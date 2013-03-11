@@ -27,6 +27,8 @@ group :test do
   gem 'ci_reporter'
   gem 'minitest-reporters'
   gem 'brakeman'
+  gem 'simplecov'
+  gem 'simplecov-rcov'
 end
 
 gem 'jquery-rails'
