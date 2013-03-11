@@ -4,6 +4,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.12'
 gem 'mongo_mapper'
+gem 'grape'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
