@@ -23,6 +23,12 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
+group :test do
+  gem 'ci_reporter'
+  gem 'minitest-reporters'
+  gem 'brakeman'
+end
+
 gem 'jquery-rails'
 # gem 'therubyracer'
 gem 'thin'
@@ -31,7 +37,6 @@ gem 'mongo'
 gem 'bson_ext' # requires devkit
 gem 'redcarpet' # required by yard for markdown. Seems to require devkit as well.
 gem 'yard'
-gem 'minitest-reporters' # required for minitest-reporter
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
