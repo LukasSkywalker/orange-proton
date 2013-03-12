@@ -1,20 +1,20 @@
-# encoding: utf-8
 require 'grape'
 require_relative '../models/field.rb'
 
 class API < Grape::API
   prefix 'api'
+  version 'v1'
   format :json
 
   desc 'Returns data'
   resource :fields do
     params do
-      requires :code, type: String, desc: 'ICD Code'
+      requires :code, type: String, regexp: /\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?/, desc: 'ICD Code'
       requires :count, type: Integer, desc: 'Number of fields to be displayed'
-      requires :lang, type: String, desc: 'The language of the response'
+      requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/, desc: 'The language of the response'
     end
 
-    get 'get/:code/:count/:lang' do
+    get 'get' do
       {
           :input => {:code => params[:code], :count => params[:count], :Lang => params[:lang]},
           :data => '',

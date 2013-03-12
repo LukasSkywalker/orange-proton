@@ -42,5 +42,5 @@ doc/
 Gemfile.lock
 
 #ignore thin client pid
-*.pid
+.pid
 
