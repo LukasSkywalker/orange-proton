@@ -24,7 +24,7 @@ class API < Grape::API
           :data => '',
           :fields => Field.create('Test', 10, 'B29.2'),
           :type => :ICD,
-          :subicds => 'alsdkjfslkdjf'
+          :subicds => 'Something new!'
       }
     end
   end
