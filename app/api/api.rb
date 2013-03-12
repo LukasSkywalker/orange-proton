@@ -1,11 +1,13 @@
 require 'grape'
-require_relative '../models/field'
-require_relative '../models/doctor'
+require_relative '../models/api/field'
+require_relative '../models/api/doctor'
+require_relative '../models/api/icd_entry'
 require_relative '../helpers/classify_code'
 
 class API < Grape::API
   prefix 'api'
-  version 'v1'
+  #let rails serve unknown routes templates
+  version 'v1', :cascade => false
   format :json
 
   http_basic do |username, password|
@@ -22,15 +24,16 @@ class API < Grape::API
     end
 
     get 'get' do
+      icd_entry = IcdEntry.create
       {
-          :data => {:empty => 'hash'},
+          :data => icd_entry,
           :fields => [
-              Field.create('TestField1', 0.8, 'B29.2'),
-              Field.create('TestField2', 0.5, 'B29.2'),
-              Field.create('TestField3', 0.2, 'B29.2')
+              Field.create('Allgemeinmedizin', 0.8, 5),
+              Field.create('Chirurgie', 0.5, 6),
+              Field.create('Innere Medizin', 0.2, 13)
           ],
           :type => get_code_type(params[:code]),
-          :subicds => [{:empty => 'hash'}]
+          :subicds => icd_entry.sub_classes
       }
     end
   end
@@ -45,14 +48,15 @@ class API < Grape::API
     end
 
     get 'get' do
-      [Doctor.create('Hans Wurst',
-                    'Dr. med. Arzt fuer Innere Medizin',
-                    'Entenstrasse 23, 8302 Entenhausen',
-                    'doc@docmail.ch',
-                    '031 791 10 10',
-                    '031 791 10 11',
-                    'BE',
-                    'Internisten'
+      [Doctor.create(
+           'Hans Wurst',
+           'Dr. med. Arzt fuer Innere Medizin',
+           'Entenstrasse 23, 8302 Entenhausen',
+           'doc@docmail.ch',
+           '031 791 10 10',
+           '031 791 10 11',
+           'BE',
+           'Internisten'
       )]
     end
   end
@@ -65,8 +69,8 @@ class API < Grape::API
       requires :lang, type: String
     end
 
-    get 'hello' do
-      {:hello => 'world'}
+    get  do
+      {:name => 'Allgemeinmedizin'}
     end
   end
 end
