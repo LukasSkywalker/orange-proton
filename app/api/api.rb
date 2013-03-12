@@ -6,6 +6,10 @@ class API < Grape::API
   version 'v1'
   format :json
 
+  http_basic do |username, password|
+    username == 'testuser' && password == 'testpwd'
+  end
+
   desc 'Returns data'
   resource :fields do
     params do
