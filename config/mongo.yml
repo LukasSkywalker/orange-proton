@@ -1,5 +1,5 @@
 defaults: &defaults
-  host: 127.0.0.1
+  host: pse4.iam.unibe.ch
   port: 27017
 
 development:
