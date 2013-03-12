@@ -1,8 +1,6 @@
 require 'grape'
-require_relative '../models/api/field'
-require_relative '../models/api/doctor'
-require_relative '../models/api/icd_entry'
 require_relative '../helpers/classify_code'
+require_relative '../helpers/information_interface'
 
 class API < Grape::API
   prefix 'api'
@@ -14,8 +12,16 @@ class API < Grape::API
     username == 'usr' && password == 'pwd'
   end
 
+  helpers do
+    def lang
+      params[:lang]
+    end
+  end
+
   desc 'Returns data'
   resource :fields do
+
+    helpers InformationInterface::IcdData
 
     params do
       requires :code, type: String, regexp: /\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?/, desc: 'ICD Code'
@@ -24,16 +30,10 @@ class API < Grape::API
     end
 
     get 'get' do
-      icd_entry = IcdEntry.create
       {
-          :data => icd_entry,
-          :fields => [
-              Field.create('Allgemeinmedizin', 0.8, 5),
-              Field.create('Chirurgie', 0.5, 6),
-              Field.create('Innere Medizin', 0.2, 13)
-          ],
+          :data => get_icd_data(params[:code], lang),
+          :fields => get_fields_of_specialization(params[:code], params[:count], lang),
           :type => get_code_type(params[:code]),
-          :subicds => icd_entry.sub_classes
       }
     end
   end
@@ -41,28 +41,24 @@ class API < Grape::API
   desc 'Returns doctors'
   resource :docs do
 
+    helpers InformationInterface::Doctors
+
     params do
       requires :lat, type: Float, desc: 'Latitude of user position'
       requires :long, type: Float, desc: 'Longitude of user position'
       requires :field, type: Integer, desc: 'Code for field of speciality'
+      requires :count, type: Integer, desc: 'Maximum numbers of doctors returned'
     end
 
     get 'get' do
-      [Doctor.create(
-           'Hans Wurst',
-           'Dr. med. Arzt fuer Innere Medizin',
-           'Entenstrasse 23, 8302 Entenhausen',
-           'doc@docmail.ch',
-           '031 791 10 10',
-           '031 791 10 11',
-           'BE',
-           'Internisten'
-      )]
+      get_close_doctors(params[:field], params[:lat], params[:long], params[:count])
     end
   end
 
   desc 'Returns name of field corresponding to a specific code'
   resource :codenames do
+
+    helpers InformationInterface::Helpers
 
     params do
       requires :code, type: String
@@ -70,7 +66,7 @@ class API < Grape::API
     end
 
     get  do
-      {:name => 'Allgemeinmedizin'}
+      get_name_of_field(params[:code], params[:lang])
     end
   end
 end
