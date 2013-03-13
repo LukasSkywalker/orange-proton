@@ -6,7 +6,7 @@ module InformationInterface
     attr_accessor :provider
   end
 
-  self.provider = MockInfoProvider
+  self.provider = MockInfoProvider.new
 
   module Doctors
     def get_close_doctors(field_code, lat, long, count)
