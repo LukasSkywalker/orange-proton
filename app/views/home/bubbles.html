@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PSE4-UI</title>
+
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  
+  <link rel="stylesheet" type="text/css" href="css/js-mindmap.css" />
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+  <!-- UI, for draggable nodes -->
+  <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+  <!-- Raphael for SVG support (won't work on android) -->
+  <script type="text/javascript" src="js/raphael-min.js"></script>
+  <!-- Mindmap -->
+  <script type="text/javascript" src="js/js-mindmap.js"></script>
+  <!-- Kick everything off -->
+  <script type="text/javascript" src="js/script.js"></script>
+
+</head>
+<body>
+  <ul>
+    <li><div id="code" class="bubble"><input class="code-field" type="text" name="code" placeholder="ICD Code"></div>
+      <ul>
+        <li><div id="syn" class="bubble">Synonyme</div></li>
+        <li><div id="cat" class="bubble">Fachrichtung</div>
+          <ul>
+            <li>
+            <div class="doc" class="bubble">Doktor A
+              <br /> <a href="https://maps.google.ch/maps?q=Gehracker+4,+Meikirch&hl=de&sll=46.813187,8.22421&sspn=2.078967,5.410767&oq=gehracker+4+&t=h&hnear=Gehracker+4,+3042+Meikirch,+Bern&z=16" onclick="window.open($(this).attr('href'));">Gehracker 4</a>
+             <br /> Tel: 239485458567
+            </div>
+            </li>
+            <li><div class="doc" class="bubble">Doktor B</div></li>
+          </ul>
+        </li>
+        <li><div id="super" class="bubble">Oberklasse</div></li>
+        <li><div id="drg" class="bubble">DRG</div></li>
+        <li><div id="exklusiva" class="bubble">Exklusiva</div></li>
+      </ul>
+    </li>
+  </ul>
+</body>
+</html>
