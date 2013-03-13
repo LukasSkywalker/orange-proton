@@ -1,5 +1,4 @@
 require 'grape'
-require_relative '../helpers/classify_code'
 require_relative '../helpers/information_interface'
 
 class API < Grape::API
