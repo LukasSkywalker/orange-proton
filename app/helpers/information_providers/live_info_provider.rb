@@ -16,4 +16,6 @@ class LiveInfoProvider < BaseInformationProvider
   def get_field_name(field_code, language)
     raise NotImplementedError
   end
+
+
 end
