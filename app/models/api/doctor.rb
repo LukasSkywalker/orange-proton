@@ -1,3 +1,5 @@
+require 'mongo_mapper'
+
 class Doctor
   attr_accessor :name, :title, :address, :email, :phone1, :phone2, :canton, :docfield
 

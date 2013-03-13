@@ -1,3 +1,4 @@
+require 'mongo_mapper'
 
 class Field
   attr_accessor :name, :relatedness, :code
