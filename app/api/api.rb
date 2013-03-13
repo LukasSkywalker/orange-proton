@@ -60,7 +60,7 @@ class API < Grape::API
       requires :lang, type: String
     end
 
-    get  do
+    get 'get'  do
       get_field_name(params[:code], params[:lang])
     end
   end
