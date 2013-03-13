@@ -30,11 +30,7 @@ class API < Grape::API
     end
 
     get 'get' do
-      {
-          :data => get_icd_data(params[:code], lang),
-          :fields => get_fields_of_specialization(params[:code], params[:count], lang),
-          :type => get_code_type(params[:code]),
-      }
+      get_fields(params[:code], params[:count], lang)
     end
   end
 
@@ -51,7 +47,7 @@ class API < Grape::API
     end
 
     get 'get' do
-      get_close_doctors(params[:field], params[:lat], params[:long], params[:count])
+      get_doctors(params[:field], params[:lat], params[:long], params[:count])
     end
   end
 
@@ -66,7 +62,7 @@ class API < Grape::API
     end
 
     get  do
-      get_name_of_field(params[:code], params[:lang])
+      get_field_name(params[:code], params[:lang])
     end
   end
 end

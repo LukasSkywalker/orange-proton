@@ -1,3 +1,5 @@
+require 'mongo_mapper'
+
 class IcdEntry
   attr_accessor :code,
                 :super_class,

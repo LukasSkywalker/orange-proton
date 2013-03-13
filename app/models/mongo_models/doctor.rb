@@ -7,6 +7,7 @@ class Doctor
     def create(name, title, address, email, phone1, phone2, canton, docfield)
       new = Doctor.new
       new.name = name
+      new.title = title
       new.address = address
       new.email = email
       new.phone1 = phone1
