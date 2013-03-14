@@ -1,7 +1,13 @@
 # returns the number of 5 matched consecutive character sequences
 def character_matching(first, second)
-  i=0; j=4; p=0
 
+  map ={'ologie' => '', 'ographie' => '', 'opathie' => '', 'skopie' => '',
+        'iatrie' => '', 'chirurgie' => '', 'therapie' => '', 'medizin' => '' }
+
+  map.each{|a,b| first.gsub!(a, b)}
+  map.each{|a,b| second.gsub!(a, b)}
+
+  i=0; j=4; p=0
   for j in 4..first.length()-1
     k=0; l=4
     for l in 4..second.length()-1
