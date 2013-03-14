@@ -1,18 +1,27 @@
 defaults: &defaults
-  host: pse4.iam.unibe.ch
   port: 27017
 
 development:
   <<: *defaults
+  host: localhost
+  database: orange_proton_development
+
+development-local:
+  <<: *defaults
+  host: localhost
+  database: orange_proton_development
+
+development-remote:
+  <<: *defaults
+  host: pse4.iam.unibe.ch
   database: orange_proton_development
 
 test:
   <<: *defaults
+  host: localhost
   database: orange_proton_test
 
 # set these environment variables on your prod server
 production:
   <<: *defaults
-  database: orange_proton
-  username: <%= ENV['MONGO_USERNAME'] %>
-  password: <%= ENV['MONGO_PASSWORD'] %>
+  database: orange_proton_production
