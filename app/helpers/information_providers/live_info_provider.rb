@@ -1,7 +1,8 @@
-require '../database_adapter'
-require '../../models/mongo_models/doctor'
-require '../../models/mongo_models/icd_entry'
-require '../../models/mongo_models/field'
+PWD = File.dirname(__FILE__)
+require PWD + '/../database_adapter'
+require PWD + '/../../models/mongo_models/doctor'
+require PWD + '/../../models/mongo_models/icd_entry'
+require PWD + '/../../models/mongo_models/field'
 
 # Information Provider for live realworld data, originating from real database
 class LiveInfoProvider < BaseInformationProvider
