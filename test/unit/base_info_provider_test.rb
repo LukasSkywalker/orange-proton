@@ -45,4 +45,5 @@ class BaseInfoProviderTest < Test::Unit::TestCase
     assert(@provider.get_code_type(@unknown5) == :unknown)
     assert(@provider.get_code_type(@unknown6) == :unknown)
   end
+
 end
