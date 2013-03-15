@@ -1,5 +1,6 @@
 require_relative 'information_providers/mock_provider'
 require_relative 'information_providers/google_info_provider'
+require_relative 'information_providers/mdc_info_provider'
 
 module InformationInterface
 
