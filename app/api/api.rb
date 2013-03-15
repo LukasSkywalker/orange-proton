@@ -55,7 +55,7 @@ class API < Grape::API
     helpers InformationInterface::Helpers
 
     params do
-      requires :code, type: String
+      requires :code, type: Integer
       requires :lang, type: String
     end
 

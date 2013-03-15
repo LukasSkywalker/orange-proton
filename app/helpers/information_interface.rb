@@ -16,8 +16,8 @@ module InformationInterface
   end
 
   module IcdData
-    def get_fields(field_code, max_count, lang)
-      InformationInterface.provider.get_fields(field_code, max_count, lang)
+    def get_fields(code, max_count, lang)
+      InformationInterface.provider.get_fields(code, max_count, lang)
     end
   end
 
