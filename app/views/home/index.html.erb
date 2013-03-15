@@ -1,3 +1,21 @@
-<h1><%= @welcome %></h1>
-<p>This is the 'index' action of the 'home' controller.</p>
-<p>See it at /app/controllers/home_controller.rb and /app/views/home/index.html.erb</p>
+<ul>
+  <li><div id="code"><input class="code-field" type="text" name="code" placeholder="ICD Code"></div>
+    <ul>
+      <li><div id="syn">Synonyme</div></li>
+      <li><div id="cat">Fachrichtung</div>
+        <ul>
+          <li>
+            <div class="doc">Doktor A
+              <br /> <a href="https://maps.google.ch/maps?q=Gehracker+4,+Meikirch&hl=de&sll=46.813187,8.22421&sspn=2.078967,5.410767&oq=gehracker+4+&t=h&hnear=Gehracker+4,+3042+Meikirch,+Bern&z=16" onclick="window.open($(this).attr('href'));">Gehracker 4</a>
+              <br /> Tel: 239485458567
+            </div>
+          </li>
+          <li><div class="doc">Doktor B</div></li>
+        </ul>
+      </li>
+      <li><div id="super">Oberklasse</div></li>
+      <li><div id="drg">DRG</div></li>
+      <li><div id="exklusiva">Exklusiva</div></li>
+    </ul>
+  </li>
+</ul>
