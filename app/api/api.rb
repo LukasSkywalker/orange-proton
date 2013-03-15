@@ -3,8 +3,7 @@ require_relative '../helpers/information_interface'
 
 class API < Grape::API
   prefix 'api'
-  #let rails serve unknown routes templates
-  version 'v1', :cascade => false
+  version 'v1'
   format :json
 
   http_basic do |username, password|
