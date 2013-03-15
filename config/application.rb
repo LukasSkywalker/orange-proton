@@ -5,16 +5,22 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "active_resource/railtie"
 require "rails/test_unit/railtie"
+require "sprockets/railtie"
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line
-  Bundler.require(*Rails.groups(:assets => %w(development test)))
+  Bundler.require(*Rails.groups(:assets => %w(development development-local development-remote test)))
   # If you want your assets lazily compiled in production, use this line
   # Bundler.require(:default, :assets, Rails.env)
 end
 
 module OrangeProton
   class Application < Rails::Application
+
+    # Load internal API files
+    config.paths.add 'app/api', :glob => '**/*.rb'
+    config.autoload_paths += Dir["#{Rails.root}/app/api/*"]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
