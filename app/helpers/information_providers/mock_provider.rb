@@ -26,7 +26,9 @@ class MockInfoProvider < BaseInformationProvider
   end
 
   def get_field_name(field_code, lang)
-    'Allgemeine Medizin'
+    {
+        :name => 'Allgemeine Medizin'
+    }
   end
 
   # private Helpers

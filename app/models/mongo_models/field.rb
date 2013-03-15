@@ -1,15 +1,7 @@
 require 'mongo_mapper'
 
 class Field
-  attr_accessor :name, :relatedness, :code
-
-  class << self
-    def create(name, relatedness, code)
-      new = Field.new
-      new.name = name
-      new.relatedness = relatedness
-      new.code = code
-      new
-    end
-  end
+  include MongoMapper::Document
+  set_database_name 'fachgebieteUndSpezialisierungen'
+  set_collection_name 'fachgebiete'
 end

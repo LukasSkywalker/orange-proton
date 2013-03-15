@@ -1,4 +1,5 @@
 require_relative 'information_providers/mock_provider'
+require_relative 'information_providers/live_info_provider'
 
 module InformationInterface
 
@@ -6,7 +7,7 @@ module InformationInterface
     attr_accessor :provider
   end
 
-  self.provider = MockInfoProvider.new
+  self.provider = LiveInfoProvider.new
 
   module Doctors
     def get_doctors(field_code, lat, long, count)
