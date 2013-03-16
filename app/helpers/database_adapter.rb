@@ -51,7 +51,7 @@ class DatabaseAdapter
   end
 
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z).
-  def get_mdc(drg_prefix)
+  def get_mdc_code(drg_prefix)
     db = @client['mdc']
     col = db['mdcNames']
     document=col.find_one({drgprefix: drg_prefix})
