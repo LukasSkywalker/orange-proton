@@ -45,6 +45,13 @@ class DatabaseAdapter
     fmhs
   end
 
+  def get_mdc(drg_prefix)
+    db = @client['mdc']
+    col = db['mdcNames']
+    document=col.find_one({drgprefix: drg_prefix})
+    document['code']
+  end
+
   def get_fmh_name(fs_code, language)
     document = @fs.find_one({code: fs_code.to_i})
     document[language]

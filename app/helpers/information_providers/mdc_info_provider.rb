@@ -6,25 +6,8 @@ class MDCInfoProvider < DatabaseInfoProvider
     drgs = db.get_drgs(icd_code)
     mdcs = []
     drgs.each do |drg|
-      ascii = drg[0].ord-65
-      case ascii
-        when 1..17
-          mdcs<<ascii
-        when 18
-          mdcs<<'18A'
-        when 19
-          mdcs<<'18B'
-        when 20..21
-          mdcs<< (ascii-1)
-        when 22
-          mdcs<<'21A'
-        when 23
-          mdcs<<'21B'
-        when 24..25
-          mdcs<< (ascii-2)
-        else
-          mdcs<<:unknown
-      end
+      prefix = drg[0]
+      mdcs<<db.get_mdc(prefix)
     end
     fmhs = []
     fmhnames = []
