@@ -36,7 +36,7 @@ class DatabaseAdapter
     @icd[language.to_sym].find_one({code: icd_code})
   end
 
-  def get_fmhs(mcd_code)
+  def get_fs_code(mcd_code)
     documents = @r_mdc_fs.find({mdc_code: mcd_code.to_s})
     fmhs = []
     documents.each do |document|
@@ -45,14 +45,14 @@ class DatabaseAdapter
     fmhs
   end
 
-  def get_mdc(drg_prefix)
+  def get_mdc_code(drg_prefix)
     db = @client['mdc']
     col = db['mdcNames']
     document=col.find_one({drgprefix: drg_prefix})
     document['code']
   end
 
-  def get_fmh_name(fs_code, language)
+  def get_fs_name(fs_code, language)
     document = @fs.find_one({code: fs_code.to_i})
     document[language]
   end

@@ -18,7 +18,7 @@ class BingInfoProvider < DatabaseInfoProvider
     field_codes = self.db.get_fields_by_bing_rank(icd_code, max_count)
     field_codes.each do |fc|
       out << {
-          name: db.get_fmh_name(fc['fs_code'],lang),
+          name: db.get_fs_name(fc['fs_code'],lang),
           relatedness: fc['icd_fs_bing_de'],
           field: fc['fs_code']
       }
