@@ -1,12 +1,8 @@
 PWD = File.dirname(__FILE__)
 require PWD + '/database_info_provider'
-require PWD + '/../database_adapter'
-require PWD + '/../../models/mongo_models/doctor'
-require PWD + '/../../models/mongo_models/icd_entry'
-require PWD + '/../../models/mongo_models/field'
 
 # Information Provider for live realworld data, originating from real database
-class GoogleInfoProvider < DatabaseInfoProvider
+class BingInfoProvider < DatabaseInfoProvider
 
   def get_fields(icd_code, max_count, language)
     {
@@ -16,12 +12,13 @@ class GoogleInfoProvider < DatabaseInfoProvider
     }
   end
 
+  private
   def get_fields_of_specialization(icd_code, max_count, lang)
     out = []
     field_codes = self.db.get_fields_by_bing_rank(icd_code, max_count)
     field_codes.each do |fc|
       out << {
-          name: db.get_fmh_name(fc['fs_code'],lang),
+          name: db.get_fs_name(fc['fs_code'],lang),
           relatedness: fc['icd_fs_bing_de'],
           field: fc['fs_code']
       }

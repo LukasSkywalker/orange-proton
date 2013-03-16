@@ -7,28 +7,28 @@ class MDCInfoProvider < DatabaseInfoProvider
     mdcs = []
     drgs.each do |drg|
       prefix = drg[0]
-      mdcs<<db.get_mdc(prefix)
+      mdcs<<db.get_mdc_code(prefix)
     end
     fmhs = []
     fmhnames = []
-    fieldhash = []
+    fieldhashes = []
     mdcs.each do |mdc|
-      db.get_fmhs(mdc).each do |fmh|
+      db.get_fs_code(mdc).each do |fmh|
         fmhs<<fmh unless fmhs.include? fmh
       end
     end
     fmhs.each do |fmh|
-      name = db.get_fmh_name(fmh,language)
+      name = db.get_fs_name(fmh,language)
       fmhnames << name unless fmhnames.include?(name)
-      fieldhash<< {
+      fieldhashes<< {
           name: name,
           relatedness: 1, #set to maximum, as there is only manual mapping involved
           field: fmh
-      }
+      } unless fieldhashes.size >= max_count
     end
     {
         data: db.get_icd(icd_code,language),
-        fields:fieldhash, #get_fields_of_specialization(icd_code, max_count, language),
+        fields:fieldhashes, #get_fields_of_specialization(icd_code, max_count, language),
         type: get_code_type(icd_code)
     }
   end
