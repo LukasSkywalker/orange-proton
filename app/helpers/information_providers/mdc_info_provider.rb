@@ -11,7 +11,7 @@ class MDCInfoProvider < DatabaseInfoProvider
     end
     fmhs = []
     fmhnames = []
-    fieldhash = []
+    fieldhashes = []
     mdcs.each do |mdc|
       db.get_fmhs(mdc).each do |fmh|
         fmhs<<fmh unless fmhs.include? fmh
@@ -20,15 +20,15 @@ class MDCInfoProvider < DatabaseInfoProvider
     fmhs.each do |fmh|
       name = db.get_fmh_name(fmh,language)
       fmhnames << name unless fmhnames.include?(name)
-      fieldhash<< {
+      fieldhashes<< {
           name: name,
           relatedness: 1, #set to maximum, as there is only manual mapping involved
           field: fmh
-      }
+      } unless fieldhashes.size >= max_count
     end
     {
         data: db.get_icd(icd_code,language),
-        fields:fieldhash, #get_fields_of_specialization(icd_code, max_count, language),
+        fields:fieldhashes, #get_fields_of_specialization(icd_code, max_count, language),
         type: get_code_type(icd_code)
     }
   end
