@@ -43,6 +43,30 @@ class DatabaseAdapter
     fmhs
   end
 
+  # @return An array of available thesaurName s
+  def get_available_thesaur_names()
+    a = @client['thesauren'].collection_names
+    a.delete('thesaurusToFSCode')
+    a.delete('system.indexes')
+    return a
+  end
+
+  # @param thesaurName any of the names returned by get_available_thesaur_names()
+  def is_icd_code_in_thesaur_named?(icd_code, thesaurName)
+    return @client['thesauren'][thesaurName].find_one({icd_code: icd_code}) != nil
+  end
+
+  def get_fs_codes_for_thesaur_named(thesaurName)
+      a = @client['thesauren']['thesaurusToFSCode'].find({
+                                                         thesaurName: thesaurName},
+                                                         fields: {:fs_code => 1, :_id => 0})
+      fs_codes= []
+      a.each {|fs|
+          fs_codes << fs["fs_code"]
+      }
+      return fs_codes
+  end
+
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z).
   def get_mdc_code(drg_prefix)
     db = @client['mdc']
@@ -51,6 +75,7 @@ class DatabaseAdapter
     document['code']
   end
 
+  # @return The name of a Fachgebiet/Spezialisierung of the given code in the language specified.
   def get_fs_name(fs_code, language)
     document = @fs.find_one({code: fs_code.to_i})
     document[language]
