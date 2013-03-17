@@ -26,6 +26,10 @@ group :test do
   gem 'simplecov-rcov'
 end
 
+group :test, :development do
+  gem 'rspec-rails', '~> 2.0'
+end
+
 gem 'jquery-rails'
 gem 'thin'
 

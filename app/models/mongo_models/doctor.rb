@@ -1,5 +1,3 @@
-require 'mongo_mapper'
-
 class Doctor
   include MongoMapper::Document
   set_database_name 'doctors'

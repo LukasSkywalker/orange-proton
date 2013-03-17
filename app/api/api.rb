@@ -1,14 +1,7 @@
-require 'grape'
-require_relative '../helpers/information_interface'
-
 class API < Grape::API
   prefix 'api'
   version 'v1'
   format :json
-
-  http_basic do |username, password|
-    username == 'usr' && password == 'pwd'
-  end
 
   helpers do
     def lang
