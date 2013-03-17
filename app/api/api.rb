@@ -6,10 +6,6 @@ class API < Grape::API
   version 'v1'
   format :json
 
-  http_basic do |username, password|
-    username == 'usr' && password == 'pwd'
-  end
-
   helpers do
     def lang
       params[:lang]
