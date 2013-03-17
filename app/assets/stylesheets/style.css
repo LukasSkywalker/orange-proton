@@ -2,13 +2,22 @@ body {
   background:#fff;
 }
 .js-mindmap-active div.node {
-  background:#f5f5f5;
+  /*background:#f5f5f5;
   border: 2px solid #e3e3e3;
   -webkit-border-radius: 20px;
   -webkit-border-radius: 20px;
   -moz-border-radius: 20px;
   -moz-border-radius: 20px;
+  border-radius: 20px;*/
+}
+
+div.node div {
+  -webkit-border-radius: 20px;
+  -webkit-border-radius: 20px;
+  -moz-border-radius: 20px;
+  -moz-border-radius: 20px;
   border-radius: 20px;
+  background: #eee;
 }
 .js-mindmap-active div.node.active {
   padding:5px 10px !important;
@@ -22,4 +31,32 @@ body {
 .code-field{
  border: none;
  background: none;
+}
+
+.syn{
+  border: 2px solid black;
+}
+
+.cat{
+  border: 2px solid blue;
+}
+
+.drg{
+  border: 2px solid red;
+}
+
+.exclusiva{
+  border: 2px solid green;
+}
+
+.inclusiva{
+  border: 2px solid yellow;
+}
+
+.super{
+  border: 2px solid gray;
+}
+
+.legend{
+  width: 200px;
 }
