@@ -1,18 +1,11 @@
-require 'mongo_mapper'
-require 'mongo'
-require_relative '../models/mongo_models/doctor'
-require_relative '../models/mongo_models/field'
-require_relative '../models/mongo_models/icd_entry'
-
-include Mongo
-
 # This connects to the real database and retrieves requested basic information. We do not compute compound information here.
 class DatabaseAdapter
   def initialize
     host = MongoMapper.connection.host
     port = MongoMapper.connection.port
 
-    @client = MongoClient.new(host, port)
+    # See http://stackoverflow.com/a/13995525
+    @client = Mongo::Connection.new(host, port)
 
     @icd = {
         :de => @client['icd_2012_ch']['de'],

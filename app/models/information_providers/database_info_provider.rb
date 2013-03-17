@@ -1,9 +1,3 @@
-PWD = File.dirname(__FILE__) unless
-require PWD + '/../database_adapter'
-require PWD + '/../../models/mongo_models/doctor'
-require PWD + '/../../models/mongo_models/icd_entry'
-require PWD + '/../../models/mongo_models/field'
-
 class DatabaseInfoProvider <  BaseInformationProvider
 
   attr_accessor :db

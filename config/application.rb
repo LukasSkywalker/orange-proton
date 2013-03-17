@@ -21,6 +21,9 @@ module OrangeProton
     config.paths.add 'app/api', :glob => '**/*.rb'
     config.autoload_paths += Dir["#{Rails.root}/app/api/*"]
 
+    # Load models in subfolders of /models
+    config.autoload_paths += Dir[ Rails.root.join('app', 'models', '**/') ]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.

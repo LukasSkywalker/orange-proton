@@ -1,12 +1,7 @@
-require 'test/unit'
-require 'minitest/reporters'
-require_relative '../../app/helpers/information_providers/base_information_provider'
+require "spec_helper"
 
-MiniTest::Reporters.use!
-
-class BaseInfoProviderTest < Test::Unit::TestCase
-
-  def setup
+describe BaseInformationProvider do
+  before(:each) do
     @provider = BaseInformationProvider.new
 
     @chop1 = '00.4D'
@@ -25,19 +20,19 @@ class BaseInfoProviderTest < Test::Unit::TestCase
     @unknown6 = 'ss5.22'
   end
 
-  def test_chop
+  it "should find code type of chop" do
     assert(@provider.get_code_type(@chop1) == :chop)
     assert(@provider.get_code_type(@chop2) == :chop)
     assert(@provider.get_code_type(@chop3) == :chop)
   end
 
-  def test_icd
+  it "should find code type of icd" do
     assert(@provider.get_code_type(@icd1) == :icd)
     assert(@provider.get_code_type(@icd2) == :icd)
     assert(@provider.get_code_type(@icd3) == :icd)
   end
 
-  def test_unknown
+  it "should find code type of unknown" do
     assert(@provider.get_code_type(@unknown1) == :unknown)
     assert(@provider.get_code_type(@unknown2) == :unknown)
     assert(@provider.get_code_type(@unknown3) == :unknown)
