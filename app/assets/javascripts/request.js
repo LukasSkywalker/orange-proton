@@ -31,7 +31,7 @@ function getICD( input ){
     type: 'GET',
     dataType: 'json',
     contentType: "charset=UTF-8",
-    success : function(text) {
+    success : function(response, status) {
       // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
       // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
       $(".node").remove();
@@ -39,7 +39,7 @@ function getICD( input ){
       $("path").remove();
       
       $('body').mindmap();
-      var data = text.data; // text is already parsed by JQuery
+      var data = response.data; // text is already parsed by JQuery
       var mm = $('body');
 
       var root = $('body').addRootNode(input, {}); // define a root node to attach the other nodes to
@@ -74,6 +74,9 @@ function getICD( input ){
         var r = fields[i].relatedness;
         mm.addNode(root, '<div class="cat">'+f+': '+n+'('+f+')</div>', {});
       }
+    },
+    error: function(xhr, status, error){
+      alert(error);
     }
   });
 }
