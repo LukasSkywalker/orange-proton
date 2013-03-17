@@ -1,6 +1,3 @@
-require 'grape'
-require_relative '../helpers/information_interface'
-
 class API < Grape::API
   prefix 'api'
   version 'v1'

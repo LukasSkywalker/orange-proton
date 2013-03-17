@@ -1,6 +1,3 @@
-PWD = File.dirname(__FILE__)
-require PWD + '/database_info_provider'
-
 # Information Provider for live realworld data, originating from real database
 class BingInfoProvider < DatabaseInfoProvider
 

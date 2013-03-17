@@ -1,5 +1,3 @@
-require_relative 'base_information_provider'
-
 class MockInfoProvider < BaseInformationProvider
 
   def get_fields(field_code, count, lang)
