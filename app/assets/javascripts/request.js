@@ -52,7 +52,8 @@ function getICD( input ){
       }
 
       var cat = data.superclass;
-      mm.addNode(root, '<div class="super">'+cat+'</div>', {});
+      var super_name = data.superclass_text;
+      mm.addNode(root, '<div class="super">'+cat+'</br>'+ super_name +'</div>', {});
 
       var drgs = data.drgs;
       for( var i=0; i<Math.min(5, drgs.length); i++) {
