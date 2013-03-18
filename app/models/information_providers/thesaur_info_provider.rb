@@ -11,7 +11,7 @@ class ThesaurInfoProvider < DatabaseInfoProvider
                 name: db.get_fs_name(fs_code, language),
                 relatedness: 1, #set to maximum, as there is only manual mapping involved
                 field: fs_code
-            } unless fields.size<=4
+            } unless fields.size>=4
           }
           #{:tn => tn, :r => db.get_fs_codes_for_thesaur_named(tn)}
         end
