@@ -12,7 +12,7 @@ $(document).ready(function(){
     var code = e.which; // normalized across browsers, use this :-)
     if(code==13) e.preventDefault();
     if(code==32||code==13||code==188||code==186){  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
-        mindmapper.sendRequest($(this).val());
+        mindmapper.sendRequest($(this).val().toUpperCase());
     }
   });
 });
