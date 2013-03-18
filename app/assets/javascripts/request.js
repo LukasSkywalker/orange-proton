@@ -27,7 +27,7 @@ function sendRequest(input){
 
 function getICD( input ){
   jQuery.ajax({
-    url: '/api/v1/fields/get?code='+escape(input)+'&count=1&lang=de',
+    url: '/api/v1/fields/get?code='+input+'&count=1&lang=de',
     type: 'GET',
     dataType: 'json',
     contentType: "charset=UTF-8",
@@ -67,7 +67,7 @@ function getICD( input ){
         mm.addNode(root, '<div class="inclusiva">'+inclusiva[i]+'</div>', {});
       }
 
-      var fields = text.fields;
+      var fields = response.fields;
       for(var i=0; i<fields.length; i++){
         var f = fields[i].field;
         var n = fields[i].name;
