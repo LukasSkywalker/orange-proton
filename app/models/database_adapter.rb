@@ -47,6 +47,7 @@ class DatabaseAdapter
   def get_available_thesaur_names()
     a = @client['thesauren'].collection_names
     a.delete('thesaurusToFSCode')
+    a.delete('thesaurusToFSCode2')
     a.delete('system.indexes')
     return a
   end
@@ -57,7 +58,7 @@ class DatabaseAdapter
   end
 
   def get_fs_codes_for_thesaur_named(thesaurName)
-      a = @client['thesauren']['thesaurusToFSCode'].find({
+      a = @client['thesauren']['thesaurusToFSCode2'].find({
                                                          thesaurName: thesaurName},
                                                          fields: {:fs_code => 1, :_id => 0})
       fs_codes= []
