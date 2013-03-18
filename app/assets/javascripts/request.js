@@ -67,7 +67,7 @@ function getICD( input ){
         mm.addNode(root, '<div class="inclusiva">'+inclusiva[i]+'</div>', {});
       }
 
-      var fields = text.fields;
+      var fields = response.fields;
       for(var i=0; i<fields.length; i++){
         var f = fields[i].field;
         var n = fields[i].name;
