@@ -27,7 +27,7 @@ function sendRequest(input){
 
 function getICD( input ){
   jQuery.ajax({
-    url: '/api/v1/fields/get?code='+input+'&count=1&lang=de',
+    url: '/api/v1/fields/get?code='+input+'&count=4&lang=de',
     type: 'GET',
     dataType: 'json',
     contentType: "charset=UTF-8",
@@ -42,7 +42,9 @@ function getICD( input ){
       var data = response.data; // text is already parsed by JQuery
       var mm = $('body');
 
-      var root = $('body').addRootNode(input, {}); // define a root node to attach the other nodes to
+      var name = data.text;
+
+      var root = $('body').addRootNode(input + "</br>" +name, {}); // define a root node to attach the other nodes to
       
       var syn = data.synonyms;      
       for( var i=0; i<Math.min(5, syn.length); i++) {
