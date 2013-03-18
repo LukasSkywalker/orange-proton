@@ -11,83 +11,92 @@ $(document).ready(function(){
   $("#code-name").keyup(function(e) {
     var code = e.which; // normalized across browsers, use this :-)
     if(code==13) e.preventDefault();
-    if(code==32||code==13||code==188||code==186){
-        sendRequest($(this).val());
+    if(code==32||code==13||code==188||code==186){  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
+        mindmapper.sendRequest($(this).val());
     }
   });
 });
 
-//This Script sends ajax json requests to the database
-function sendRequest(input){
-  console.log(input);
-  getICD(input);
-  // TODO getSpeciality(input);
-  // TODO getDoctors(input);
-}
 
-function getICD( input ){
-  jQuery.ajax({
-    url: '/api/v1/fields/get?code='+input+'&count=4&lang=de',
-    type: 'GET',
-    dataType: 'json',
-    contentType: "charset=UTF-8",
-    success : function(response, status) {
-      // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
-      // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
-      $(".node").remove();
-      $("svg").remove();
-      $("path").remove();
-      
-      $('body').mindmap();
-      var data = response.data; // text is already parsed by JQuery
-      var mm = $('body');
+var mindmapper = {
+  //This method sends ajax requests to the API
+  sendRequest: function( input ){
+    console.log(input);
+    this.getICD(input);
+    // TODO mindmapper.getSpeciality(input);
+    // TODO mindmapper.getDoctors(input);
+  },
 
-      var name = data.text;
+  getICD: function( input ){
+    var MAX_SYN = 5; // max number of synonyms to display
+    var MAX_FIELDS = 5; // max number of fields
+    var MAX_DRGS = 5;
+    var MAX_INCLUSIVA = 5;
+    var MAX_EXCLUSIVA = 5;
 
-      var root = $('body').addRootNode(input + "</br>" +name, {}); // define a root node to attach the other nodes to
-      
-      var syn = data.synonyms;      
-      for( var i=0; i<Math.min(5, syn.length); i++) {
-        mm.addNode(root, '<div class="syn">'+syn[i]+'</div>', {});
+    jQuery.ajax({
+      url: '/api/v1/fields/get?code='+input+'&count=4&lang=de',
+      type: 'GET',
+      dataType: 'json',
+      contentType: "charset=UTF-8",
+      success : function(response, status) {
+        // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
+        // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
+        $(".node").remove();
+        $("svg").remove();
+        $("path").remove();
+        
+        $('body').mindmap();
+        var data = response.data; // text is already parsed by JQuery
+        var mm = $('body');
+
+        var name = data.text;
+
+        var root = $('body').addRootNode(input + "</br>" +name, {}); // define a root node to attach the other nodes to
+        
+        var syn = data.synonyms;      
+        for( var i=0; i<Math.min(MAX_SYN, syn.length); i++) {
+          mm.addNode(root, '<div class="syn">'+syn[i]+'</div>', {});
+        }
+
+        var superclass = data.superclass;
+        var super_name = data.superclass_text;
+        mm.addNode(root, '<div class="super">'+superclass+'</br>'+ super_name +'</div>', {});
+
+        var drgs = data.drgs;
+        for( var i=0; i<Math.min(MAX_DRGS, drgs.length); i++) {
+          mm.addNode(root, '<div class="drg">'+drgs[i]+'</div>', {});
+        }
+
+        var exclusiva = data.exclusiva;
+        for( var i=0; i<Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
+          mm.addNode(root, '<div class="exclusiva">'+exclusiva[i]+'</div>', {});
+        }
+
+        var inclusiva = data.inclusiva;
+        for( var i=0; i<Math.min(MAX_INCLUSIVA, inclusiva.length); i++) {
+          mm.addNode(root, '<div class="inclusiva">'+inclusiva[i]+'</div>', {});
+        }
+
+        var fields = response.fields;
+        for(var i=0; i<Math.min(MAX_FIELDS,fields.length); i++){
+          var f = fields[i].field;
+          var n = fields[i].name;
+          var r = fields[i].relatedness;
+          mm.addNode(root, '<div class="cat">'+f+': '+n+'</div>', {});
+        }
+      },
+      error: function(xhr, status, error){
+        alert(error);
       }
+    });
+  },
 
-      var cat = data.superclass;
-      var super_name = data.superclass_text;
-      mm.addNode(root, '<div class="super">'+cat+'</br>'+ super_name +'</div>', {});
+  getDoctors: function( input ){
+    // TODO
+  },
 
-      var drgs = data.drgs;
-      for( var i=0; i<Math.min(5, drgs.length); i++) {
-        mm.addNode(root, '<div class="drg">'+drgs[i]+'</div>', {});
-      }
-
-      var exclusiva = data.exclusiva;
-      for( var i=0; i<Math.min(5, exclusiva.length); i++) {
-        mm.addNode(root, '<div class="exclusiva">'+exclusiva[i]+'</div>', {});
-      }
-
-      var inclusiva = data.inclusiva;
-      for( var i=0; i<Math.min(5, inclusiva.length); i++) {
-        mm.addNode(root, '<div class="inclusiva">'+inclusiva[i]+'</div>', {});
-      }
-
-      var fields = response.fields;
-      for(var i=0; i<Math.min(5,fields.length); i++){
-        var f = fields[i].field;
-        var n = fields[i].name;
-        var r = fields[i].relatedness;
-        mm.addNode(root, '<div class="cat">'+f+': '+n+'('+f+')</div>', {});
-      }
-    },
-    error: function(xhr, status, error){
-      alert(error);
-    }
-  });
-}
-
-function getDoctors( input ){
-  // TODO
-}
-
-function getSpeciality( input ){
-  // TODO
+  getSpeciality: function( input ){
+    // TODO
+  }
 }
