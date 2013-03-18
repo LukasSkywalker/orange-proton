@@ -4,7 +4,7 @@ module InformationInterface
     attr_accessor :provider
   end
 
-  self.provider = ThesaurInfoProvider.new#BingInfoProvider.new#MDCInfoProvider.new#
+  self.provider = BingInfoProvider.new#BingInfoProvider.new#MDCInfoProvider.new#
 
   module Doctors
     def get_doctors(field_code, lat, long, count)

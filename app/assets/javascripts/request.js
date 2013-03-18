@@ -27,7 +27,7 @@ function sendRequest(input){
 
 function getICD( input ){
   jQuery.ajax({
-    url: '/api/v1/fields/get?code='+escape(input)+'&count=1&lang=de',
+    url: '/api/v1/fields/get?code='+input+'&count=1&lang=de',
     type: 'GET',
     dataType: 'json',
     contentType: "charset=UTF-8",
