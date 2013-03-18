@@ -71,7 +71,7 @@ function getICD( input ){
       }
 
       var fields = response.fields;
-      for(var i=0; i<fields.length; i++){
+      for(var i=0; i<Math.min(5,fields.length); i++){
         var f = fields[i].field;
         var n = fields[i].name;
         var r = fields[i].relatedness;
