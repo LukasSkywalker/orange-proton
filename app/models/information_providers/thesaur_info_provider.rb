@@ -13,7 +13,7 @@ class ThesaurInfoProvider < DatabaseInfoProvider
                 field: fs_code
             }
           }
-          fields <<{:tn => tn, :r => db.get_fs_codes_for_thesaur_named(tn)}
+          #fields <<{:tn => tn, :r => db.get_fs_codes_for_thesaur_named(tn)}
         end
     }
 
