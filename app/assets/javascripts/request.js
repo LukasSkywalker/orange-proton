@@ -34,8 +34,10 @@ var mindmapper = {
     var MAX_INCLUSIVA = 5;
     var MAX_EXCLUSIVA = 5;
 
+    var lang = $("#lang").val();
+
     jQuery.ajax({
-      url: '/api/v1/fields/get?code='+input+'&count=4&lang=de',
+      url: '/api/v1/fields/get?code='+input+'&count=4&lang='+lang,
       type: 'GET',
       dataType: 'json',
       contentType: "charset=UTF-8",

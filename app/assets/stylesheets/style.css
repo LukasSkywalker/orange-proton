@@ -101,6 +101,11 @@ div.node div {
     padding-left: 15px;
 }
 
-h1{
-    margin-top: 5px;
+#lang{
+    position: absolute;
+    right:0;
+    margin-top: 15px;
+    margin-right: 10px;
+    width: 100px;
+    border: 1px solid #cccccc;
 }

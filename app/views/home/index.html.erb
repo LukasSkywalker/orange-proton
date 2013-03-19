@@ -1,10 +1,17 @@
-<div id="search-bar"><input id="code-name" type="text" placeholder="ICD Code"></div>
+<div id="search-bar">
+  <input id="code-name" type="text" placeholder="ICD Code">
+  <select name="lang" id="lang" size="1">
+    <option value="de">Deutsch</option>
+    <option value="fr">Français</option>
+    <option value="it">Italiano</option>
+  </select>
+</div>
 <div id="legend">
-  <div class="syn legend">Synonyme</div>
-  <div class="cat legend">Fachrichtung</div>
-  <div class="doc legend">Doktor A</div>
-  <div class="super legend">Oberklasse</div>
-  <div class="drg legend">DRG</div>
-  <div class="exclusiva legend">Exklusiva</div>
-  <div class="inclusiva legend">Inklusiva</div>
+  <div class="syn legend"><%=t :syn %></div>
+  <div class="cat legend"><%=t :cat %></div>
+  <div class="doc legend"><%=t :doc %></div>
+  <div class="super legend"><%=t :super %></div>
+  <div class="drg legend"><%=t :drg %></div>
+  <div class="exclusiva legend"><%=t :exclusiva %></div>
+  <div class="inclusiva legend"><%=t :inclusiva %></div>
 </div>
