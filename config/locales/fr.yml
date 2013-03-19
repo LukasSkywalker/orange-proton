@@ -1,0 +1,8 @@
+fr:
+  syn: "Synonymes"
+  cat: "Branche"
+  doc: "Médcin"
+  super: "Classe supérieure"
+  drg: "DRG"
+  exclusiva: "Exclusiva"
+  inclusiva: "Inclusiva"
