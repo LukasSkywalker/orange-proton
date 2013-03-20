@@ -9,9 +9,6 @@ orange-proton
   * in development mode (remote DB) with `rails s -e development-remote`
   * in production mode (remote DB) with `rake assets:precompile` and `rails s -e production`
 
-* If you want to automatically restart the server when it's down,
-  * install god with `gem install god`
-  * run it with `god -c orange-proton/config/god.rb`
 
 * View the in-code documentation with yard `gem install yard`, then `yard server --reload`.
 
