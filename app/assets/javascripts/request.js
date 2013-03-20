@@ -72,8 +72,8 @@ var mindmapper = {
                 }
 
                 var superclass = data.superclass;
-                var super_name = data.superclass_text;
-                mm.addNode(root, '<div class="super">' + superclass + '</br>' + super_name + '</div>', {});
+                var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
+                mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
 
                 var drgs = data.drgs;
                 for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
