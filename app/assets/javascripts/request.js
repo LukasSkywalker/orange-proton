@@ -19,12 +19,19 @@ $(document).ready(function () {
 
 
 var mindmapper = {
-    //This method sends ajax requests to the API
+    // This method sends ajax requests to the API
     sendRequest: function (input) {
-        console.log(input);
+        this.log(input);
         this.getICD(input);
         // TODO mindmapper.getSpeciality(input);
         // TODO mindmapper.getDoctors(input);
+    },
+    
+    log: function (text) {
+    // IE does not know the console object
+        if (console.log) {
+            console.log(text);
+        }
     },
 
     getICD: function (input) {
