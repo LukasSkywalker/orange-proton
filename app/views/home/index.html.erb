@@ -1,6 +1,6 @@
 <div id="search-bar">
   <input id="code-name" type="text" placeholder="ICD Code">
-  <select name="lang" id="lang" size="1">
+  <select name="lang" id="lang" size="1" onchange="mindmapper.sendRequest($('#code-name').val().toUpperCase());">
     <option value="de">Deutsch</option>
     <option value="fr">Français</option>
     <option value="it">Italiano</option>
