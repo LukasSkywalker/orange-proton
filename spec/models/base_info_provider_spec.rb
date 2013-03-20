@@ -22,7 +22,7 @@ describe BaseInformationProvider do
 
   it 'should find code type of chop' do
     @provider.get_code_type(@chop1).should be :chop
-    @provider.get_code_type(@chop2).should be :icd
+    @provider.get_code_type(@chop2).should be :chop
     @provider.get_code_type(@chop3).should be :chop
   end
 
