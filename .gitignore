@@ -30,6 +30,7 @@ spec/reports
 test/tmp
 test/version_tmp
 tmp
+thin.pid
 
 # YARD artifacts
 .yardoc
