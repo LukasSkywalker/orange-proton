@@ -48,13 +48,13 @@ var mindmapper = {
                 $("svg").remove();
                 $("path").remove();
 
-                $('body').mindmap();
+                $('#mindmap').mindmap();
                 var data = response.data; // text is already parsed by JQuery
-                var mm = $('body');
+                var mm = $('#mindmap');
 
                 var name = data.text;
 
-                var root = $('body').addRootNode(input + "</br>" + name, {}); // define a root node to attach the other nodes to
+                var root = $('#mindmap').addRootNode(input + "</br>" + name, {}); // define a root node to attach the other nodes to
 
                 var syn = data.synonyms;
                 for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {

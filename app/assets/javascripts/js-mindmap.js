@@ -46,7 +46,7 @@
 
     // create the element for display
     this.el = $('<div id= "' + this.id +'">' + this.name + '</div>').addClass('node');
-    $('body').prepend(this.el);
+    $('#mindmap').prepend(this.el);
 
     if (!parent) {
       obj.activeNode = this;
