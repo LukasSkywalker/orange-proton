@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 describe BaseInformationProvider do
   before(:each) do
@@ -20,25 +20,25 @@ describe BaseInformationProvider do
     @unknown6 = 'ss5.22'
   end
 
-  it "should find code type of chop" do
-    assert(@provider.get_code_type(@chop1) == :chop)
-    assert(@provider.get_code_type(@chop2) == :chop)
-    assert(@provider.get_code_type(@chop3) == :chop)
+  it 'should find code type of chop' do
+    @provider.get_code_type(@chop1).should be :chop
+    @provider.get_code_type(@chop2).should be :icd
+    @provider.get_code_type(@chop3).should be :chop
   end
 
-  it "should find code type of icd" do
-    assert(@provider.get_code_type(@icd1) == :icd)
-    assert(@provider.get_code_type(@icd2) == :icd)
-    assert(@provider.get_code_type(@icd3) == :icd)
+  it 'should find code type of icd' do
+    @provider.get_code_type(@icd1).should be :icd
+    @provider.get_code_type(@icd2).should be :icd
+    @provider.get_code_type(@icd3).should be :icd
   end
 
-  it "should find code type of unknown" do
-    assert(@provider.get_code_type(@unknown1) == :unknown)
-    assert(@provider.get_code_type(@unknown2) == :unknown)
-    assert(@provider.get_code_type(@unknown3) == :unknown)
-    assert(@provider.get_code_type(@unknown4) == :unknown)
-    assert(@provider.get_code_type(@unknown5) == :unknown)
-    assert(@provider.get_code_type(@unknown6) == :unknown)
+  it 'should find code type of unknown' do
+    @provider.get_code_type(@unknown1).should be :unknown
+    @provider.get_code_type(@unknown2).should be :unknown
+    @provider.get_code_type(@unknown3).should be :unknown
+    @provider.get_code_type(@unknown4).should be :unknown
+    @provider.get_code_type(@unknown5).should be :unknown
+    @provider.get_code_type(@unknown6).should be :unknown
   end
 
 end
