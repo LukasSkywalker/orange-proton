@@ -12,17 +12,22 @@ $(document).ready(function () {
         var code = e.which; // normalized across browsers, use this :-)
         if (code == 13) e.preventDefault();
         if (code == 32 || code == 13 || code == 188 || code == 186) {  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
-            mindmapper.sendRequest($(this).val().toUpperCase());
+            mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
         }
+    });
+    
+    $("#lang").change(function (e) {
+        var lang = $(this).val();
+        mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
 });
 
 
 var mindmapper = {
     // This method sends ajax requests to the API
-    sendRequest: function (input) {
+    sendRequest: function (input, lang) {
         this.log(input);
-        this.getICD(input);
+        this.getICD(input, lang);
         // TODO mindmapper.getSpeciality(input);
         // TODO mindmapper.getDoctors(input);
     },
@@ -34,14 +39,12 @@ var mindmapper = {
         }
     },
 
-    getICD: function (input) {
+    getICD: function (input, lang) {
         var MAX_SYN = 5; // max number of synonyms to display
         var MAX_FIELDS = 5; // max number of fields
         var MAX_DRGS = 5;
         var MAX_INCLUSIVA = 5;
         var MAX_EXCLUSIVA = 5;
-
-        var lang = $("#lang").val();
 
         jQuery.ajax({
             url: '/api/v1/fields/get?code=' + input + '&count=4&lang=' + lang,
