@@ -484,7 +484,7 @@
         options.mapArea.y = $window.height();
       }
       //create drawing area
-      this.canvas = Raphael(0, 0, options.mapArea.x, options.mapArea.y);
+      this.canvas = Raphael(document.getElementById('mindmap'), options.mapArea.x, options.mapArea.y);
 
       // Add a class to the object, so that styles can be applied
       $(this).addClass('js-mindmap-active');

@@ -89,7 +89,6 @@ div.node div {
     border-bottom: 1px solid #c5c5c5;
     top: 0;
     left:0;
-    z-index: 1000000;
 }
 
 #code-name{
@@ -109,4 +108,11 @@ div.node div {
     margin-right: 10px;
     width: 100px;
     border: 1px solid #cccccc;
+}
+
+#mindmap{
+    position: absolute;
+    top:51px;
+    height:100%;
+    width: 100%;
 }
