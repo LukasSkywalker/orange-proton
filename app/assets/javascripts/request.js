@@ -34,7 +34,7 @@ var mindmapper = {
     
     log: function (text) {
     // IE does not know the console object
-        if (console.log) {
+        if (window.console) {
             console.log(text);
         }
     },

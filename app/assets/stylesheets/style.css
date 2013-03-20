@@ -68,6 +68,7 @@ div.node div {
 .legend {
     margin: 10px;
     padding-left: 10px;
+    text-align: center;
 }
 
 #legend {

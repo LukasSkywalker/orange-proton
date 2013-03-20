@@ -13,10 +13,10 @@ body {
   position:absolute;
   top:0;
   left:0;
-  font-family:verdana;
+  font-family:verdana,sans-serif;
   font-size:11px;
   color:#000;
-  opacity:0.9;
+  opacity:1;
   padding:0 7px;
   cursor:pointer;
   cursor:hand;
@@ -24,13 +24,14 @@ body {
   list-style:none;
 }
 .js-mindmap-active div.node {
-  font: 30px/34px Arial, sans-serif;
+  font: 20px Verdana, sans-serif;
   font-size:1em;
   letter-spacing: 0;
   display:block;
   color:#000;
   text-align:center;
   text-decoration:none;
+  max-width: 500px;
 }
 .js-mindmap-active .node.active{
   font-size:1.5em;
