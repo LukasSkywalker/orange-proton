@@ -26,7 +26,8 @@ class DatabaseAdapter
 
   def get_drgs(icd_code)
     doc = @icd[:de].find_one({code: icd_code})
-    doc['drgs']
+    return doc['drgs'] unless doc.nil?
+    []
   end
 
   def get_icd(icd_code, language)
