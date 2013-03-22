@@ -10,7 +10,8 @@ class DatabaseAdapter
     @icd = {
         :de => @client['icd_2012_ch']['de'],
         :fr => @client['icd_2012_ch']['fr'],
-        :it => @client['icd_2012_ch']['it']
+        :it => @client['icd_2012_ch']['it'],
+        :en => @client['icd_2012_ch']['en']
     }
 
     @fs = @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
@@ -26,7 +27,8 @@ class DatabaseAdapter
 
   def get_drgs(icd_code)
     doc = @icd[:de].find_one({code: icd_code})
-    doc['drgs']
+    return doc['drgs'] unless doc.nil?
+    []
   end
 
   def get_icd(icd_code, language)

@@ -13,9 +13,9 @@ class MDCInfoProvider < DatabaseInfoProvider
     fmhnames = []
     fieldhashes = []
     mdcs.each do |mdc|
-      db.get_fs_code(mdc).each do |fmh|
-        fmhs<<fmh unless fmhs.include? fmh
-      end
+        db.get_fs_code(mdc).each do |fmh|
+          fmhs<<fmh unless fmhs.include? fmh
+        end
     end
     fmhs.each do |fmh|
       name = db.get_fs_name(fmh,language)
