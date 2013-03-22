@@ -28,7 +28,6 @@ end
 
 group :test, :development do
   gem 'rspec-rails', '~> 2.0'
-  gem 'rspec', :require => false
 end
 
 gem 'jquery-rails'

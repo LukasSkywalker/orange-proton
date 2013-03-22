@@ -3,9 +3,20 @@ class DatabaseAdapter
   def initialize
     host = MongoMapper.connection.host
     port = MongoMapper.connection.port
+    
+    db_config = YAML::load(File.read(File.join(Rails.root, "/config/mongo.yml")))
 
     # See http://stackoverflow.com/a/13995525
-    @client = Mongo::Connection.new(host, port)
+    MongoMapper.connection = Mongo::Connection.new(host, port)
+    MongoMapper.database = 'admin'
+    if db_config[Rails.env]
+      mongo = db_config[Rails.env]
+      if mongo['username'] && mongo['password']
+        MongoMapper.database.authenticate(mongo['username'], mongo['password'])
+      end
+    end
+    
+    @client = MongoMapper.connection
 
     @icd = {
         :de => @client['icd_2012_ch']['de'],

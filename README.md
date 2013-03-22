@@ -5,10 +5,11 @@ orange-proton
 * Install the bundler gem: `gem install bundler`
 * Install the gems defined in Gemfile `bundle install`
 * Run the server
-  * in development mode (local DB) with `rails s -e development-local`
+  * in development mode (local DB) with `rails s -e development`
   * in development mode (remote DB) with `rails s -e development-remote`
   * in production mode (remote DB) with `rake assets:precompile` and `rails s -e production`
 
+* For testing with the local DB: ` RAILS_ENV=test rake spec`
 
 * View the in-code documentation with yard `gem install yard`, then `yard server --reload`.
 
