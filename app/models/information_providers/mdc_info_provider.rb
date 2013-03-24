@@ -17,6 +17,8 @@ class MDCInfoProvider < DatabaseInfoProvider
         fmhs<<fmh unless fmhs.include? fmh
       end
     end
+
+     puts "mdc........................"
     fmhs.each do |fmh|
       name = db.get_fs_name(fmh,language)
       fmhnames << name unless fmhnames.include?(name)
@@ -25,6 +27,7 @@ class MDCInfoProvider < DatabaseInfoProvider
           relatedness: 1, #set to maximum, as there is only manual mapping involved
           field: fmh
       } unless fieldhashes.size >= max_count
+
     end
     {
         data: db.get_icd(icd_code,language),
