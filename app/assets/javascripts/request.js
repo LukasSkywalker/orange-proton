@@ -95,7 +95,9 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    mm.addNode(root, '<div class="cat">' + f + ': ' + n + '</div>', {});
+                    var c = Math.floor((Math.random()*156)+100).toString(16);  //Random number is because api doesn't send a number between 0 and 1 for relatedness
+                    var color = '#' + c + c + c; //Color is three times c, so it's always grey
+                    mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
                 }
             },
             error: function (xhr, status, error) {

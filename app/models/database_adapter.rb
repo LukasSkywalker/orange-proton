@@ -3,15 +3,26 @@ class DatabaseAdapter
   def initialize
     host = MongoMapper.connection.host
     port = MongoMapper.connection.port
+    
+    db_config = YAML::load(File.read(File.join(Rails.root, "/config/mongo.yml")))
 
     # See http://stackoverflow.com/a/13995525
-    @client = Mongo::Connection.new(host, port)
-    @client['admin'].authenticate("pse4_read", "plokij")
+    MongoMapper.connection = Mongo::Connection.new(host, port)
+    MongoMapper.database = 'admin'
+    if db_config[Rails.env]
+      mongo = db_config[Rails.env]
+      if mongo['username'] && mongo['password']
+        MongoMapper.database.authenticate(mongo['username'], mongo['password'])
+      end
+    end
+    
+    @client = MongoMapper.connection
 
     @icd = {
         :de => @client['icd_2012_ch']['de'],
         :fr => @client['icd_2012_ch']['fr'],
-        :it => @client['icd_2012_ch']['it']
+        :it => @client['icd_2012_ch']['it'],
+        :en => @client['icd_2012_ch']['en']
     }
 
     @fs = @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
@@ -31,7 +42,8 @@ class DatabaseAdapter
   # @return The drgs (most common diagnoses) for a given icd
   def get_drgs(icd_code)
     doc = @icd[:de].find_one({code: icd_code})
-    doc['drgs']
+    return doc['drgs'] unless doc.nil?
+    []
   end
 
   # @return The raw icd database entry for the given code.
@@ -47,6 +59,7 @@ class DatabaseAdapter
     documents.each do |document|
       fmhs << document['fs_code']
     end
+
     fmhs
   end
 
