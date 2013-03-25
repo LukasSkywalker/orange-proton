@@ -20,12 +20,14 @@ $(document).ready(function () {
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
 
-    var code = getUrlVars()["code"].toUpperCase();
-    var lang = getUrlVars()["lang"];
+    if(getUrlVars()["code"] !== undefined){
+        var code = getUrlVars()["code"].toUpperCase();
+        var lang = getUrlVars()["lang"] || "de";
 
-    mindmapper.sendRequest(code, lang);
-    document.getElementById("code-name").value = code;
-    document.getElementById("lang").value = lang;
+        mindmapper.sendRequest(code, lang);
+        document.getElementById("code-name").value = code;
+        document.getElementById("lang").value = lang;
+    }
 });
 
 
@@ -52,10 +54,10 @@ var mindmapper = {
         var MAX_INCLUSIVA = 5;
         var MAX_EXCLUSIVA = 5;
 
-        var params = '?code=' + input + '&count=4&lang=' + lang;
+        var params = '?code=' + input + '&lang=' + lang;
 
         jQuery.ajax({
-            url: '/api/v1/fields/get' + params,
+            url: '/api/v1/fields/get' + params + '&count=4',
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
