@@ -62,7 +62,7 @@ var mindmapper = {
             success: function (response, status) {
                 // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
                 // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
-                History.pushState(null, null, params);
+                History.pushState(null, "OrangeProton", params);
 
                 $(".node").remove();
                 $("svg").remove();
