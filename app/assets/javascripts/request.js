@@ -17,9 +17,15 @@ $(document).ready(function () {
     });
     
     $("#lang").change(function (e) {
-        var lang = $(this).val();
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
+
+    var code = getUrlVars()["code"].toUpperCase();
+    var lang = getUrlVars()["lang"];
+
+    mindmapper.sendRequest(code, lang);
+    document.getElementById("code-name").value = code;
+    document.getElementById("lang").value = lang;
 });
 
 
@@ -46,14 +52,18 @@ var mindmapper = {
         var MAX_INCLUSIVA = 5;
         var MAX_EXCLUSIVA = 5;
 
+        var params = '?code=' + input + '&count=4&lang=' + lang;
+
         jQuery.ajax({
-            url: '/api/v1/fields/get?code=' + input + '&count=4&lang=' + lang,
+            url: '/api/v1/fields/get' + params,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
                 // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
                 // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
+                History.pushState(null, null, params);
+
                 $(".node").remove();
                 $("svg").remove();
                 $("path").remove();
@@ -113,4 +123,18 @@ var mindmapper = {
     getSpeciality: function (input) {
         // TODO
     }
+}
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
 }
