@@ -20,6 +20,8 @@ $(document).ready(function () {
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
 
+    document.getElementById("code-name").focus();
+
     if(getUrlVars()["code"] !== undefined){
         var code = getUrlVars()["code"].toUpperCase();
         var lang = getUrlVars()["lang"] || "de";
