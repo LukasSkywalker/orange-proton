@@ -137,7 +137,7 @@ class DatabaseAdapter
   # @return All doctors with speciality in a given field
   def get_doctors_by_fs fs_code
     specs = get_specialities_from_fs fs_code
-    docs = @client['doctors']['doctors'].find({'docfield' => {'$in' => specs} })
+    docs = @client['doctors']['doctors'].find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
     docs.to_a
   end
 end
