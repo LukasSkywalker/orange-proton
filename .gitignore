@@ -46,3 +46,4 @@ doc/
 *.pid
 
 public/assets
+.sass-cache

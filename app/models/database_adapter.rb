@@ -125,4 +125,19 @@ class DatabaseAdapter
     document[language]
   end
 
+  def get_specialities_from_fs fs_code
+    specs = @client['doctors']['docfieldToFSCode'].find({fs_code: fs_code})
+    specialities = []
+    specs.each do |spec|
+      specialities << spec['docfield']
+    end
+    specialities
+  end
+
+  # @return All doctors with speciality in a given field
+  def get_doctors_by_fs fs_code
+    specs = get_specialities_from_fs fs_code
+    docs = @client['doctors']['doctors'].find({'docfield' => {'$in' => specs} })
+    docs.to_a
+  end
 end

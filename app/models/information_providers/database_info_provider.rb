@@ -1,3 +1,5 @@
+require_relative '../doctor_locator'
+
 class DatabaseInfoProvider <  BaseInformationProvider
 
   attr_accessor :db
@@ -7,7 +9,7 @@ class DatabaseInfoProvider <  BaseInformationProvider
   end
 
   def get_doctors(field_code, lat, long, count)
-    Doctor.first
+    DoctorLocator.new.find_doctors_within(field_code, lat, long, count)
   end
 
   def get_field_name(field_code, language)
