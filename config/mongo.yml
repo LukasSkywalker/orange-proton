@@ -4,24 +4,23 @@ defaults: &defaults
 development:
   <<: *defaults
   host: localhost
-  database: orange_proton_development
-
-development-local:
-  <<: *defaults
-  host: localhost
-  database: orange_proton_development
+  database: admin
 
 development-remote:
   <<: *defaults
   host: pse4.iam.unibe.ch
-  database: orange_proton_development
+  database: admin
+  username: pse4_read
+  password: plokij
 
 test:
   <<: *defaults
   host: localhost
-  database: orange_proton_test
+  database: admin
 
 # set these environment variables on your prod server
 production:
   <<: *defaults
-  database: orange_proton_production
+  database: admin
+  username: pse4_read
+  password: plokij

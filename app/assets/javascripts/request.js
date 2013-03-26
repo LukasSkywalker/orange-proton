@@ -17,9 +17,19 @@ $(document).ready(function () {
     });
     
     $("#lang").change(function (e) {
-        var lang = $(this).val();
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
+
+    document.getElementById("code-name").focus();
+
+    if(getUrlVars()["code"] !== undefined){
+        var code = getUrlVars()["code"].toUpperCase();
+        var lang = getUrlVars()["lang"] || "de";
+
+        mindmapper.sendRequest(code, lang);
+        document.getElementById("code-name").value = code;
+        document.getElementById("lang").value = lang;
+    }
 });
 
 
@@ -46,14 +56,18 @@ var mindmapper = {
         var MAX_INCLUSIVA = 5;
         var MAX_EXCLUSIVA = 5;
 
+        var params = '?code=' + input + '&lang=' + lang;
+
         jQuery.ajax({
-            url: '/api/v1/fields/get?code=' + input + '&count=4&lang=' + lang,
+            url: '/api/v1/fields/get' + params + '&count=4',
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
                 // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
                 // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
+                History.pushState(null, "OrangeProton", params);
+
                 $(".node").remove();
                 $("svg").remove();
                 $("path").remove();
@@ -95,7 +109,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var c = Math.floor((Math.random()*156)+100).toString(16);  //Random number is because api doesn't send a number between 0 and 1 for relatedness
+                    var c = Math.floor((r*156)+100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
                 }
@@ -113,4 +127,18 @@ var mindmapper = {
     getSpeciality: function (input) {
         // TODO
     }
+}
+
+// Read a page's GET URL variables and return them as an associative array.
+function getUrlVars()
+{
+    var vars = [], hash;
+    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    for(var i = 0; i < hashes.length; i++)
+    {
+        hash = hashes[i].split('=');
+        vars.push(hash[0]);
+        vars[hash[0]] = hash[1];
+    }
+    return vars;
 }
