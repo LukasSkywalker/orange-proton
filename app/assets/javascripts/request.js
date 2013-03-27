@@ -80,19 +80,33 @@ var mindmapper = {
 
                 var root = $('#mindmap').addRootNode(input + "</br>" + name, {}); // define a root node to attach the other nodes to
 
+                var r = [];
                 var syn = data.synonyms;
                 for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                    mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
-                }
+                  //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
+                  $newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
+                  $newdiv.appendTo('body');
+                  r.push($newdiv);
+                }    
+                
+                var c = new Canvas(50,50,400);
+                c.addNodes(r);
 
                 var superclass = data.superclass;
                 var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                 mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
 
                 var drgs = data.drgs;
+                r = [];
                 for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
-                    mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
+                    //mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
+                    $newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
+                    $newdiv.appendTo('body');
+                    r.push($newdiv);
                 }
+                
+                var c = new Canvas(450,50,400);
+                c.addNodes(r);
 
                 var exclusiva = data.exclusiva;
                 for (var i = 0; i < Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
@@ -105,14 +119,23 @@ var mindmapper = {
                 }
 
                 var fields = response.fields;
+                var s = [];
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
                     var c = Math.floor((r*156)+100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
+                    //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
+                    $newdiv = $('<div class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
+                    $newdiv.appendTo('body');
+                    s.push($newdiv);
                 }
+                
+                c = new Canvas(100,150,400,400);
+                c.addNodes(s);
+                c.shuffle();
+                c.space();
             },
             error: function (xhr, status, error) {
                 alert(error);
