@@ -10,12 +10,14 @@
     <body>
         <div id="search-bar">
             <input id="code-name" type="text" placeholder="ICD Code">
-            <select name="lang" id="lang" size="1">
-                <option value="de">Deutsch</option>
-                <option value="fr">Français</option>
-                <option value="it">Italiano</option>
-                <option value="en">English</option>
-            </select>
+            <div class="hide-arrow">
+              <select name="lang" id="lang" size="1">
+                    <option value="de">Deutsch</option>
+                    <option value="fr">Français</option>
+                    <option value="it">Italiano</option>
+                    <option value="en">English</option>
+                </select>
+            </div>
         </div>
         <div id="legend">
             <div class="syn legend"><%=t :syn %></div>
