@@ -15,7 +15,7 @@ $(document).ready(function () {
             mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
         }
     });
-    
+
     $("#lang").change(function (e) {
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
@@ -41,7 +41,7 @@ var mindmapper = {
         // TODO mindmapper.getSpeciality(input);
         // TODO mindmapper.getDoctors(input);
     },
-    
+
     log: function (text) {
     // IE does not know the console object
         if (window.console) {
@@ -87,26 +87,21 @@ var mindmapper = {
                   $newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
                   $newdiv.appendTo('body');
                   r.push($newdiv);
-                }    
-                
-                var c = new Canvas(50,50,400);
+                }
+
+                var c = new Canvas(50,50,400,400);
                 c.addNodes(r);
+                console.log('before layout');
+                c.doLayout();
 
                 var superclass = data.superclass;
                 var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                 mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
 
                 var drgs = data.drgs;
-                r = [];
                 for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
-                    //mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
-                    $newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
-                    $newdiv.appendTo('body');
-                    r.push($newdiv);
+                    mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
                 }
-                
-                var c = new Canvas(450,50,400);
-                c.addNodes(r);
 
                 var exclusiva = data.exclusiva;
                 for (var i = 0; i < Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
@@ -131,11 +126,6 @@ var mindmapper = {
                     $newdiv.appendTo('body');
                     s.push($newdiv);
                 }
-                
-                c = new Canvas(100,150,400,400);
-                c.addNodes(s);
-                c.shuffle();
-                c.space();
             },
             error: function (xhr, status, error) {
                 alert(error);
@@ -164,4 +154,8 @@ function getUrlVars()
         vars[hash[0]] = hash[1];
     }
     return vars;
+}
+
+function propChanged(prop) {
+  alert(prop);
 }
