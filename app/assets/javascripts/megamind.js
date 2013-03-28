@@ -5,31 +5,28 @@
       this.top = top;
       this.width = width;
       this.height = height;
+      return this;
     }
 
     Canvas.prototype.doLayout = function() {
       this.space();
       for(var i=0; i<this.rows.length; i++){
-        var r = $('<div class="row node ui-draggable" style="border: 1px solid red;">' + i + '</div>');
+        /* DEBUG var r = $('<div class="row node ui-draggable" style="border: 1px solid red;">' + i + '</div>');
         r.css({
           left: this.rows[i].left(),
           top: this.rows[i].top(),
           width: this.rows[i].width(),
           height: this.rows[i].height()
         });
-        r.appendTo('body');
-        console.log('ADDED R '+i);
-        console.log(this.rows[i].nodes.length);
+        r.appendTo('body');*/
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
-          var k = $('<div class="nod node ui-draggable" style="border: 1px solid blue;">' + (10 * i + j) + '</div>');
-          k.css({
+          n.el.css({
             left: n.left(),
             top: n.top(),
             width: n.width,
             height: n.height
           });
-          k.appendTo('body');
           console.log('ADDED N '+(10*i)+j);
         }
       }
@@ -79,10 +76,11 @@
 
 
     Canvas.prototype.addNodes = function(nodes) {
+      nodes.shuffle();
       for (var i = 0; i < nodes.length; i++) {
         var n = new Node(nodes[i], null, true);
         if( n.width > this.width ) {
-          console.log("### unable to add node, is "+n.width+" px wide, max is "+this.width);
+          alert("### unable to add node, is "+n.width+" px wide, max is "+this.width);
         }else if (n.width > this.width / 2) {
           this.addRow(n);
         }
@@ -104,6 +102,11 @@
           }
         }
       }
+      this.shuffle();
+      for(var i=0; i<this.rows.length; i++) {
+        this.rows[i].shuffle();
+      }
+      return this;
     }
     
     Canvas.prototype.rowsBefore = function(row) {
