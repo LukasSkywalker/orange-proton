@@ -130,7 +130,7 @@ var mindmapper = {
                     $newdiv.appendTo('body');
                     p.push($newdiv);
                 }
-                new Canvas(50,140,150,300).addNodes(p).doLayout();
+                new Canvas(50,250,150,200).addNodes(p).doLayout();
 
                 var s = [];
                 var exclusiva = data.exclusiva;
@@ -162,7 +162,7 @@ var mindmapper = {
                     s.push($newdiv);
                 }
                 
-                new Canvas(50,430,1200,200).addNodes(s).doLayout();
+                new Canvas(50,450,1200,200).addNodes(s).doLayout();
             },
             error: function (xhr, status, error) {
                 alert(error);

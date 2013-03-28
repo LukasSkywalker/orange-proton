@@ -4,20 +4,42 @@
       this.top = top;
       this.width = width;
       this.height = height;
+      mindmap_debug.canvas.push(this);
       return this;
+    }
+    
+    var mindmap_debug = {
+      canvas: [],
+
+      showBorders: function(){
+        for(var j=0; j<mindmap_debug.canvas.length; j++) {
+          var c = mindmap_debug.canvas[j];
+          var q = $('<div class="canvas node ui-draggable" style="border: 1px solid blue;">|canvas '+j+'| left,top,width,height = ['+c.left+','+c.top+','+c.width+','+c.height+']</div>');
+          q.css({
+            left: c.left,
+            top: c.top,
+            width: c.width,
+            height: c.height
+          });
+          q.appendTo('body');
+          for(var i=0; i<c.rows.length; i++){
+            var d = c.rows[i];
+            var r = $('<div class="row node ui-draggable" style="border: 1px solid green;">|row '+i+'|</div>');
+            r.css({
+              left: d.left(),
+              top: d.top(),
+              width: d.width(),
+              height: d.height()
+            });
+            r.appendTo('body');
+          }
+        }
+      }
     }
 
     Canvas.prototype.doLayout = function() {
       this.space();
       for(var i=0; i<this.rows.length; i++){
-        /* DEBUG var r = $('<div class="row node ui-draggable" style="border: 1px solid red;">' + i + '</div>');
-        r.css({
-          left: this.rows[i].left(),
-          top: this.rows[i].top(),
-          width: this.rows[i].width(),
-          height: this.rows[i].height()
-        });
-        r.appendTo('body');*/
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
           n.el.css({
@@ -151,7 +173,7 @@
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.nodes.length; i++) {
         var n = this.nodes[i];
-        var amount = 0.3 * spacing + Math.random() * 0.7 * spacing;  // move between 30 and 100% of the spacing
+        var amount = 0.6 * spacing + Math.random() * 0.8 * spacing;  // move between 60 and 140% of the spacing
         n.move(amount, 0);
       }
     }
@@ -234,7 +256,7 @@
     }
 
     Node.prototype.getCenter = function() {
-      return new Point(this.el.position().left + this.width/2, this.el.position().top + this.height/2);
+      return new Point(this.left() + this.width/2, this.top() + this.height/2);
     }
 
     Node.prototype.remove = function() {
@@ -242,4 +264,9 @@
         this.parent.children.removeByValue(this);
       }
       this.el.remove();
+    }
+    
+    function Point(x, y) {
+      this.x = x;
+      this.y = y;
     }
