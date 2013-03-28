@@ -1,7 +1,6 @@
     function Canvas(left, top, width, height) {
       this.rows = [];
       this.left = left;
-      console.log(this.left);
       this.top = top;
       this.width = width;
       this.height = height;
@@ -27,7 +26,6 @@
             width: n.width,
             height: n.height
           });
-          console.log('ADDED N '+(10*i)+j);
         }
       }
     }
@@ -127,11 +125,9 @@
 
     Row.prototype.top = function(){
       var h=0;
-      var i=0;
       var previousRows = this.canvas.rowsBefore(this);
       for(var i=0; i<previousRows.length; i++){
         h += previousRows[i].height() + previousRows[i].yOffset;
-        i++;
       }
       return this.canvas.top + h + this.yOffset;
     }

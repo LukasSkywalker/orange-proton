@@ -98,8 +98,6 @@ var mindmapper = {
                    Notes:
                    - the doLayout() is not yet complete. The spacing is bad and I should feel bad.
                    - doLayout() is not deterministic, since it uses some random variables. This is intended.
-                   - If a container has more than two lines of nodes, they sometimes (always?) overlap. This is a known limitation
-                        and will be addressed as soon as possible.
                    - You need to add the node-CSS-class to the nodes. Otherwise, they stretch to the entire page's width and
                         bad things may happen to your eyes, your computer and your grandma.
                         
@@ -132,7 +130,7 @@ var mindmapper = {
                     $newdiv.appendTo('body');
                     p.push($newdiv);
                 }
-                new Canvas(50,120,150,300).addNodes(p).doLayout();
+                new Canvas(50,140,150,300).addNodes(p).doLayout();
 
                 var s = [];
                 var exclusiva = data.exclusiva;
@@ -164,7 +162,7 @@ var mindmapper = {
                     s.push($newdiv);
                 }
                 
-                new Canvas(50,400,1000,200).addNodes(s).doLayout();
+                new Canvas(50,430,1000,200).addNodes(s).doLayout();
             },
             error: function (xhr, status, error) {
                 alert(error);
