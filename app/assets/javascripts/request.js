@@ -89,7 +89,7 @@ var mindmapper = {
                   r.push($newdiv);
                 }
 
-                var c = new Canvas(50,50,400,400);
+                var c = new Canvas(50,50,1000,200);
                 c.addNodes(r);
                 console.log('before layout');
                 c.doLayout();

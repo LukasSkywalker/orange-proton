@@ -105,6 +105,14 @@
         }
       }
     }
+    
+    Canvas.prototype.rowsBefore = function(row) {
+      var r = [];
+      for(var i=0; i<this.rows.length && this.rows[i] != row; i++){
+        r.push(this.rows[i]);
+      }
+      return r;
+    }
 
     function Row(node, canvas) {
       this.xOffset = 0;
@@ -117,8 +125,9 @@
     Row.prototype.top = function(){
       var h=0;
       var i=0;
-      while(this.canvas.rows[0] && i<this.canvas.rows.length && this.canvas.rows[i] != this){
-        h += this.canvas.rows[i].height() + this.canvas.rows[i].yOffset;
+      var previousRows = this.canvas.rowsBefore(this);
+      for(var i=0; i<previousRows.length; i++){
+        h += previousRows[i].height() + previousRows[i].yOffset;
         i++;
       }
       return this.canvas.top + h + this.yOffset;
@@ -176,6 +185,14 @@
     Row.prototype.bottom = function() {
       return this.top() + this.height();
     }
+    
+    Row.prototype.nodesBefore = function(node) {
+      var n = [];
+      for(var i=0; i<this.nodes.length && this.nodes[i] != node; i++){
+        n.push(this.nodes[i]);
+      }
+      return n;
+    }
 
     function Node(el, parent, root) {
       if(root) rootNode = this;
@@ -192,8 +209,9 @@
 
     Node.prototype.left = function() {
       var w = 0;
-      for(var i=0; i<this.row.nodes.length; i++){
-        var n = this.row.nodes[i];
+      var nodesBefore = this.row.nodesBefore(this);
+      for(var i=0; i<nodesBefore.length; i++){
+        var n = nodesBefore[i];
         w += n.width + n.xOffset;
       }
       return this.row.left() + w + this.xOffset;
