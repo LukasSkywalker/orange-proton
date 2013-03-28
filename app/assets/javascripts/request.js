@@ -162,7 +162,7 @@ var mindmapper = {
                     s.push($newdiv);
                 }
                 
-                new Canvas(50,430,1000,200).addNodes(s).doLayout();
+                new Canvas(50,430,1200,200).addNodes(s).doLayout();
             },
             error: function (xhr, status, error) {
                 alert(error);

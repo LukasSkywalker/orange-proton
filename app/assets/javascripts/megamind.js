@@ -93,7 +93,7 @@
         if (n.width <= this.width / 2) {
           if (this.currentRow() == undefined){ //no row yet
             this.addRow(n);
-          }else if(n.width + this.currentRow().spaceUsed() <= this.width) { //fits in this row
+          }else if(n.width + this.currentRow().spaceUsed() <= this.width * 0.7) { //fits in this row (only use 70%)
             this.currentRow().addNode(n);
           } else {                             // no more space left
             this.addRow(n);
@@ -151,7 +151,8 @@
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.nodes.length; i++) {
         var n = this.nodes[i];
-        n.move(spacing, 0);
+        var amount = 0.3 * spacing + Math.random() * 0.7 * spacing;  // move between 30 and 100% of the spacing
+        n.move(amount, 0);
       }
     }
 
