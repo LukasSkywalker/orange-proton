@@ -71,6 +71,11 @@ div.node div {
     text-align: center;
 }
 
+.doctors{
+    border-radius: 20px;
+    border: 3px double #22991b;
+}
+
 #legend {
     width: 200px;
     margin: 10px;

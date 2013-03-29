@@ -39,7 +39,6 @@ var mindmapper = {
         this.log(input);
         this.getICD(input, lang);
         // TODO mindmapper.getSpeciality(input);
-        // TODO mindmapper.getDoctors(input);
     },
 
     log: function (text) {
@@ -163,15 +162,48 @@ var mindmapper = {
                 }
                 
                 new Canvas(50,450,1200,200).addNodes(s).doLayout();
+
+                //Get the Doctors from Fields, Lat, Long
+                //TODO long & lat from interface
+                //TODO get Root node in Megamind
+                //TODO specify Field to show doctors, (now hardcoded first)
+                mindmapper.getDoctors(7.444,46.947,response.fields[0].field,root);
             },
+
+
             error: function (xhr, status, error) {
                 alert(error);
             }
         });
     },
 
-    getDoctors: function (input) {
-        // TODO
+    getDoctors: function (long,lat,fields,root) {
+        var DOC_COUNT = 4;
+
+        jQuery.ajax({
+            url: '/api/v1/docs/get?long='+long+'&lat='+lat+'&field='+fields+'&count='+DOC_COUNT,
+            type: 'GET',
+            dataType: 'json',
+            contentType: "charset=UTF-8",
+            success: function (response, status) {
+                //Get the already created MM from the get ICD request
+                var mm = $('#mindmap');
+
+                var s = [];
+                for (var i = 0; i < Math.min(DOC_COUNT, response.length); i++) {
+                    //TODO add and Format the other Attributes to the Output
+                    //mm.addNode(root, '<div class="doctors">' + response[i].name + '</div>', {});
+                    $newdiv = $('<div class="doctors node ui-draggable">' + response[i].name + '</div>');
+                    $newdiv.appendTo('body');
+                    s.push($newdiv);
+                }
+                new Canvas(50,120,150,300).addNodes(s).doLayout();
+
+            },
+            error: function (xhr, status, error) {
+                alert(error);
+            }
+        });
     },
 
     getSpeciality: function (input) {
