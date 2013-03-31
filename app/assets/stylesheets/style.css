@@ -46,6 +46,12 @@ div.node div {
     border: 3px double blue;
 }
 
+.cat-button{
+    background: transparent;
+    border-style: hidden;
+    mous
+}
+
 .drg {
     border-radius: 20px;
     border: 2px dashed red;
@@ -71,7 +77,7 @@ div.node div {
     text-align: center;
 }
 
-.doctors{
+.doc{
     border-radius: 20px;
     border: 3px double #22991b;
 }

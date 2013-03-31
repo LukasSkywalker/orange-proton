@@ -20,6 +20,11 @@ $(document).ready(function () {
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
     });
 
+    /*$("#speciality").click(function (e){
+        mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
+
+    });  */
+
     document.getElementById("code-name").focus();
 
     if(getUrlVars()["code"] !== undefined){
@@ -34,6 +39,12 @@ $(document).ready(function () {
 
 
 var mindmapper = {
+
+    var: response = 0,
+
+    getResponse: function(){
+        return this.response;
+    },
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
         this.log(input);
@@ -156,20 +167,16 @@ var mindmapper = {
                     var c = Math.floor((r*156)+100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
-                    $newdiv = $('<div class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
+                    //$newdiv = $('<div id=speciality class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
+                    $newdiv = $('<div class="cat node ui-draggable" style="background-color:' + color +'">'+'' +
+                        '<input type="button" class="cat-button" value="'+f + ': ' + n  +'" onclick=" mindmapper.getDoctors(7.444,46.947,'+ f +');" >' +
+                        + '</div>');
                     $newdiv.appendTo('body');
                     s.push($newdiv);
                 }
                 
                 new Canvas(50,450,1200,200).addNodes(s).doLayout();
-
-                //Get the Doctors from Fields, Lat, Long
-                //TODO long & lat from interface
-                //TODO get Root node in Megamind
-                //TODO specify Field to show doctors, (now hardcoded first)
-                mindmapper.getDoctors(7.444,46.947,response.fields[0].field,root);
             },
-
 
             error: function (xhr, status, error) {
                 alert(error);
@@ -177,7 +184,10 @@ var mindmapper = {
         });
     },
 
-    getDoctors: function (long,lat,fields,root) {
+    //Get the doctors from the db specific to the field and the users location
+    //TODO long & lat from interface
+    //TODO delete previous Doctor node in Megamind and get Parent note to adjust the Layout
+    getDoctors: function (long,lat,fields) {
         var DOC_COUNT = 4;
 
         jQuery.ajax({
@@ -193,11 +203,14 @@ var mindmapper = {
                 for (var i = 0; i < Math.min(DOC_COUNT, response.length); i++) {
                     //TODO add and Format the other Attributes to the Output
                     //mm.addNode(root, '<div class="doctors">' + response[i].name + '</div>', {});
-                    $newdiv = $('<div class="doctors node ui-draggable">' + response[i].name + '</div>');
+                    $newdiv = $('<div class="doc node ui-draggable">'
+                            + response[i].name +'<br />'
+                            + response[i].address + ' <br />'
+                            + response[i].phone2 + ' <br />' + '</div>');
                     $newdiv.appendTo('body');
                     s.push($newdiv);
                 }
-                new Canvas(50,120,150,300).addNodes(s).doLayout();
+                new Canvas(50,120,500,600).addNodes(s).doLayout();
 
             },
             error: function (xhr, status, error) {
