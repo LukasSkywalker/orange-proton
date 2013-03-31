@@ -189,7 +189,6 @@ var mindmapper = {
     //TODO delete previous Doctor node in Megamind and get Parent note to adjust the Layout
     getDoctors: function (long,lat,fields) {
         var DOC_COUNT = 4;
-        navigator
         jQuery.ajax({
             url: '/api/v1/docs/get?long='+long+'&lat='+lat+'&field='+fields+'&count='+DOC_COUNT,
             type: 'GET',
