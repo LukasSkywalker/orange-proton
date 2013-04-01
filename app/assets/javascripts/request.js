@@ -1,13 +1,14 @@
 // This file handes search requests. It makes the AJAX-request and parses and displays the result.
 // TODO:
-// -the input field is locked after the first search (element floating above it or mindmap.js capturing onclicks?)
 // -define action when clicking a node
 // -use language defined in ui, not default (de)
 // -namespace the whole file so we don't pollute 'window' too much
 // -rethink the for-loops. maybe we could simplify them
-// -when performing a search, a black line quickly appears from the top left corner to the center of the screen. Has probably something to do with .mindmap()-ing the <body> element, although this is equal to the example implementation.
 
 $(document).ready(function () {
+    I18n.defaultLocale = "de";
+    displayLegend();
+    //
     $("#code-name").keyup(function (e) {
         var code = e.which; // normalized across browsers, use this :-)
         if (code == 13) e.preventDefault();
@@ -18,6 +19,7 @@ $(document).ready(function () {
 
     $("#lang").change(function (e) {
         mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
+        setLocale($(this).val());
     });
 
     /*$("#speciality").click(function (e){
@@ -34,6 +36,7 @@ $(document).ready(function () {
         mindmapper.sendRequest(code, lang);
         document.getElementById("code-name").value = code;
         document.getElementById("lang").value = lang;
+        setLocale(lang);
     }
 });
 
@@ -263,4 +266,25 @@ function getSpinner(){
     };
 
     return new Spinner(opts);
+}
+
+function setLocale(locale){
+    I18n.locale = locale || "de";
+    displayLegend();
+}
+
+function displayLegend(){
+
+   var text = ('<div class="syn legend">'+I18n.t("syn")+'</div>'
+        +'<div class="cat legend">' + I18n.t("cat") +'</div>'
+        +'<div class="doc legend">'+ I18n.t("doc") +'</div>'
+        +'<div class="super legend">' + I18n.t("super")+'</div>'
+        +'<div class="drg legend">'+ I18n.t("drg")+'</div>'
+        +'<div class="exclusiva legend">'+I18n.t("exclusiva")+'</div>'
+        +'<div class="inclusiva legend">'+I18n.t("inclusiva")+'</div>');
+
+
+
+    document.getElementById("legend").innerHTML = text;
+
 }

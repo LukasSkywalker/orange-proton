@@ -40,6 +40,7 @@ gem 'redcarpet' # required by yard for markdown. Seems to require devkit as well
 gem 'yard'
 gem 'geocoder'
 gem 'parallel-each'
+gem 'i18n-js', git: 'git://github.com/sientia-phi/i18n-js.git', branch: 'fix_utf8_encoding'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
