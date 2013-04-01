@@ -115,6 +115,7 @@ GEM
       plucky (~> 0.5.2)
     multi_json (1.7.1)
     multi_xml (0.5.3)
+    parallel-each (1.0.0)
     plucky (0.5.2)
       mongo (~> 1.5)
     polyglot (0.3.3)
@@ -234,6 +235,7 @@ DEPENDENCIES
   minitest-reporters
   mongo
   mongo_mapper
+  parallel-each
   rails (= 3.2.13)
   redcarpet
   rspec-rails (~> 2.0)

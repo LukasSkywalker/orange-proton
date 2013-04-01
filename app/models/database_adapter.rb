@@ -7,7 +7,7 @@ class DatabaseAdapter
     db_config = YAML::load(File.read(File.join(Rails.root, "/config/mongo.yml")))
 
     # See http://stackoverflow.com/a/13995525
-    MongoMapper.connection = Mongo::Connection.new(host, port)
+    MongoMapper.connection = Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
     MongoMapper.database = 'admin'
     if db_config[Rails.env]
       mongo = db_config[Rails.env]

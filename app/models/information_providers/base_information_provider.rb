@@ -1,3 +1,5 @@
+require 'parallel_each'
+
 # Defines the interface that information providers use. Also defines some helper methods for these to use.
 class BaseInformationProvider
   # to be implemented by subclasses
@@ -38,7 +40,7 @@ class BaseInformationProvider
   # @return An array of field codes formatted as by API standard ({name : "...", relatedness: relatedness, field: code} for each code)
   def format_fs_codes_for_api(field_codes, relatedness, lang)
     out = []
-    field_codes.each do |fc|
+    field_codes.p_each(5) do |fc|
       out << format_fs_code_for_api(fc, relatedness, lang) 
     end
     out

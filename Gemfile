@@ -39,6 +39,7 @@ gem 'bson_ext' # requires devkit
 gem 'redcarpet' # required by yard for markdown. Seems to require devkit as well.
 gem 'yard'
 gem 'geocoder'
+gem 'parallel-each'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
