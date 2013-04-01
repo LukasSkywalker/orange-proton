@@ -72,8 +72,13 @@ var mindmapper = {
         var MAX_EXCLUSIVA = 5;
 
         var params = '?code=' + input + '&lang=' + lang;
+
+        document.getElementById('mindmap').innerHTML = "";
+        $(".node").remove();
+
         var spinner = getSpinner();
-        spinner.spin(document.getElementById('mindmap'))
+        spinner.spin(document.getElementById('mindmap'));
+
         jQuery.ajax({
             url: '/api/v1/fields/get' + params + '&count=4',
             type: 'GET',
