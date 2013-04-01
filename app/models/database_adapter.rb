@@ -140,4 +140,10 @@ class DatabaseAdapter
     docs = @client['doctors']['doctors'].find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
     docs.to_a
   end
+
+  def get_fields_by_char_match(icd_code, max_count)
+    @r_icd_fs.find({icd_code: icd_code, by_seq_match: {'$exists' => true}},
+                       fields: [:by_seq_match,:fs_code],
+                       sort: {by_seq_match: 'descending'}).limit(max_count).to_a
+  end
 end
