@@ -13,7 +13,7 @@ body {
     border-radius: 20px;
 }
 
-div.node div {
+div.node {
     background: #eee;
     padding-left: 15px;
     padding-right: 15px;
@@ -78,7 +78,7 @@ div.node div {
 
 .doc{
     border-radius: 20px;
-    border: 3px double #22991b;
+    border: 1px dashed darkviolet;
 }
 
 #legend {
