@@ -23,7 +23,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   def get_fields(icd_code, max_count, language)
     fields = []
 
-    @ips_to_relatedness.p_each(5) {|ip, relatedness|
+    @ips_to_relatedness.p_each(10) {|ip, relatedness|
       tf = ip.get_fields(icd_code, max_count, language)[:fields]
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
