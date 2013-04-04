@@ -8,6 +8,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     @ips_to_relatedness = {
       ManualInfoProvider.new => 1.0,
       MDCInfoProvider.new => 0.75,
+      RangeInfoProvider.new => 0.75,
       ThesaurInfoProvider.new => 0.5,
       StringmatchInfoProvider.new => 0.3,
       BingInfoProvider.new => 0.25

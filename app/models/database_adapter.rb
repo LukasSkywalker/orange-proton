@@ -146,4 +146,17 @@ class DatabaseAdapter
                        fields: [:by_seq_match,:fs_code],
                        sort: {by_seq_match: 'descending'}).limit(max_count).to_a
   end
+
+  def get_ranges (icd)
+    db = @client['ICDRangeFSH']
+    col = db['mappings']
+    ranges = []
+    col.find().each do |doc|
+      if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
+        doc.delete('name')
+        ranges<<doc
+      end
+    end
+    ranges
+  end
 end
