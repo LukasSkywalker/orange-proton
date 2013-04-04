@@ -180,8 +180,7 @@ var mindmapper = {
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
                     //$newdiv = $('<div id=speciality class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
-                    $newdiv = $('<div class="cat node ui-draggable" style="background-color:' + color + '">' + '' +
-                        '<input type="button" class="cat-button" value="' + f + ': ' + n + '" onclick=" mindmapper.getDoctors(7.444,46.947,' + f + ');" >' + +'</div>');
+                    $newdiv = $('<div class="cat node ui-draggable" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
                     $newdiv.appendTo('body');
                     s.push($newdiv);
                 }
