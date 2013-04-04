@@ -77,6 +77,21 @@ div.node {
     text-align: center;
 }
 
+#admin {
+    width: 200px;
+    margin: 10px;
+    border: 1px dashed #c5c5c5;
+    padding: 10px;
+    right: 0;
+    position: absolute;
+    border-radius: 20px;
+    top: 330px;
+}
+
+.slider{
+
+}
+
 .doc{
     border-radius: 20px;
     border: 1px dashed darkviolet;

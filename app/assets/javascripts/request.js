@@ -7,6 +7,7 @@
 
 $(document).ready(function () {
     setLocale($("#lang").val());
+    displayAdmin();
     //
     $("#code-name").keyup(function (e) {
         var code = e.which; // normalized across browsers, use this :-)
