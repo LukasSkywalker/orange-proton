@@ -18,6 +18,8 @@ div.node {
     padding-left: 15px;
     padding-right: 15px;
     margin: 5px;
+    max-width: 250px;
+    word-break: break-word;
 }
 
 .js-mindmap-active div.node.active {
