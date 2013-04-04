@@ -44,4 +44,18 @@ puts e
       InformationInterface.provider.get_field_name(field_code, lang)
     end
   end
+
+  module Admin
+    def set_relatedness(values)
+      values.gsub('[','')
+      values.gsub(']','')
+
+      vals = values.split(',')
+      vals.each do |val|
+        val = val.to_i / 100.0
+      end
+
+      InformationInterface.provider.set_relatedness_weight vals
+    end
+  end
 end

@@ -14,11 +14,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
       BingInfoProvider.new => 0.25
     }
   end
-
-  def fields_multiply_relatedness(fcs, fac)
-    fcs.each{ |fc| fc[:relatedness] *= fac }
-    fcs
-  end
   
   def get_fields(icd_code, max_count, language)
     fields = []
@@ -38,6 +33,12 @@ class CompoundInfoProvider < DatabaseInfoProvider
     }
   end
 
+  def set_relatedness_weight values
+    @ips_to_relatedness.each_with_index do |(key, value), index|
+      @ips_to_relatedness[key] = values[index]
+    end
+  end
+
   private
   def remove_dublicate_fields fields
     out_fields = {}
@@ -54,5 +55,10 @@ class CompoundInfoProvider < DatabaseInfoProvider
     end
 
     out_fields.values
+  end
+
+  def fields_multiply_relatedness(fcs, fac)
+    fcs.each{ |fc| fc[:relatedness] *= fac }
+    fcs
   end
 end

@@ -56,4 +56,16 @@ class API < Grape::API
       get_field_name(params[:code], params[:lang])
     end
   end
+
+  resource :admin do
+    helpers InformationInterface::Admin
+
+    params do
+      requires :values, type: String
+    end
+
+    post 'set' do
+      get_field_name(params[:code], params[:lang])
+    end
+  end
 end
