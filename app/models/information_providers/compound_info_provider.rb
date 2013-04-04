@@ -27,13 +27,32 @@ class CompoundInfoProvider < DatabaseInfoProvider
       tf = ip.get_fields(icd_code, max_count, language)[:fields]
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
+
       fields.concat(fields_multiply_relatedness(tf, relatedness))
     }
 
     {
-      data:  db.get_icd(icd_code,language),
-      fields:fields,
+      data: db.get_icd(icd_code,language),
+      fields: remove_dublicate_fields(fields),
       type: get_code_type(icd_code)
     }
+  end
+
+  private
+  def remove_dublicate_fields fields
+    out_fields = {}
+
+    fields.each do |field|
+      code = field[:field]
+
+      if out_fields.has_key? code
+        out_fields[code][:relatedness] += field[:relatedness]
+        out_fields[code][:relatedness] = 1.0 if out_fields[code][:relatedness] > 1.0
+      else
+        out_fields[code] = field
+      end
+    end
+
+    out_fields.values
   end
 end
