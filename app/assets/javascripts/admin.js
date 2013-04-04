@@ -12,6 +12,8 @@ function sendAdmin(){
         var val = $("#slider" + i).slider("value");
         console.log(val);
         params += val;
+        if (i<6)
+            params += ",";
     }
     params += "]";
     jQuery.ajax({

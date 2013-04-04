@@ -23,6 +23,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
 
+
       fields.concat(fields_multiply_relatedness(tf, relatedness))
     }
 
@@ -35,7 +36,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
   def set_relatedness_weight values
     @ips_to_relatedness.each_with_index do |(key, value), index|
-      @ips_to_relatedness[key] = values[index]
+      @ips_to_relatedness[key] = values[index].to_i/100.0
     end
   end
 

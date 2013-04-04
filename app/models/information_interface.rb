@@ -35,7 +35,7 @@ puts e
      #puts "after sort"
      #puts f[:fields]
       f[:fields] = f[:fields][0..max_count-1]
-      return f
+      f
     end
   end
 
@@ -47,14 +47,8 @@ puts e
 
   module Admin
     def set_relatedness(values)
-      values.gsub('[','')
-      values.gsub(']','')
-
+      values = values.gsub('[','').gsub(']','')
       vals = values.split(',')
-      vals.each do |val|
-        val = val.to_i / 100.0
-      end
-
       InformationInterface.provider.set_relatedness_weight vals
     end
   end

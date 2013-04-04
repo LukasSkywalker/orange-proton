@@ -65,7 +65,7 @@ class API < Grape::API
     end
 
     post 'set' do
-      get_field_name(params[:code], params[:lang])
+      set_relatedness(params[:values])
     end
   end
 end
