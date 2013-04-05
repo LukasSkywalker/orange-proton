@@ -1,8 +1,14 @@
 function displayAdmin(){
-    for (var i = 1; i<=6; i++)
+    var providers = ["Manual", "MDC", "Range", "Thesaur", "StringMatcher", "Bing"];
+    var panel = $("#admin");
+    panel.innerHTML = "";
+    for (var j = 0;j<6;j++)
     {
-        $("#slider" + i).slider({disabled:false},{max: 100}, {min:0});
+      panel.append('<p class="provider">' + providers[j] + '</p>');
+      panel.append('<p id="slider'+ (j+1)+'"></p>');
+      $("#slider" + (j+1)).slider({disabled:false},{max: 100}, {min:0});
     }
+    panel.append('<input type="button" onclick="sendAdmin();" value="Send">');
 }
 
 function sendAdmin(){
@@ -20,4 +26,6 @@ function sendAdmin(){
         url: '/api/v1/admin/set?values=' + params,
         type: 'POST'
     });
+
+    mindmapper.sendRequest($("#code-name").val().toUpperCase(), $("#lang").val());
 }
