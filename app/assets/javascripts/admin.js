@@ -6,7 +6,7 @@ function displayAdmin(){
     {
       panel.append('<p class="provider">' + providers[j] + '</p>');
       panel.append('<p id="slider'+ (j+1)+'"></p>');
-      $("#slider" + (j+1)).slider({disabled:false},{max: 100}, {min:0});
+      $("#slider" + (j+1)).slider({max: 100, min:0, animate:"fast"});
     }
     panel.append('<input type="button" onclick="sendAdmin();" value="Send">');
 }

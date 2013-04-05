@@ -86,10 +86,11 @@ div.node {
     position: absolute;
     border-radius: 20px;
     top: 330px;
+    font-size: 10px;
 }
 
-.slider{
-
+.provider{
+    font-size: 15px;
 }
 
 .doc{
