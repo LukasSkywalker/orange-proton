@@ -71,6 +71,7 @@ var mindmapper = {
         var MAX_DRGS = 5;
         var MAX_INCLUSIVA = 5;
         var MAX_EXCLUSIVA = 5;
+        var AS_LIST = true; // if synonyms should be in a list instead of bubbles
 
         var params = '?code=' + input + '&lang=' + lang;
 
@@ -129,11 +130,26 @@ var mindmapper = {
 
                 var r = [];
                 var syn = data.synonyms;
-                for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                    //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
-                    $newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
+
+                if(AS_LIST)
+                {
+                    var syns = '<ul>';
+                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
+                       syns += '<li>'+ syn[i] +'</li>'
+                    }
+                    syns += '</ul>'
+                    $newdiv = $('<div class="syn node ui-draggable">' + syns + '</div>');
                     $newdiv.appendTo('body');
                     r.push($newdiv);
+                }
+                else
+                {
+                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
+                        //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
+                        $newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
+                        $newdiv.appendTo('body');
+                        r.push($newdiv);
+                    }
                 }
 
                 var superclass = data.superclass;
