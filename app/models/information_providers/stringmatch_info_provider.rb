@@ -1,5 +1,8 @@
 #encoding: utf-8
-# yes, unlike many texteditors, ruby cannot figure this out without a bom
+
+# This finds Fachgebiete related to an illness by comparing the (german) name of the 
+# illness or any of it's synonyms and the name of the fachgebiet.
+# We have precomputed this data and stored it in the db.
 class StringmatchInfoProvider < DatabaseInfoProvider
 
   def initialize
@@ -20,7 +23,8 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     best_fields.each do |field|
       fs_code = field['fs_code']
       # scale relatedness (this somehow has to consider synonyms and synonymlength!)
-      relatedness = field['by_seq_match'].to_f / cmatch_prepare(self.db.get_fs_name(fs_code, 'de')).length
+      relatedness = field['by_seq_match'].to_f / 
+        cmatch_prepare(self.db.get_fs_name(fs_code, 'de')).length
       fs << format_fs_code_for_api(fs_code, relatedness, language)
     end
 

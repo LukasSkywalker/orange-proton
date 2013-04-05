@@ -1,3 +1,6 @@
+# This returns the fields for the 'Thesaurus' (pdf file of icd codes belonging to
+# some category) the given code appears in.
+# This is based on a manually created table.
 class ThesaurInfoProvider < DatabaseInfoProvider
 
   def get_fields(icd_code, max_count, language)

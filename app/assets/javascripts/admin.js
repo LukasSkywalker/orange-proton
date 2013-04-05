@@ -1,3 +1,4 @@
+/* This file implements the admin panel. */
 function displayAdmin(){
     var providers = ["Manual", "MDC", "Range", "Thesaur", "StringMatcher", "Bing"];
     var panel = $("#admin");

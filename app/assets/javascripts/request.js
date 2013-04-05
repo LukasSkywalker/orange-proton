@@ -1,8 +1,7 @@
 // This file handes search requests. It makes the AJAX-request and parses and displays the result.
 // TODO:
 // -define action when clicking a node
-// -use language defined in ui, not default (de)
-// -namespace the whole file so we don't pollute 'window' too much
+// -namespace the whole file so we don't pollute 'window' too much (low priority)
 // -rethink the for-loops. maybe we could simplify them
 
 $(document).ready(function () {

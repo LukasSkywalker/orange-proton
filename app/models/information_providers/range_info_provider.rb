@@ -1,5 +1,6 @@
-
-
+# This info provider finds the fields a given ICD code belongs to by looking
+# up all the ICD code ranges the code belongs to (e.g. B26 is in something like B20-B30, which is in A00-B99 etc.)
+# This is based on a manually created table specifying fields for these ranges.
 class RangeInfoProvider < DatabaseInfoProvider
   def get_fields(icd_code, max_count, language)
     ranges = db.get_ranges(icd_code)

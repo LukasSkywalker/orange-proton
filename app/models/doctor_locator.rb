@@ -1,6 +1,8 @@
 require 'geocoder'
 require_relative 'database_adapter'
 
+# Uses the 'geocoder' gem and coordinates passed as parameters and stored in the DB to sort
+# the doctors specializing in a given field (as retrieveable from the database adapter) accoring to distance to a reference point.
 class DoctorLocator
 
   def initialize
@@ -12,6 +14,7 @@ class DoctorLocator
     )
   end
 
+  # @return The raw db entries of at most doctors with a given field of specialization (fs_code), sorted by distance to the position specified.
   def find_doctors_within(field_code, lat, long, count)
     field_doctors = @db.get_doctors_by_fs field_code
 

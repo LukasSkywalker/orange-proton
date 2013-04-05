@@ -1,10 +1,11 @@
+# Speed things up a little bit.
 require 'parallel_each'
 
-# Combines other information providers
+# Combines other information providers and weights the relatedness of
+# the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
-
   def initialize
-    super   # you HAVE to call this to get db
+    super   # you HAVE to call this to get the db attribute.
     @ips_to_relatedness = {
       ManualInfoProvider.new => 1.0,
       MDCInfoProvider.new => 0.75,
@@ -16,32 +17,40 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
   
   def get_fields(icd_code, max_count, language)
+    # Let all information providers return their results into fields
     fields = []
-
     @ips_to_relatedness.p_each(10) {|ip, relatedness|
       tf = ip.get_fields(icd_code, max_count, language)[:fields]
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
 
-
+      # TODO Couldn't we get a race if we do this in parallel?
       fields.concat(fields_multiply_relatedness(tf, relatedness))
     }
 
     {
       data: db.get_icd(icd_code,language),
-      fields: remove_dublicate_fields(fields),
+      fields: remove_duplicate_fields(fields),
       type: get_code_type(icd_code)
     }
   end
 
+  # Handle
+  # /api/v1/admin/set??? (values?)
+  # TODO Document!
+  # Assign new weights ot each info provider. Values is a simple list (?).
   def set_relatedness_weight values
     @ips_to_relatedness.each_with_index do |(key, value), index|
       @ips_to_relatedness[key] = values[index].to_i/100.0
     end
   end
 
+  # Pass over the resulting filelds array and remove duplicates, summing up their
+  # relatedness.
+  # TODO Maybe we should just take the max. That is take the first and sort
+  # before we do this.
   private
-  def remove_dublicate_fields fields
+  def remove_duplicate_fields fields
     out_fields = {}
 
     fields.each do |field|
@@ -58,6 +67,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     out_fields.values
   end
 
+  # Multipliy the relatedness of the fields in fcs by fac (0-1).
   def fields_multiply_relatedness(fcs, fac)
     fcs.each{ |fc| fc[:relatedness] *= fac }
     fcs

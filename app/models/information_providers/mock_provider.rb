@@ -1,3 +1,6 @@
+# This provider returns some example data to show the format to be followed
+# by the other providers.
+# It can also be used for testing.
 class MockInfoProvider < BaseInformationProvider
 
   def get_fields(field_code, count, lang)

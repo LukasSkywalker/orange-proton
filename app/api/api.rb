@@ -1,14 +1,21 @@
+# This handles the API queries, using the Grape API gem.
 class API < Grape::API
+  # API specification for grape (url prefixes)
   prefix 'api'
   version 'v1'
+
+  # Return type format. The other possibility is xml.
   format :json
 
+  # Some params we always use.
   helpers do
     def lang
       params[:lang]
     end
   end
 
+  # Handles the most important queries:
+  # /api/v1/fields/get?code=string&count=integer&lang=string
   desc 'Returns data'
   resource :fields do
 
@@ -25,9 +32,10 @@ class API < Grape::API
     end
   end
 
+  # Handles queries of shape
+  # /api/v1/docs/get?long=float&lat=float&field=int&count=int
   desc 'Returns doctors'
   resource :docs do
-
     helpers InformationInterface::Doctors
 
     params do
@@ -42,6 +50,8 @@ class API < Grape::API
     end
   end
 
+  # Handles queries:
+  # /api/v1/codenames/get?code=string&lang=string
   desc 'Returns name of field corresponding to a specific code'
   resource :codenames do
 
@@ -57,6 +67,9 @@ class API < Grape::API
     end
   end
 
+  # Handles admin queries
+  # /api/v1/admin/set??? (values?)
+  # TODO Document!
   resource :admin do
     helpers InformationInterface::Admin
 
@@ -68,4 +81,5 @@ class API < Grape::API
       set_relatedness(params[:values])
     end
   end
+  
 end

@@ -1,3 +1,4 @@
+# Returns the fachgebiete an icd was manually mapped to (specified via manually: 1 in the relationFSZuICD database entry).
 class ManualInfoProvider < DatabaseInfoProvider 
   def get_fields(icd_code, max_count, language)
     return  {
