@@ -3,14 +3,22 @@
 # belong to, and finally mapping these to fachgebiete (using a manually created
 # table).
 class MDCInfoProvider < DatabaseInfoProvider
-  def get_fields(icd_code, max_count, language)
+  def get_fields(code, max_count, language)
+    code_type = get_code_type(code)
 
-    drgs = db.get_drgs(icd_code)
+    drgs = []
+    if code_type == :icd
+      drgs = db.get_drgs(code) # TODO Rename to get drgs for icd or make it detect code type (then we have to move the detection...)
+    else
+      drgs = db.get_drgs_for_chop(code)
+    end
+
     mdcs = []
     drgs.each do |drg|
       prefix = drg[0]
       mdcs<<db.get_mdc_code(prefix)
     end
+
     fmhs = []
     fmhnames = []
     fieldhashes = []
@@ -28,12 +36,13 @@ class MDCInfoProvider < DatabaseInfoProvider
         relatedness: 1, #set to maximum, as there is only manual mapping involved
         field: fmh
       } unless fieldhashes.size >= max_count
-
     end
-    {
-      data: db.get_icd(icd_code,language),
+   
+    # finally
+    return {
+      data: code_type == :icd ? db.get_icd(code,language) : db.get_chop_entry(code,language),
       fields:fieldhashes, #get_fields_of_specialization(icd_code, max_count, language),
-      type: get_code_type(icd_code)
+      type: code_type
     }
   end
 

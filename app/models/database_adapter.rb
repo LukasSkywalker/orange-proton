@@ -28,6 +28,13 @@ class DatabaseAdapter
         :en => @client['icd_2012_ch']['en']
     }
 
+    @chop = {
+        :de => @client['chop_2013_ch']['de'],
+        :fr => @client['chop_2013_ch']['fr'],
+        :it => @client['chop_2013_ch']['it'],
+        :en => @client['chop_2013_ch']['de'] # hardwired fallback
+    }
+
     @fs = @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
 
     @r_icd_fs = @client['relationFSZuICD']['relationFSZuICD']
@@ -49,9 +56,21 @@ class DatabaseAdapter
     []
   end
 
+  # @return The drgs (most common diagnoses) for a given chop.
+  def get_drgs_for_chop(code)
+    doc = @chop[:de].find_one({code: code})
+    return doc['drgs'] unless doc.nil?
+    []
+  end
+
   # @return The raw icd database entry for the given ICD code.
   def get_icd(icd_code, language)
     @icd[language.to_sym].find_one({code: icd_code})
+  end
+
+  # @return The raw chop database entry for the given chop code.
+  def get_chop_entry(code, language)
+    @chop[language.to_sym].find_one({code: code})
   end
 
   # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
