@@ -20,6 +20,9 @@ class CompoundInfoProvider < DatabaseInfoProvider
     # Let all information providers return their results into fields
     fields = []
     @ips_to_relatedness.p_each(10) {|ip, relatedness|
+      # skip provider if relatedness was set to zero
+      next unless relatedness > 0.0
+
       tf = ip.get_fields(icd_code, max_count, language)[:fields]
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
@@ -41,7 +44,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # Assign new weights ot each info provider. Values is a simple list (?).
   def set_relatedness_weight values
     @ips_to_relatedness.each_with_index do |(key, value), index|
-      @ips_to_relatedness[key] = values[index].to_i/100.0
+      @ips_to_relatedness[key] = values[index]
     end
   end
 
@@ -54,7 +57,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     out_fields = {}
 
     fields.each do |field|
-      code = field[:field]
+      code = field[:field].to_i
 
       if out_fields.has_key? code
         out_fields[code][:relatedness] += field[:relatedness]

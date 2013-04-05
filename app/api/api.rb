@@ -68,16 +68,16 @@ class API < Grape::API
   end
 
   # Handles admin queries
-  # /api/v1/admin/set??? (values?)
-  # TODO Document!
+  # /api/v1/admin/setWeight??? (values?)
+  desc 'Handles admin queries, such as setting the relatedness bias'
   resource :admin do
     helpers InformationInterface::Admin
 
     params do
-      requires :values, type: String
+      requires :values, type: String, desc: 'The weight values the frontend sends'
     end
 
-    post 'set' do
+    post 'setWeight' do
       set_relatedness(params[:values])
     end
   end

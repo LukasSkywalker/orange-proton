@@ -24,7 +24,7 @@ function sendAdmin(){
     }
     params += "]";
     jQuery.ajax({
-        url: '/api/v1/admin/set?values=' + params,
+        url: '/api/v1/admin/setWeight?values=' + params,
         type: 'POST'
     });
 

@@ -60,6 +60,9 @@ module InformationInterface
     def set_relatedness(values)
       values = values.gsub('[','').gsub(']','')
       vals = values.split(',')
+      vals.map! do |val|
+        val.to_i / 100.0
+      end
       # See compound info provider (only info provider implementing this).
       InformationInterface.provider.set_relatedness_weight vals
     end
