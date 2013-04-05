@@ -11,8 +11,9 @@ module InformationInterface
 
   # The info provider used to generate this data
   self.provider = CompoundInfoProvider.new
-  module IcdData
+  module IcdChopData
     def get_fields(code, max_count, lang)
+      
       f = InformationInterface.provider.get_fields(code, max_count, lang)
 
       #  If there were no results, look up at superclass (e.g. B26.9 -> B26)

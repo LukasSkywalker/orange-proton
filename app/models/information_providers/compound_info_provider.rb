@@ -6,9 +6,10 @@ require 'parallel_each'
 class CompoundInfoProvider < DatabaseInfoProvider
   def initialize
     super   # you HAVE to call this to get the db attribute.
+    @mdcip = MDCInfoProvider.new
     @ips_to_relatedness = {
       ManualInfoProvider.new => 1.0,
-      MDCInfoProvider.new => 0.75,
+      @mdcip => 0.75,
       RangeInfoProvider.new => 0.75,
       ThesaurInfoProvider.new => 0.5,
       StringmatchInfoProvider.new => 0.3,
@@ -16,11 +17,16 @@ class CompoundInfoProvider < DatabaseInfoProvider
     }
   end
   
-  def get_fields(icd_code, max_count, language)
+  def get_fields(code, max_count, language)
+    if get_code_type(code) == :chop
+      return @mdcip.get_fields(code, max_count, language)
+    end
+
+
     # Let all information providers return their results into fields
     fields = []
     @ips_to_relatedness.p_each(10) {|ip, relatedness|
-      tf = ip.get_fields(icd_code, max_count, language)[:fields]
+      tf = ip.get_fields(code, max_count, language)[:fields]
       puts "#{ip.class} found: "
       puts tf.empty? ? 'nothing' : tf
 
@@ -29,9 +35,9 @@ class CompoundInfoProvider < DatabaseInfoProvider
     }
 
     {
-      data: db.get_icd(icd_code,language),
+      data: db.get_icd(code,language),
       fields: remove_duplicate_fields(fields),
-      type: get_code_type(icd_code)
+      type: get_code_type(code)
     }
   end
 
