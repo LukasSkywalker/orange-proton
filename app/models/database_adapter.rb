@@ -7,7 +7,7 @@ class DatabaseAdapter
     # Create a connection to the db based on the config/mongo.yml login data
     host = MongoMapper.connection.host
     port = MongoMapper.connection.port
-    db_config = YAML::load(File.read(File.join(Rails.root, "/config/mongo.yml")))
+    db_config = YAML::load(File.read(File.join(Rails.root, '/config/mongo.yml')))
 
     MongoMapper.connection = 
       Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
@@ -43,28 +43,25 @@ class DatabaseAdapter
 
   # @return At most count fields related to a specified icd_code sorted by Bing search results count.
   def get_fields_by_bing_rank(icd_code, count)
-   r = @r_icd_fs.find({icd_code: icd_code, icd_fs_bing_de: {"$exists" => true}},
+    @r_icd_fs.find({icd_code: icd_code, icd_fs_bing_de: {'$exists' => true}},
                    fields: [:icd_fs_bing_de,:fs_code],
                    sort: {icd_fs_bing_de: 'descending'}).limit(count).to_a
-   return r
   end
 
   # @return The drgs (most common diagnoses) for a given ICD.
-  def get_drgs(icd_code)
+  def get_drgs_for_icd(icd_code)
     doc = @icd[:de].find_one({code: icd_code})
-    return doc['drgs'] unless doc.nil?
-    []
+    doc.nil? ? [] : doc['drgs']
   end
 
   # @return The drgs (most common diagnoses) for a given chop.
   def get_drgs_for_chop(code)
     doc = @chop[:de].find_one({code: code})
-    return doc['drgs'] unless doc.nil?
-    []
+    doc.nil? ? [] : doc['drgs']
   end
 
   # @return The raw icd database entry for the given ICD code.
-  def get_icd(icd_code, language)
+  def get_icd_entry(icd_code, language)
     @icd[language.to_sym].find_one({code: icd_code})
   end
 
@@ -76,7 +73,7 @@ class DatabaseAdapter
   # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
   # Used for icd > drg > mdc > fs mapping.
   # This is based on a manually set up table.
-  def get_fs_code(mcd_code)
+  def get_fs_code_by_mdc(mcd_code)
     documents = @r_mdc_fs.find({mdc_code: mcd_code.to_s})
     fmhs = []
     documents.each do |document|
@@ -96,40 +93,40 @@ class DatabaseAdapter
     fs
   end
 
-  # @return An array of available thesaurName s
-  def get_available_thesaur_names()
+  # @return An array of available thesaur_name s
+  def get_available_thesaur_names
     a = @client['thesauren'].collection_names
     a.delete('thesaurusToFSCode')
     a.delete('thesaurusToFSCode2')
     a.delete('system.indexes')
-    return a
+    a
   end
 
   # @return A hash fs_code (Integer) to fs_name (localised to lang)
   def get_fs_names(lang)
     fs = {}
     @fs.find().each { |b| 
-      fs[Integer(b["code"])] = 
-        b[lang].encode("UTF-8")
+      fs[Integer(b['code'])] =
+        b[lang].encode('UTF-8')
     }
     fs
   end
 
-  # @param thesaurName any of the names returned by get_available_thesaur_names()
+  # @param thesaur_name any of the names returned by get_available_thesaur_names()
   # @return true if the given icd code is listed in the thesaur
-  def is_icd_code_in_thesaur_named?(icd_code, thesaurName)
-    return @client['thesauren'][thesaurName].find_one({icd_code: icd_code}) != nil
+  def is_icd_code_in_thesaur_named?(icd_code, thesaur_name)
+    @client['thesauren'][thesaur_name].find_one({icd_code: icd_code}) != nil
   end
 
   # All fs codes related to the given thesaur.
-  def get_fs_codes_for_thesaur_named(thesaurName)
+  def get_fs_codes_for_thesaur_named(thesaur_name)
       a = @client['thesauren']['thesaurusToFSCode2'].find(
-          { thesaurName: thesaurName}, fields: {:fs_code => 1, :_id => 0})
+          { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0})
       fs_codes= []
       a.each {|fs|
-          fs_codes << fs["fs_code"]
+          fs_codes << fs['fs_code']
       }
-      return fs_codes
+      fs_codes
   end
 
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z).

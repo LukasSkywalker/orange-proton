@@ -1,19 +1,19 @@
 # This basically duplicates the api/api.rb, but does some extra work and
 # knows about the internals of the models (additional layer of abstraction).
 module InformationInterface
-  # promote this module to a class to make it have an attribute (?)
-  class << self
-    attr_accessor :provider
-  end
+
+  mattr_accessor :provider
+  self.provider = CompoundInfoProvider.new
 
   # Handle queries
   # /api/v1/fields/get?code=string&count=integer&lang=string
-
-  # The info provider used to generate this data
-  self.provider = CompoundInfoProvider.new
   module IcdChopData
     def get_fields(code, max_count, lang)
-      InformationInterface.provider.get_fields(code, max_count, lang)
+      fields = ApiFormatter.format_fields(InformationInterface.provider.get_fields(code, max_count, lang))
+      icd_data = InformationInterface.provider.get_icd_or_chop_data(code, lang)
+      type = InformationInterface.provider.get_code_type(code)
+
+      ApiFormatter.format_response(icd_data, fields, type)
     end
   end
 
@@ -29,7 +29,8 @@ module InformationInterface
   # /api/v1/codenames/get?code=string&lang=string
   module Helpers
     def get_field_name(field_code, lang)
-      InformationInterface.provider.get_field_name(field_code, lang)
+      field_name = InformationInterface.provider.get_field_name(field_code, lang)
+      ApiFormatter.format_field_name field_name
     end
   end
 
