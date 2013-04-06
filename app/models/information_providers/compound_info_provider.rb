@@ -4,22 +4,23 @@ require 'parallel_each'
 # Combines other information providers and weights the relatedness of
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
+  PComp = Struct.new(:provider, :relatedness)
+
   def initialize
-    super   # you HAVE to call this to get the db attribute.
-    @mdcip = MDCInfoProvider.new
-    @ips_to_relatedness = {
-      ManualInfoProvider.new => 1.0,
-      @mdcip => 0.75,
-      RangeInfoProvider.new => 0.75,
-      ThesaurInfoProvider.new => 0.5,
-      StringmatchInfoProvider.new => 0.3,
-      BingInfoProvider.new => 0.25
+    super
+    @components = {
+        ManualInfoProvider => PComp.new(ManualInfoProvider.new, 1.0),
+        MDCInfoProvider => PComp.new(MDCInfoProvider.new, 0.75),
+        RangeInfoProvider => PComp.new(RangeInfoProvider.new, 0.75),
+        ThesaurInfoProvider => PComp.new(ThesaurInfoProvider.new, 0.5),
+        StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, 0.3),
+        BingInfoProvider => PComp.new(BingInfoProvider.new, 0.25),
     }
   end
   
   def get_fields(code, max_count, language)
     if get_code_type(code) == :chop
-      return @mdcip.get_fields(code, max_count, language)
+      return @components[MDCInfoProvider].provider.get_fields(code, max_count, language)
     end
 
     # Let all information providers return their results into fields
@@ -49,19 +50,20 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # TODO Document!
   # Assign new weights ot each info provider. Values is a simple list (?).
   def set_relatedness_weight values
-    @ips_to_relatedness.each_with_index do |(key, value), index|
-      @ips_to_relatedness[key] = values[index]
+    @components.each_with_index do |(key, value), index|
+      @components[key].relatedness = values[index]
     end
   end
 
   def get_provider_results(code, max_count, language)
     fields = []
-    @ips_to_relatedness.p_each(10) {|ip, relatedness|
+    @components.p_each(10) {|provider_name, component|
+      relatedness = component.relatedness
       # skip provider if relatedness was set to zero
       next unless relatedness > 0.0
 
-      tf = ip.get_fields(code, max_count, language)[:fields]
-      puts "#{ip.class} found: "
+      tf = component.provider.get_fields(code, max_count, language)[:fields]
+      puts "#{provider_name} found: "
       puts tf.empty? ? 'nothing' : tf
 
       # TODO Couldn't we get a race if we do this in parallel?
@@ -75,7 +77,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # TODO Maybe we should just take the max. That is take the first and sort
   # before we do this.
   private
-  def remove_duplicate_fields fields
+  def remove_duplicate_fields(fields)
     out_fields = {}
 
     fields.each do |field|
