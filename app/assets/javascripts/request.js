@@ -24,11 +24,6 @@ $(document).ready(function () {
         setLocale($(this).val());
     });
 
-    /*$("#speciality").click(function (e){
-     mindmapper.sendRequest($("#code-name").val().toUpperCase(), $(this).val());
-
-     });  */
-
     document.getElementById("code-name").focus();
 
     if (getUrlVars()["code"] !== undefined) {
@@ -45,11 +40,6 @@ $(document).ready(function () {
 
 var mindmapper = {
 
-    var: response = 0,
-
-    getResponse: function () {
-        return this.response;
-    },
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
         this.log(input);
