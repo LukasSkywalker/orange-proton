@@ -22,24 +22,24 @@ class CompoundInfoProvider < DatabaseInfoProvider
       return @mdcip.get_fields(code, max_count, language)
     end
 
-
     # Let all information providers return their results into fields
-    fields = []
-    @ips_to_relatedness.p_each(10) {|ip, relatedness|
-      # skip provider if relatedness was set to zero
-      next unless relatedness > 0.0
+    fields = get_provider_results(code, max_count, language)
 
-      tf = ip.get_fields(code, max_count, language)[:fields]
-      puts "#{ip.class} found: "
-      puts tf.empty? ? 'nothing' : tf
+    # is this even necessary now?
+    fields = get_provider_results(self.to_icd_superclass(code), max_count, language) if
+        fields.size <= 0 and self.is_icd_subclass(code)
 
-      # TODO Couldn't we get a race if we do this in parallel?
-      fields.concat(fields_multiply_relatedness(tf, relatedness))
-    }
+    fields = remove_duplicate_fields fields
+
+    fields.sort! do |x, y|
+      y[:relatedness] - x[:relatedness]
+    end
+
+    fields = fields[0..max_count-1]
 
     {
       data: db.get_icd(code,language),
-      fields: remove_duplicate_fields(fields),
+      fields: fields,
       type: get_code_type(code)
     }
   end
@@ -52,6 +52,22 @@ class CompoundInfoProvider < DatabaseInfoProvider
     @ips_to_relatedness.each_with_index do |(key, value), index|
       @ips_to_relatedness[key] = values[index]
     end
+  end
+
+  def get_provider_results(code, max_count, language)
+    fields = []
+    @ips_to_relatedness.p_each(10) {|ip, relatedness|
+      # skip provider if relatedness was set to zero
+      next unless relatedness > 0.0
+
+      tf = ip.get_fields(code, max_count, language)[:fields]
+      puts "#{ip.class} found: "
+      puts tf.empty? ? 'nothing' : tf
+
+      # TODO Couldn't we get a race if we do this in parallel?
+      fields.concat(fields_multiply_relatedness(tf, relatedness))
+    }
+    fields
   end
 
   # Pass over the resulting filelds array and remove duplicates, summing up their

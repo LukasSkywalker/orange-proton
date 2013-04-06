@@ -13,29 +13,7 @@ module InformationInterface
   self.provider = CompoundInfoProvider.new
   module IcdChopData
     def get_fields(code, max_count, lang)
-      
-      f = InformationInterface.provider.get_fields(code, max_count, lang)
-
-      #  If there were no results, look up at superclass (e.g. B26.9 -> B26)
-      if f[:fields].size == 0 && InformationInterface.provider.is_icd_subclass(code)
-
-        f[:fields] = InformationInterface.provider.get_fields(
-          InformationInterface.provider.to_icd_superclass(code), 
-          max_count, lang)[:fields]
-      end
-
-      # Sort results by relatedness
-      f[:fields].sort! {
-        |x,y| 
-        # Do not use return in a block!
-        y[:relatedness] - x[:relatedness]
-      }
-
-      # And limit to requested amount
-      # TODO Make the compound information provider do the sorting and limitng?
-      f[:fields] = f[:fields][0..max_count-1]
-
-      return f
+      InformationInterface.provider.get_fields(code, max_count, lang)
     end
   end
 
