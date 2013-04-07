@@ -30,6 +30,7 @@ jQuery.fn.extend({
   setRoot: function( element ) {
     var mm = $(this.first());
     var ele = $(element);
+    ele.addClass("node");
     ele.appendTo(mm);
     var top = (mm.height() - ele.outerHeight()) / 2;
     var left = (mm.width() - ele.outerWidth()) / 2;
@@ -151,26 +152,34 @@ jQuery.fn.extend({
     }
 
 
-    Canvas.prototype.addNodes = function(nodes) {
-      nodes.shuffle();
-      for (var i = 0; i < nodes.length; i++) {
-        $(nodes[i]).appendTo(megamind.container);
-        var n = new Node(nodes[i], null);
+    Canvas.prototype.addNodes = function(elements) {
+      elements.shuffle();
+
+      // some preprocessing: add required classes
+      for(var i = 0; i < elements.length; i++) {
+        var element = $(elements[i]);
+        element.addClass("node");
+      }
+
+      for (var i = 0; i < elements.length; i++) {
+        var element = $(elements[i]);
+        $(element).appendTo(megamind.container);
+        var n = new Node(element, null);
         if( n.width() > this.width || n.height() > this.height ) {
           console.log("### unable to add node, is "+n.width()+"x"+ n.height()+
               " px large, max is "+this.width+"x"+this.height);
-          nodes[i].remove();
+          element.remove();
         }else if (n.width() > this.width / 2) {
           this.addRow(n);
         }
       }
 
-      nodes.sort(function (a, b) {
+      elements.sort(function (a, b) {
         return b.height() - a.height();
       });
 
-      for (var i = 0; i < nodes.length; i++) {
-        var n = new Node(nodes[i], null);
+      for (var i = 0; i < elements.length; i++) {
+        var n = new Node(elements[i], null);
         if (n.width() <= this.width / 2) {
           if (this.currentRow() == undefined){ //no row yet
             if(n.height() <= this.height){
@@ -184,7 +193,7 @@ jQuery.fn.extend({
             this.addRow(n);
           }else {
             alert('no space left');   // no more space left for new row
-            nodes[i].remove();
+            elements[i].remove();
           }
         }
       }

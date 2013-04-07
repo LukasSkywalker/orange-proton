@@ -87,17 +87,17 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-                $('#mindmap').spin(false);
-                History.pushState(null, "OrangeProton", params);
+              $('#mindmap').spin(false);
+              History.pushState(null, "OrangeProton", params);
 
-                var data = response.data; // text is already parsed by JQuery
+              var data = response.data; // text is already parsed by JQuery
 
-                var name = data.text;
+              var name = data.text;
 
               var mm = $('#mindmap');
 
               var container = mm.megamind();      //initialize
-              var rootNode = "<div class='root node ui-draggable'>" + input + "</br>" + name + "</div>";
+              var rootNode = "<div class='root'>" + input + "</br>" + name + "</div>";
               var root = mm.setRoot(rootNode);
 
 
@@ -108,73 +108,57 @@ var mindmapper = {
                 /* Megamind has a concept of different containers where the different nodes are put. This allows us to
                  split up the page to organize the nodes as we wish. Inside the containers, the nodes are automatically
                  laid out and distributed. Here are the instructions for generating a new container and adding nodes:
-                 - create an array which holds the nodes. This is pretty straightforward, just see the examples below
-                 - Call the Canvas constructor. The arguments are: new Canvas(left,top,width,height). All are CSS-pixel values
-                 - chain a call to .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
+                 - initialize a mindmap. call megamind() on a jQuery object [let that be 'mm' here] that represents a
+                 DOM node to do so
+                 - set a root node by calling setRoot() on mm, with the HTML string of the node as parameter
+                 - create an array which holds HTML-strings of the nodes. This is pretty straightforward, just see the examples below
+                 - Call the Canvas constructor on mm: mm.addCanvas(left,top,width,height). All are CSS-pixel values
+                 - Call .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
                  this array. You can also add click handlers or images or the <cat> element to the nodes.
-                 - chain a call to .doLayout(). This distributes the nodes and makes them fill up the container more or less.
 
                  Notes:
+                 - elements that are too tall are discarded. We will have to find a better solution for this
+                 - sometimes, an element's outerWidth is calculated wrongly and the width is returned instead. One exam-
+                 ple is the call to a rows spaceUsed(), where the nodes report wrong sized. This leads to nodes over-
+                 flowing their rows. Strangely, the correct outerWidth is reported once the mindmap is rendered and the
+                 rows are filled. Not sure if this is a bug in jQuery or my design.
 
-                 You get the picture. Please don't kill hedgehogs.
+                 You get the picture.
                  */
 
-                var r = [];
-                var syn = data.synonyms;
+                var synonyms = [];
 
                 if(AS_LIST)
                 {
-                    var syns = '<ul>';
-                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                       syns += '<li>'+ syn[i] +'</li>'
-                    }
-                    syns += '</ul>'
-                    var newdiv = $('<div class="syn node ui-draggable">' + syns + '</div>');
-                    r.push(newdiv);
+                    var syn = data.synonyms.slice(0, MAX_SYN);
+                    var newdiv = $.map(syn, function(el) {
+                      return '<li><div class="syn">' + el + '</div></li>';
+                    }).join();
+
+                    synonyms.push($('<ul>' + newdiv + '</ul>'));
                 }
                 else
                 {
-                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                        //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
-                        var newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
-                        r.push(newdiv);
-                    }
+                    synonyms = mindmapper.generateHTML(data.synonyms, MAX_SYN, 'syn');
                 }
 
                 var superclass = data.superclass;
                 var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
-                //mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
                 var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
-                r.push(newdiv);
+                synonyms.push(newdiv);
 
-              var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
-              c.addNodes(r);
+                var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
+                c.addNodes(synonyms);
 
-                var p = [];
-                var drgs = data.drgs;
-                for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
-                    //mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
-                    var newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
-                    p.push(newdiv);
-                }
+                var drgs = mindmapper.generateHTML(data.drgs, MAX_DRGS, 'drg');
                 var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
-              c.addNodes(p);
+                c.addNodes(drgs);
+
+                var exclusiva = mindmapper.generateHTML(data.exclusiva, MAX_EXCLUSIVA, 'exclusiva');
+
+                var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
                 var s = [];
-                var exclusiva = data.exclusiva;
-                for (var i = 0; i < Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
-                    //mm.addNode(root, '<div class="exclusiva">' + exclusiva[i] + '</div>', {});
-                  var newdiv = $('<div class="exclusiva node ui-draggable">' + exclusiva[i] + '</div>');
-                    s.push(newdiv);
-                }
-
-                var inclusiva = data.inclusiva;
-                for (var i = 0; i < Math.min(MAX_INCLUSIVA, inclusiva.length); i++) {
-                    //mm.addNode(root, '<div class="inclusiva">' + inclusiva[i] + '</div>', {});
-                    var newdiv = $('<div class="inclusiva node ui-draggable">' + inclusiva[i] + '</div>');
-                    s.push(newdiv);
-                }
-
                 var fields = response.fields;
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
@@ -182,20 +166,28 @@ var mindmapper = {
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
-                    //$newdiv = $('<div id=speciality class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
-                  var newdiv = $('<div class="cat node ui-draggable" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    var newdiv = $('<div class="cat" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
                     s.push(newdiv);
                 }
 
               var c = mm.addCanvas(0, 0, root.position().left - 100, container.height());
-                  c.addNodes(s);
+                  c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 
             error: function (xhr, status, error) {
                 alert(error);
             }
         });
+    },
+
+    generateHTML: function(collection, limit, className, nameFunction) {
+      var elements = [];
+      collection = collection.slice(0, limit);
+      $.each(collection, function(index, name) {
+        var element = jQuery('<div/>').addClass(className).html(name);
+        elements.push(element);
+      });
+      return elements;
     },
 
     //Get the doctors from the db specific to the field and the users location

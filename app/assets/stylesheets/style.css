@@ -14,16 +14,13 @@ body {
     border-radius: 20px;
 }
 
-.ui-draggable {
-    position:absolute;
-}
-
 div.node {
     background: #eee;
     padding-left: 15px;
     padding-right: 15px;
     max-width: 250px;
     word-wrap: break-word;
+    position:absolute;
 }
 
 .code-field {
