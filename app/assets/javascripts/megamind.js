@@ -65,7 +65,7 @@ jQuery.fn.extend({
 
   cleanUp: function() {
     $('.debug').remove();
-    $('.node')
+    $('.node').remove();
     $('#mindmap').html('');
     megamind.canvas = [];
     megamind.rootNode = null;
