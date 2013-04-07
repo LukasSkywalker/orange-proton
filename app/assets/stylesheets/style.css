@@ -14,24 +14,16 @@ body {
     border-radius: 20px;
 }
 
+.ui-draggable {
+    position:absolute;
+}
+
 div.node {
     background: #eee;
     padding-left: 15px;
     padding-right: 15px;
-    margin: 5px;
     max-width: 250px;
     word-wrap: break-word;
-}
-
-.js-mindmap-active div.node.active {
-    padding: 5px 10px !important;
-    border-width: 5px !important;
-}
-
-.js-mindmap-active div.node.activeparent {
-    padding: 5px 10px !important;
-    border-width: 5px !important;
-    background: #cccccc;
 }
 
 .code-field {
@@ -158,9 +150,17 @@ div.node {
     float: right;
 }
 
+html, body {
+    height: 100%;
+}
+
+* html #mindmap {
+    height: 100%;
+}
+
 #mindmap {
     position: absolute;
     top: 51px;
-    height: 100%;
+    min-height: 100%;
     width: 99%;
 }

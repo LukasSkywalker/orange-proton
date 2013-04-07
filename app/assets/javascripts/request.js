@@ -142,8 +142,8 @@ var mindmapper = {
                 var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
                 r.push(newdiv);
 
-                var c = mm.addCanvas(0, 0, root.position().left, root.position().top + root.outerHeight());
-                c.addNodes(r);
+              var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
+              c.addNodes(r);
 
                 var p = [];
                 var drgs = data.drgs;
@@ -152,7 +152,7 @@ var mindmapper = {
                     var newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
                     p.push(newdiv);
                 }
-                var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
+                var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
               c.addNodes(p);
 
                 var s = [];
@@ -183,7 +183,7 @@ var mindmapper = {
                     s.push(newdiv);
                 }
 
-              var c = mm.addCanvas(0, root.position().top + root.outerHeight(), root.position().left + root.outerWidth(), container.height() - root.position().top - root.outerHeight());
+              var c = mm.addCanvas(0, 0, root.position().left - 100, container.height());
                   c.addNodes(s);
             },
 
