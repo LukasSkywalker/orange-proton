@@ -9,11 +9,14 @@ module InformationInterface
   # /api/v1/fields/get?code=string&count=integer&lang=string
   module IcdChopData
     def get_fields(code, max_count, lang)
-      fields = ApiFormatter.format_fields(InformationInterface.provider.get_fields(code, max_count, lang))
-      icd_data = InformationInterface.provider.get_icd_or_chop_data(code, lang)
-      type = InformationInterface.provider.get_code_type(code)
-
-      ApiFormatter.format_response(icd_data, fields, type)
+      begin
+        type = InformationInterface.provider.get_code_type(code)
+        icd_data = InformationInterface.provider.get_icd_or_chop_data(code, lang)
+        fields = InformationInterface.provider.get_fields(code, max_count, lang)
+        ApiResponse::Success.field_response(icd_data, fields, type)
+      rescue ProviderLookupError => error
+        ApiResponse::Error.error_response(error.message, lang)
+      end
     end
   end
 
@@ -30,7 +33,7 @@ module InformationInterface
   module Helpers
     def get_field_name(field_code, lang)
       field_name = InformationInterface.provider.get_field_name(field_code, lang)
-      ApiFormatter.format_field_name field_name
+      ApiResponse.Success.name_response field_name
     end
   end
 

@@ -14,7 +14,17 @@ class DatabaseInfoProvider <  BaseInformationProvider
   end
 
   def get_icd_or_chop_data (code, language)
-    self.get_code_type(code) == :icd ? self.db.get_icd_entry(code, language) : self.db.get_chop_entry(code, language)
+    type = self.get_code_type(code)
+    case type
+      when :icd
+        data = self.db.get_icd_entry(code, language)
+      when :chop
+        data = self.db.get_chop_entry(code, language)
+      else
+        raise ProviderLookupError, 'unknown_code_type'
+    end
+    raise ProviderLookupError, 'no_icd_chop_data' if data.nil?
+    data
   end
 
   def get_field_name(field_code, language)
