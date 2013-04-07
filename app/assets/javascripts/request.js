@@ -81,19 +81,16 @@ var mindmapper = {
                 // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
                 History.pushState(null, "OrangeProton", params);
 
-                $(".node").remove();
-                $("svg").remove();
-                $("path").remove();
-
-                $('#mindmap').mindmap();
                 var data = response.data; // text is already parsed by JQuery
-                var mm = $('#mindmap');
 
                 var name = data.text;
 
-                var root = $('#mindmap').addRootNode(input + "</br>" + name, {}); // define a root node to attach the other nodes to
-                mm.addNode(root, '<div></div>', {});                              // add a fake node in order to center the root
-                // TODO remove mindmap.js and this hack
+              var mm = $('#mindmap');
+
+              var container = mm.megamind();      //initialize
+              var rootNode = "<div class='root node ui-draggable'>" + input + "</br>" + name + "</div>";
+              var root = mm.setRoot(rootNode);
+
 
                 /*###################################*/
                 /*#####   How to use MEGAMIND   #####*/
@@ -127,54 +124,50 @@ var mindmapper = {
                        syns += '<li>'+ syn[i] +'</li>'
                     }
                     syns += '</ul>'
-                    $newdiv = $('<div class="syn node ui-draggable">' + syns + '</div>');
-                    $newdiv.appendTo('body');
-                    r.push($newdiv);
+                    var newdiv = $('<div class="syn node ui-draggable">' + syns + '</div>');
+                    r.push(newdiv);
                 }
                 else
                 {
                     for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
                         //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
-                        $newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
-                        $newdiv.appendTo('body');
-                        r.push($newdiv);
+                        var newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
+                        r.push(newdiv);
                     }
                 }
 
                 var superclass = data.superclass;
                 var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                 //mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
-                $newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
-                $newdiv.appendTo('body');
-                r.push($newdiv);
+                var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
+                r.push(newdiv);
 
-                new Canvas(50, 50, 1000, 200).addNodes(r).doLayout();
+                var c = mm.addCanvas(0, 0, root.position().left, root.position().top + root.outerHeight());
+                c.addNodes(r);
 
                 var p = [];
                 var drgs = data.drgs;
                 for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
                     //mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
-                    $newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
-                    $newdiv.appendTo('body');
-                    p.push($newdiv);
+                    var newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
+                    p.push(newdiv);
                 }
-                new Canvas(50, 250, 150, 200).addNodes(p).doLayout();
+                var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
+              c.addNodes(p);
 
                 var s = [];
                 var exclusiva = data.exclusiva;
                 for (var i = 0; i < Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
                     //mm.addNode(root, '<div class="exclusiva">' + exclusiva[i] + '</div>', {});
-                    $newdiv = $('<div class="exclusiva node ui-draggable">' + exclusiva[i] + '</div>');
-                    $newdiv.appendTo('body');
-                    s.push($newdiv);
+                  var newdiv = $('<div class="exclusiva node ui-draggable">' + exclusiva[i] + '</div>');
+                    s.push(newdiv);
                 }
 
                 var inclusiva = data.inclusiva;
                 for (var i = 0; i < Math.min(MAX_INCLUSIVA, inclusiva.length); i++) {
                     //mm.addNode(root, '<div class="inclusiva">' + inclusiva[i] + '</div>', {});
-                    $newdiv = $('<div class="inclusiva node ui-draggable">' + inclusiva[i] + '</div>');
-                    $newdiv.appendTo('body');
-                    s.push($newdiv);
+                    var newdiv = $('<div class="inclusiva node ui-draggable">' + inclusiva[i] + '</div>');
+                    s.push(newdiv);
                 }
 
                 var fields = response.fields;
@@ -186,12 +179,12 @@ var mindmapper = {
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
                     //$newdiv = $('<div id=speciality class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
-                    $newdiv = $('<div class="cat node ui-draggable" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
-                    $newdiv.appendTo('body');
-                    s.push($newdiv);
+                  var newdiv = $('<div class="cat node ui-draggable" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    s.push(newdiv);
                 }
 
-                new Canvas(50, 450, 1200, 200).addNodes(s).doLayout();
+              var c = mm.addCanvas(0, root.position().top + root.outerHeight(), root.position().left + root.outerWidth(), container.height() - root.position().top - root.outerHeight());
+                  c.addNodes(s);
             },
 
             error: function (xhr, status, error) {
