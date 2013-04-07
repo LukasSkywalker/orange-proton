@@ -5,9 +5,10 @@
 // -rethink the for-loops. maybe we could simplify them
 
 $(document).ready(function () {
-    setLocale($("#lang").val());
+    // load the admin interface
     displayAdmin();
-    //
+
+    // add event handler for code searches
     $("#code-name").keyup(function (e) {
         var code = e.which; // normalized across browsers, use this :-)
         if (code == 13) e.preventDefault();
@@ -16,29 +17,40 @@ $(document).ready(function () {
         }
     });
 
-    $("#lang").change(function (e) {
+    // event handler for language change on UI element
+    $("#lang").change(function () {
         var code =  $("#code-name").val().toUpperCase();
+        var lang = $(this).val();
         if(code !== ""){
-           mindmapper.sendRequest(code, $(this).val());
+           mindmapper.sendRequest(code, lang);
         }
-        setLocale($(this).val());
+        setLocale(lang);
     });
 
-    document.getElementById("code-name").focus();
+    $("#code-name").focus();
 
     if (getUrlVars()["code"] !== undefined) {
         var code = getUrlVars()["code"].toUpperCase();
         var lang = getUrlVars()["lang"] || "de";
 
         mindmapper.sendRequest(code, lang);
-        document.getElementById("code-name").value = code;
-        document.getElementById("lang").value = lang;
-        setLocale(lang);
+        $("#code-name").val(code);
+        $("#lang").val(lang);
     }
+
+    setLocale($("#lang").val());
 });
 
 
 var mindmapper = {
+
+    spinner_opts : {
+        lines: 13, // The number of lines to draw
+        width: 4, // The line thickness
+        trail: 60, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false // Whether to use hardware acceleration
+    },
 
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
@@ -64,11 +76,10 @@ var mindmapper = {
 
         var params = '?code=' + input + '&lang=' + lang;
 
-        document.getElementById('mindmap').innerHTML = "";
-        $(".node").remove();
 
-        var spinner = getSpinner();
-        spinner.spin(document.getElementById('mindmap'));
+        $('#mindmap').cleanUp();
+
+        $('#mindmap').spin(mindmapper.spinner_opts);
 
         jQuery.ajax({
             url: '/api/v1/fields/get' + params + '&count=4',
@@ -76,9 +87,7 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-                spinner.stop();
-                // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
-                // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
+                $('#mindmap').spin(false);
                 History.pushState(null, "OrangeProton", params);
 
                 var data = response.data; // text is already parsed by JQuery
@@ -106,10 +115,6 @@ var mindmapper = {
                  - chain a call to .doLayout(). This distributes the nodes and makes them fill up the container more or less.
 
                  Notes:
-                 - the doLayout() is not yet complete. The spacing is bad and I should feel bad.
-                 - doLayout() is not deterministic, since it uses some random variables. This is intended.
-                 - You need to add the node-CSS-class to the nodes. Otherwise, they stretch to the entire page's width and
-                 bad things may happen to your eyes, your computer and your grandma.
 
                  You get the picture. Please don't kill hedgehogs.
                  */
@@ -248,43 +253,17 @@ function getUrlVars() {
     return vars;
 }
 
-function getSpinner() {
-    var opts = {
-        lines: 13, // The number of lines to draw
-        length: 7, // The length of each line
-        width: 4, // The line thickness
-        radius: 10, // The radius of the inner circle
-        corners: 1, // Corner roundness (0..1)
-        rotate: 0, // The rotation offset
-        color: '#000', // #rgb or #rrggbb
-        speed: 1, // Rounds per second
-        trail: 60, // Afterglow percentage
-        shadow: false, // Whether to render a shadow
-        hwaccel: false, // Whether to use hardware acceleration
-        className: 'spinner', // The CSS class to assign to the spinner
-        zIndex: 2e9, // The z-index (defaults to 2000000000)
-        top: 'auto', // Top position relative to parent in px
-        left: 'auto' // Left position relative to parent in px
-    };
-
-    return new Spinner(opts);
-}
-
 function setLocale(locale) {
     I18n.locale = locale || "de";
     displayLegend();
 }
 
 function displayLegend() {
+    $('#legend').empty();
 
-    var text = ('<div class="syn legend">' + I18n.t("syn") + '</div>'
-        + '<div class="cat legend">' + I18n.t("cat") + '</div>'
-        + '<div class="doc legend">' + I18n.t("doc") + '</div>'
-        + '<div class="super legend">' + I18n.t("super") + '</div>'
-        + '<div class="drg legend">' + I18n.t("drg") + '</div>'
-        + '<div class="exclusiva legend">' + I18n.t("exclusiva") + '</div>'
-        + '<div class="inclusiva legend">' + I18n.t("inclusiva") + '</div>');
+    var identifiers = ['syn', 'cat', 'doc', 'super', 'drg', 'exclusiva', 'inclusiva'];
 
-    document.getElementById("legend").innerHTML = text;
-
+    $.each(identifiers, function(index, name) {
+        $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
+    });
 }

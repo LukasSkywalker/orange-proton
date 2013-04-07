@@ -61,6 +61,15 @@ jQuery.fn.extend({
       debugElements.remove();
       return false;
     }
+  },
+
+  cleanUp: function() {
+    $('.debug').remove();
+    $('.node')
+    $('#mindmap').html('');
+    megamind.canvas = [];
+    megamind.rootNode = null;
+    megamind.container = null;
   }
 });
 
