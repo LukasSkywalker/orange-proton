@@ -68,7 +68,7 @@ jQuery.fn.extend({
     $('.debug').remove();
     $('.node').remove();
     $('#mindmap').html('');
-    megamind.canvas = [];
+    megamind.canvases = [];
     megamind.rootNode = null;
     megamind.container = null;
   }
