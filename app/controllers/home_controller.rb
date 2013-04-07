@@ -1,5 +1,7 @@
 class HomeController < ActionController::Base
   def index
-    @welcome = 'Hello, PSE4!'
+    # The main controller. We don't do anything here, instead we
+    # run some ruby code in the automatically linked view
+    # index.html.erb.
   end
 end

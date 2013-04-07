@@ -1,3 +1,4 @@
+# Implements string comparison algorithms.
 class CharacterMatcher
   # returns the number of 5 matched consecutive character sequences
   def character_matching(first, second)

@@ -1,17 +1,28 @@
+require 'parallel_each'
+
 # Defines the interface that information providers use. Also defines some helper methods for these to use.
 class BaseInformationProvider
-  # to be implemented by subclasses
+  # To be implemented by subclasses:
+  
+  # Handle queries
+  # /api/v1/fields/get?code=string&count=integer&lang=string
   def get_fields(field_code, max_count, language)
     raise NotImplementedError
   end
 
+  # Handle
+  # /api/v1/docs/get?long=float&lat=float&field=int&count=int
   def get_doctors(field_code, lat, long, count)
     raise NotImplementedError
   end
 
+  # Handle
+  # /api/v1/codenames/get?code=string&lang=string
   def get_field_name(field_code, language)
     raise NotImplementedError
   end
+
+  # Helpers:
 
   # classifies the code from user input to icd or chop or unknown
   # accepts only exact matches and is case insensitive
@@ -38,7 +49,7 @@ class BaseInformationProvider
   # @return An array of field codes formatted as by API standard ({name : "...", relatedness: relatedness, field: code} for each code)
   def format_fs_codes_for_api(field_codes, relatedness, lang)
     out = []
-    field_codes.each do |fc|
+    field_codes.p_each(5) do |fc|
       out << format_fs_code_for_api(fc, relatedness, lang) 
     end
     out
@@ -53,13 +64,16 @@ class BaseInformationProvider
     }
   end
 
+  # Takes a fields array formatted as specified by the api and normalizes the 
+  # relatedness by setting the maximum found relatedness to 1 and the others
+  # to their relative size compared to that.
   def normalize_relatedness(api_fields_array)
     tot = 0
     api_fields_array.each do |fc|
       v = fc[:relatedness]
       tot = v > tot ? v : tot # max() is actually not defined by default!
     end
-return api_fields_array if tot == 0
+    return api_fields_array if tot == 0
     tot *= 1.0
     api_fields_array.each {|e| 
       e[:relatedness] = (1.0*e[:relatedness])/tot

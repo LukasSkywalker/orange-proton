@@ -1,13 +1,16 @@
-# This connects to the real database and retrieves requested basic information. We do not compute compound information here.
+# This class connects to the real database and retrieves requested basic information. 
+# We do not compute compound information here -- the information providers use
+# the data they get from here to do this.
 class DatabaseAdapter
   def initialize
+
+    # Create a connection to the db based on the config/mongo.yml login data
     host = MongoMapper.connection.host
     port = MongoMapper.connection.port
-    
     db_config = YAML::load(File.read(File.join(Rails.root, "/config/mongo.yml")))
 
-    # See http://stackoverflow.com/a/13995525
-    MongoMapper.connection = Mongo::Connection.new(host, port)
+    MongoMapper.connection = 
+      Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
     MongoMapper.database = 'admin'
     if db_config[Rails.env]
       mongo = db_config[Rails.env]
@@ -15,14 +18,21 @@ class DatabaseAdapter
         MongoMapper.database.authenticate(mongo['username'], mongo['password'])
       end
     end
-    
     @client = MongoMapper.connection
 
+    # Store some of the databases in variables so we don't need to redo this over and over
     @icd = {
         :de => @client['icd_2012_ch']['de'],
         :fr => @client['icd_2012_ch']['fr'],
         :it => @client['icd_2012_ch']['it'],
         :en => @client['icd_2012_ch']['en']
+    }
+
+    @chop = {
+        :de => @client['chop_2013_ch']['de'],
+        :fr => @client['chop_2013_ch']['fr'],
+        :it => @client['chop_2013_ch']['it'],
+        :en => @client['chop_2013_ch']['de'] # hardwired fallback
     }
 
     @fs = @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
@@ -31,40 +41,51 @@ class DatabaseAdapter
     @r_mdc_fs = @client['mdc']['mdcCodeToFSCode']
   end
 
+  # @return At most count fields related to a specified icd_code sorted by Bing search results count.
   def get_fields_by_bing_rank(icd_code, count)
    r = @r_icd_fs.find({icd_code: icd_code, icd_fs_bing_de: {"$exists" => true}},
                    fields: [:icd_fs_bing_de,:fs_code],
                    sort: {icd_fs_bing_de: 'descending'}).limit(count).to_a
-   #puts "found #{r.size} fields by bing rank"
    return r
   end
 
-  # @return The drgs (most common diagnoses) for a given icd
+  # @return The drgs (most common diagnoses) for a given ICD.
   def get_drgs(icd_code)
     doc = @icd[:de].find_one({code: icd_code})
     return doc['drgs'] unless doc.nil?
     []
   end
 
-  # @return The raw icd database entry for the given code.
+  # @return The drgs (most common diagnoses) for a given chop.
+  def get_drgs_for_chop(code)
+    doc = @chop[:de].find_one({code: code})
+    return doc['drgs'] unless doc.nil?
+    []
+  end
+
+  # @return The raw icd database entry for the given ICD code.
   def get_icd(icd_code, language)
     @icd[language.to_sym].find_one({code: icd_code})
   end
 
-  # @return An array of all fs codes related to a given mdc. 
+  # @return The raw chop database entry for the given chop code.
+  def get_chop_entry(code, language)
+    @chop[language.to_sym].find_one({code: code})
+  end
+
+  # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
   # Used for icd > drg > mdc > fs mapping.
+  # This is based on a manually set up table.
   def get_fs_code(mcd_code)
     documents = @r_mdc_fs.find({mdc_code: mcd_code.to_s})
     fmhs = []
     documents.each do |document|
       fmhs << document['fs_code']
     end
-
     fmhs
   end
 
-  # All entries in relationFSZuICD that specify that the mapping was done manually.
-  # For a given icd.
+  # @return All FS codes manually mapped to this icd code.
   def get_manually_mapped_fs_codes_for_icd(icd_code)
     documents = @r_icd_fs.find({icd_code: icd_code, manually: 1})
     fs = []
@@ -125,4 +146,50 @@ class DatabaseAdapter
     document[language]
   end
 
+  # @return All "docfields" that are mapped to the fs_code (there are more fs_codes than docfields).
+  # This is based on a manually set up table.
+  # This is used by get_doctors_by_fs.
+  def get_specialities_from_fs(fs_code)
+    specs = @client['doctors']['docfieldToFSCode'].find({fs_code: fs_code})
+    specialities = []
+    specs.each do |spec|
+      specialities << spec['docfield']
+    end
+    specialities
+  end
+
+  # @return All doctors (the raw db entry) with speciality in a given field (given as fs_code).
+  def get_doctors_by_fs(fs_code)
+    specs = get_specialities_from_fs fs_code
+
+    docs = @client['doctors']['doctors'].
+      find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
+
+    docs.to_a
+  end
+
+  # @return At most max_count fields related to the icd_code specified, sorted
+  # by character sequence match length between the german illness name and the 
+  # field name.
+  def get_fields_by_char_match(icd_code, max_count)
+    @r_icd_fs.find({icd_code: icd_code, by_seq_match: {'$exists' => true}},
+                       fields: [:by_seq_match,:fs_code],
+                       sort: {by_seq_match: 'descending'}).limit(max_count).to_a
+  end
+
+  # @return An array of all ICD Code ranges (as specified by the who) a given ICD code lies within.
+  # Every range contains an array 'fmhcodes' of codes related to it.
+  # This is based on a manually set up table.
+  def get_ranges (icd)
+    db = @client['ICDRangeFSH']
+    col = db['mappings']
+    ranges = []
+    col.find().each do |doc|
+      if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
+        doc.delete('name')
+        ranges<<doc
+      end
+    end
+    ranges
+  end
 end
