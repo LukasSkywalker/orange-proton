@@ -13,6 +13,7 @@ jQuery.fn.extend({
   megamind: function(){
     var mm = $(this.first());
     megamind.container = mm;
+    megamind.canvas = Raphael('mindmap');
     return mm;
   },
 
@@ -32,9 +33,7 @@ jQuery.fn.extend({
     var ele = $(element);
     ele.addClass("node");
     ele.appendTo(mm);
-    var top = (mm.height() - ele.outerHeight()) / 2;
-    var left = (mm.width() - ele.outerWidth()) / 2;
-    ele.css({ top: top, left: left });
+    ele.center(mm);
     megamind.rootNode = ele;
     return ele;
   },
@@ -94,13 +93,17 @@ jQuery.fn.extend({
 
     Canvas.prototype.doLayout = function() {
       this.space();
+      var root = megamind.rootNode;
+      var center = { x: root.position().left + root.outerWidth() / 2, y: root.position().top + root.outerHeight() / 2 };
       for(var i=0; i<this.rows.length; i++){
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
-          n.el.css({
+          n.el.animate({
             left: n.left(),
-            top: n.top()
-          });
+            top: n.top(),
+            opacity: 1
+          }, {duration: 1000, easing: 'linear'} );
+          megamind.canvas.path('M'+center.x+' '+center.y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
         }
       }
     }
@@ -157,6 +160,8 @@ jQuery.fn.extend({
       for(var i = 0; i < elements.length; i++) {
         var element = $(elements[i]);
         element.addClass("node");
+        element.center(megamind.container);
+        element.css({opacity: 0});
       }
 
       for (var i = 0; i < elements.length; i++) {
@@ -347,4 +352,13 @@ jQuery.fn.extend({
     function Point(x, y) {
       this.x = x;
       this.y = y;
+    }
+    
+    jQuery.fn.center = function ( parent ) {
+      this.css("position","absolute");
+      this.css("top", Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) + 
+                                                  $(parent).scrollTop()));
+      this.css("left", Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
+                                                  $(parent).scrollLeft()));
+      return this;
     }
