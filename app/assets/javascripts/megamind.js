@@ -99,9 +99,7 @@ jQuery.fn.extend({
           var n = this.rows[i].nodes[j];
           n.el.css({
             left: n.left(),
-            top: n.top(),
-            width: n.width(),
-            height: n.height()
+            top: n.top()
           });
         }
       }

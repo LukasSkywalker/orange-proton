@@ -118,10 +118,6 @@ var mindmapper = {
 
                  Notes:
                  - elements that are too tall are discarded. We will have to find a better solution for this
-                 - sometimes, an element's outerWidth is calculated wrongly and the width is returned instead. One exam-
-                 ple is the call to a rows spaceUsed(), where the nodes report wrong sized. This leads to nodes over-
-                 flowing their rows. Strangely, the correct outerWidth is reported once the mindmap is rendered and the
-                 rows are filled. Not sure if this is a bug in jQuery or my design.
 
                  You get the picture.
                  */
