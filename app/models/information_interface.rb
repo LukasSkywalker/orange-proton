@@ -33,7 +33,7 @@ module InformationInterface
   module Helpers
     def get_field_name(field_code, lang)
       field_name = InformationInterface.provider.get_field_name(field_code, lang)
-      ApiResponse.Success.name_response field_name
+      ApiResponse::Success.name_response field_name
     end
   end
 
