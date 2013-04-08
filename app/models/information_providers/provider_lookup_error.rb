@@ -1,3 +1,8 @@
 class ProviderLookupError < StandardError
-  # To change this template use File | Settings | File Templates.
+  attr_accessor :language
+
+  def initialize(msg, language)
+    super(msg)
+    self.language = language
+  end
 end

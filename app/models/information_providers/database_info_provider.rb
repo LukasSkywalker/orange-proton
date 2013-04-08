@@ -21,9 +21,9 @@ class DatabaseInfoProvider <  BaseInformationProvider
       when :chop
         data = self.db.get_chop_entry(code, language)
       else
-        raise ProviderLookupError, 'unknown_code_type'
+        raise ProviderLookupError.new('unknown_code_type', language)
     end
-    raise ProviderLookupError, 'no_icd_chop_data' if data.nil?
+    raise ProviderLookupError.new('no_icd_chop_data', language) if data.nil?
     data
   end
 
