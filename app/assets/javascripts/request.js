@@ -174,7 +174,13 @@ var mindmapper = {
             },
 
             error: function (xhr, status, error) {
-                alert(error);
+                var message;
+                try{
+                  message = jQuery.parseJSON(xhr.responseText).error;
+                }catch(e) {
+                  message = error;
+                }
+                alert(message);
             },
             
             complete: function(xhr, status) {
