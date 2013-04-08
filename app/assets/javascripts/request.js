@@ -29,8 +29,9 @@ $(document).ready(function () {
 
     $("#code-name").focus();
 
-    if (getUrlVars()["code"] !== undefined) {
-        var code = getUrlVars()["code"].toUpperCase();
+    var codeParam = getUrlVars()["code"];
+    if (codeParam !== undefined && codeParam !== '') {
+        var code = codeParam.toUpperCase();
         var lang = getUrlVars()["lang"] || "de";
 
         mindmapper.sendRequest(code, lang);
