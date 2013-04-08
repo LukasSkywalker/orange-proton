@@ -9,7 +9,7 @@ class API < Grape::API
 
   # The InfoProvider used to return all Query Results
   cattr_accessor :provider
-  self.provider = CompoundInfoProvider.new
+  self.provider = ProviderFactory.get
 
   # Some handy helpers for the API
   helpers do
