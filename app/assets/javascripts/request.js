@@ -139,9 +139,11 @@ var mindmapper = {
                 }
 
                 var superclass = data.superclass;
-                var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
-                var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
-                synonyms.push(newdiv);
+                if(superclass) {
+                  var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
+                  var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
+                  synonyms.push(newdiv);
+                }
 
                 var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
                 c.addNodes(synonyms);
@@ -178,6 +180,7 @@ var mindmapper = {
 
     generateHTML: function(collection, limit, className, nameFunction) {
       var elements = [];
+      if(!collection) return elements;
       collection = collection.slice(0, limit);
       $.each(collection, function(index, name) {
         var element = jQuery('<div/>').addClass(className).html(name);
