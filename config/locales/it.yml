@@ -6,3 +6,6 @@ it:
   drg: "DRG"
   exclusiva: "Exklusiva"
   inclusiva: "Inklusiva"
+
+#errors
+  no_icd_chop_data: "Babedibuppi baberibabebabbere"

@@ -25,16 +25,12 @@ class StringmatchInfoProvider < DatabaseInfoProvider
       # scale relatedness (this somehow has to consider synonyms and synonymlength!)
       relatedness = field['by_seq_match'].to_f / 
         cmatch_prepare(self.db.get_fs_name(fs_code, 'de')).length
-      fs << format_fs_code_for_api(fs_code, relatedness, language)
+      fs << new_fs_field_entry(fs_code, relatedness, language)
     end
 
     normalize_relatedness(fs)
 
-    {
-      data:   db.get_icd(icd_code,language),
-      fields: fs,
-      type:   get_code_type(icd_code)
-    }
+    fs
   end
 
   private
