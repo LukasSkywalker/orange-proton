@@ -13,6 +13,7 @@ jQuery.fn.extend({
   megamind: function(){
     var mm = $(this.first());
     megamind.container = mm;
+    megamind.canvas = Raphael('mindmap');
     return mm;
   },
 
@@ -92,6 +93,8 @@ jQuery.fn.extend({
 
     Canvas.prototype.doLayout = function() {
       this.space();
+      var root = megamind.rootNode;
+      var center = { x: root.position().left + root.outerWidth() / 2, y: root.position().top + root.outerHeight() / 2 };
       for(var i=0; i<this.rows.length; i++){
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
@@ -99,7 +102,8 @@ jQuery.fn.extend({
             left: n.left(),
             top: n.top(),
             opacity: 1
-          }, 1000, 'linear' );
+          }, {duration: 1000, easing: 'linear'} );
+          megamind.canvas.path('M'+center.x+' '+center.y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
         }
       }
     }
