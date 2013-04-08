@@ -4,8 +4,9 @@ it:
   doc: "Dottore"
   super: "Ceto alto"
   drg: "DRG"
-  exclusiva: "Exklusiva"
-  inclusiva: "Inklusiva"
+  exclusiva: "Exclusiva"
+  inclusiva: "Inclusiva"
 
 #errors
-  no_icd_chop_data: "Babedibuppi baberibabebabbere"
+  no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"
+
