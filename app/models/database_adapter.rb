@@ -41,13 +41,6 @@ class DatabaseAdapter
     @r_mdc_fs = @client['mdc']['mdcCodeToFSCode']
   end
 
-  # @return At most count fields related to a specified icd_code sorted by Bing search results count.
-  def get_fields_by_bing_rank(icd_code, count)
-    @r_icd_fs.find({icd_code: icd_code, icd_fs_bing_de: {'$exists' => true}},
-                   fields: [:icd_fs_bing_de,:fs_code],
-                   sort: {icd_fs_bing_de: 'descending'}).limit(count).to_a
-  end
-
   # @return The drgs (most common diagnoses) for a given ICD.
   def get_drgs_for_icd(icd_code)
     doc = @icd[:de].find_one({code: icd_code})

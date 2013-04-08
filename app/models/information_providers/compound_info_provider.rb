@@ -14,7 +14,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
         RangeInfoProvider => PComp.new(RangeInfoProvider.new, 0.75),
         ThesaurInfoProvider => PComp.new(ThesaurInfoProvider.new, 0.5),
         StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, 0.3),
-        BingInfoProvider => PComp.new(BingInfoProvider.new, 0.25),
     }
   end
   
