@@ -88,7 +88,7 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-              $('#mindmap').spin(false);
+              $('#mindmap').cleanUp();
               History.pushState(null, "OrangeProton", params);
 
               var data = response.data; // text is already parsed by JQuery
@@ -175,6 +175,10 @@ var mindmapper = {
 
             error: function (xhr, status, error) {
                 alert(error);
+            },
+            
+            complete: function(xhr, status) {
+                $('#mindmap').spin(false);
             }
         });
     },
