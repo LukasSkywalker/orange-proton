@@ -12,7 +12,7 @@ describe CharacterMatcher do
     assert_equal(@cm.character_matching('kardiologie', 'endokrinologie'), 0)
     assert_equal(@cm.character_matching('kardiographie', 'pathologie'), 0)
     assert_equal(@cm.character_matching('sportmedizin', 'tauchmedizin'), 0)
-    assert_equal(@cm.character_matching('psychotherapie', 'sporttherapie'), 0)
+    assert_equal(@cm.character_matching('psychotherapie', 'sporttherapie'), 4)
     assert_equal(@cm.character_matching('allgemeinchirurgie', 'augenchirurgie'), 0)
     assert_equal(@cm.character_matching('gastroskopie', 'teleskopie'), 0)
     assert_equal(@cm.character_matching('psychiatrie', 'entwicklungspaediatrie'), 0)
