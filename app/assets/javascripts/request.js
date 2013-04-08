@@ -174,13 +174,8 @@ var mindmapper = {
                   c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 
-            error: function (xhr, status, error) {
-                var message;
-                try{
-                  message = jQuery.parseJSON(xhr.responseText).error;
-                }catch(e) {
-                  message = error;
-                }
+            error: function (xhr, httpStatus, error) {
+                message = jQuery.parseJSON(xhr.responseText).message;
                 alert(message);
             },
             
