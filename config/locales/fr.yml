@@ -6,3 +6,6 @@ fr:
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
+
+#errors
+  no_icd_chop_data: "Someone with French skills please translate :-)"

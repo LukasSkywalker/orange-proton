@@ -4,6 +4,11 @@ var megamind = {
   canvases : []
 }
 
+const HORIZONTAL_FILL_AMOUNT = 0.9;  // how much should a row be filled in [0,1]
+const HORIZONTAL_WOBBLING = 1;       // how much the horiz. spacing should vary (in [0,1])
+
+const VERTICAL_WOBBLING = 1;
+
 jQuery.fn.extend({
   megamind: function(){
     var mm = $(this.first());
@@ -14,7 +19,7 @@ jQuery.fn.extend({
   addCanvas: function( left, top, width, height) {
     var mm = $(this.first());
     if(left + width > mm.width() || top + height > mm.height()){
-      alert('Canvas with size '+left+','+top+','+width+','+height+
+      console.log('### Canvas with size '+left+','+top+','+width+','+height+
           ' does not fit in container ['+mm.width()+','+mm.height()+']!');
     }
     var cv = new Canvas(left, top, width, height);
@@ -25,6 +30,7 @@ jQuery.fn.extend({
   setRoot: function( element ) {
     var mm = $(this.first());
     var ele = $(element);
+    ele.addClass("node");
     ele.appendTo(mm);
     var top = (mm.height() - ele.outerHeight()) / 2;
     var left = (mm.width() - ele.outerWidth()) / 2;
@@ -56,6 +62,15 @@ jQuery.fn.extend({
       debugElements.remove();
       return false;
     }
+  },
+
+  cleanUp: function() {
+    $('.debug').remove();
+    $('.node').remove();
+    $('#mindmap').html('');
+    megamind.canvases = [];
+    megamind.rootNode = null;
+    megamind.container = null;
   }
 });
 
@@ -84,9 +99,7 @@ jQuery.fn.extend({
           var n = this.rows[i].nodes[j];
           n.el.css({
             left: n.left(),
-            top: n.top(),
-            width: n.width(),
-            height: n.height()
+            top: n.top()
           });
         }
       }
@@ -121,7 +134,9 @@ jQuery.fn.extend({
       var gaps = this.rows.length + 1;
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.rows.length; i++) {
-        this.rows[i].move(0, spacing);
+        var amount = (1 - VERTICAL_WOBBLING/2) * spacing
+            + Math.random() * VERTICAL_WOBBLING * spacing;
+        this.rows[i].move(0, amount);
         this.rows[i].space();
       }
     }
@@ -135,31 +150,48 @@ jQuery.fn.extend({
     }
 
 
-    Canvas.prototype.addNodes = function(nodes) {
-      nodes.shuffle();
-      for (var i = 0; i < nodes.length; i++) {
-        $(nodes[i]).appendTo(megamind.container);
-        var n = new Node(nodes[i], null, true);
-        if( n.width() > this.width ) {
-          alert("### unable to add node, is "+n.width+" px wide, max is "+this.width);
+    Canvas.prototype.addNodes = function(elements) {
+      elements.shuffle();
+
+      // some preprocessing: add required classes
+      for(var i = 0; i < elements.length; i++) {
+        var element = $(elements[i]);
+        element.addClass("node");
+      }
+
+      for (var i = 0; i < elements.length; i++) {
+        var element = $(elements[i]);
+        $(element).appendTo(megamind.container);
+        var n = new Node(element, null);
+        if( n.width() > this.width || n.height() > this.height ) {
+          console.log("### unable to add node, is "+n.width()+"x"+ n.height()+
+              " px large, max is "+this.width+"x"+this.height);
+          element.remove();
         }else if (n.width() > this.width / 2) {
           this.addRow(n);
         }
       }
 
-      nodes.sort(function (a, b) {
-        return $(b).height() - $(a).height();
+      elements.sort(function (a, b) {
+        return b.height() - a.height();
       });
 
-      for (var i = 0; i < nodes.length; i++) {
-        var n = new Node(nodes[i], null, false);
+      for (var i = 0; i < elements.length; i++) {
+        var n = new Node(elements[i], null);
         if (n.width() <= this.width / 2) {
           if (this.currentRow() == undefined){ //no row yet
-            this.addRow(n);
-          }else if(n.width() + this.currentRow().spaceUsed() <= this.width * 0.7) { //fits in this row (only use 70%)
+            if(n.height() <= this.height){
+              this.addRow(n);
+            }else{
+              alert('no space left');   // no more space left for new row
+            }
+          }else if(n.width() + this.currentRow().spaceUsed() <= this.width * HORIZONTAL_FILL_AMOUNT) { //fits in this row
             this.currentRow().addNode(n);
-          } else {                             // no more space left
+          } else if(this.spaceUsed() + n.height() <= this.height) {    // no more space left, new row
             this.addRow(n);
+          }else {
+            alert('no space left');   // no more space left for new row
+            elements[i].remove();
           }
         }
       }
@@ -190,7 +222,7 @@ jQuery.fn.extend({
     }
 
     Row.prototype.top = function(){
-      var h=0;
+      var h = 0;
       var previousRows = this.canvas.rowsBefore(this);
       for(var i=0; i<previousRows.length; i++){
         h += previousRows[i].height() + previousRows[i].yOffset;
@@ -217,14 +249,16 @@ jQuery.fn.extend({
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.nodes.length; i++) {
         var n = this.nodes[i];
-        var amount = 0.6 * spacing + Math.random() * 0.8 * spacing;  // move between 60 and 140% of the spacing
+        var amount = (1 - HORIZONTAL_WOBBLING/2) * spacing
+            + Math.random() * HORIZONTAL_WOBBLING * spacing;  // if WOBBLING is 0.4 or 40%:
+                                                              // move between 80 and 120% of the spacing
         n.move(amount, 0);
       }
     }
 
     Row.prototype.move = function(x, y) {
-      this.xOffset += x;
-      this.yOffset += y;
+      this.xOffset = x;
+      this.yOffset = y;
     }
 
     Row.prototype.spaceUsed = function() {
@@ -273,11 +307,11 @@ jQuery.fn.extend({
     }
 
     Node.prototype.width = function() {
-      return $(this.el).outerWidth();
+      return this.el.outerWidth();
     }
 
     Node.prototype.height = function() {
-      return $(this.el).outerHeight();
+      return this.el.outerHeight();
     }
 
     Node.prototype.left = function() {

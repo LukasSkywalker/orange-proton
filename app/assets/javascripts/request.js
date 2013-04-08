@@ -5,9 +5,10 @@
 // -rethink the for-loops. maybe we could simplify them
 
 $(document).ready(function () {
-    setLocale($("#lang").val());
+    // load the admin interface
     displayAdmin();
-    //
+
+    // add event handler for code searches
     $("#code-name").keyup(function (e) {
         var code = e.which; // normalized across browsers, use this :-)
         if (code == 13) e.preventDefault();
@@ -16,29 +17,40 @@ $(document).ready(function () {
         }
     });
 
-    $("#lang").change(function (e) {
+    // event handler for language change on UI element
+    $("#lang").change(function () {
         var code =  $("#code-name").val().toUpperCase();
+        var lang = $(this).val();
         if(code !== ""){
-           mindmapper.sendRequest(code, $(this).val());
+           mindmapper.sendRequest(code, lang);
         }
-        setLocale($(this).val());
+        setLocale(lang);
     });
 
-    document.getElementById("code-name").focus();
+    $("#code-name").focus();
 
     if (getUrlVars()["code"] !== undefined) {
         var code = getUrlVars()["code"].toUpperCase();
         var lang = getUrlVars()["lang"] || "de";
 
         mindmapper.sendRequest(code, lang);
-        document.getElementById("code-name").value = code;
-        document.getElementById("lang").value = lang;
-        setLocale(lang);
+        $("#code-name").val(code);
+        $("#lang").val(lang);
     }
+
+    setLocale($("#lang").val());
 });
 
 
 var mindmapper = {
+
+    spinner_opts : {
+        lines: 13, // The number of lines to draw
+        width: 4, // The line thickness
+        trail: 60, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false // Whether to use hardware acceleration
+    },
 
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
@@ -64,11 +76,10 @@ var mindmapper = {
 
         var params = '?code=' + input + '&lang=' + lang;
 
-        document.getElementById('mindmap').innerHTML = "";
-        $(".node").remove();
 
-        var spinner = getSpinner();
-        spinner.spin(document.getElementById('mindmap'));
+        $('#mindmap').cleanUp();
+
+        $('#mindmap').spin(mindmapper.spinner_opts);
 
         jQuery.ajax({
             url: '/api/v1/fields/get' + params + '&count=4',
@@ -76,19 +87,17 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-                spinner.stop();
-                // TODO: we should definitely change the removal routines here. This is US-style. kill everything that moves.
-                // look at mindmap.js's source and try to find the "nodes" array in the window object to remove nodes and stuff from there.
-                History.pushState(null, "OrangeProton", params);
+              $('#mindmap').spin(false);
+              History.pushState(null, "OrangeProton", params);
 
-                var data = response.data; // text is already parsed by JQuery
+              var data = response.data; // text is already parsed by JQuery
 
-                var name = data.text;
+              var name = data.text;
 
               var mm = $('#mindmap');
 
               var container = mm.megamind();      //initialize
-              var rootNode = "<div class='root node ui-draggable'>" + input + "</br>" + name + "</div>";
+              var rootNode = "<div class='root'>" + input + "</br>" + name + "</div>";
               var root = mm.setRoot(rootNode);
 
 
@@ -99,77 +108,55 @@ var mindmapper = {
                 /* Megamind has a concept of different containers where the different nodes are put. This allows us to
                  split up the page to organize the nodes as we wish. Inside the containers, the nodes are automatically
                  laid out and distributed. Here are the instructions for generating a new container and adding nodes:
-                 - create an array which holds the nodes. This is pretty straightforward, just see the examples below
-                 - Call the Canvas constructor. The arguments are: new Canvas(left,top,width,height). All are CSS-pixel values
-                 - chain a call to .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
+                 - initialize a mindmap. call megamind() on a jQuery object [let that be 'mm' here] that represents a
+                 DOM node to do so
+                 - set a root node by calling setRoot() on mm, with the HTML string of the node as parameter
+                 - create an array which holds HTML-strings of the nodes. This is pretty straightforward, just see the examples below
+                 - Call the Canvas constructor on mm: mm.addCanvas(left,top,width,height). All are CSS-pixel values
+                 - Call .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
                  this array. You can also add click handlers or images or the <cat> element to the nodes.
-                 - chain a call to .doLayout(). This distributes the nodes and makes them fill up the container more or less.
 
                  Notes:
-                 - the doLayout() is not yet complete. The spacing is bad and I should feel bad.
-                 - doLayout() is not deterministic, since it uses some random variables. This is intended.
-                 - You need to add the node-CSS-class to the nodes. Otherwise, they stretch to the entire page's width and
-                 bad things may happen to your eyes, your computer and your grandma.
+                 - elements that are too tall are discarded. We will have to find a better solution for this
 
-                 You get the picture. Please don't kill hedgehogs.
+                 You get the picture.
                  */
 
-                var r = [];
-                var syn = data.synonyms;
+                var synonyms = [];
 
                 if(AS_LIST)
                 {
-                    var syns = '<ul>';
-                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                       syns += '<li>'+ syn[i] +'</li>'
-                    }
-                    syns += '</ul>'
-                    var newdiv = $('<div class="syn node ui-draggable">' + syns + '</div>');
-                    r.push(newdiv);
+                    var syn = data.synonyms.slice(0, MAX_SYN);
+                    var newdiv = $.map(syn, function(el) {
+                      return '<li><div class="syn">' + el + '</div></li>';
+                    }).join();
+
+                    synonyms.push($('<ul>' + newdiv + '</ul>'));
                 }
                 else
                 {
-                    for (var i = 0; i < Math.min(MAX_SYN, syn.length); i++) {
-                        //mm.addNode(root, '<div class="syn">' + syn[i] + '</div>', {});
-                        var newdiv = $('<div class="syn node ui-draggable">' + syn[i] + '</div>');
-                        r.push(newdiv);
-                    }
+                    synonyms = mindmapper.generateHTML(data.synonyms, MAX_SYN, 'syn');
                 }
 
                 var superclass = data.superclass;
-                var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
-                //mm.addNode(root, '<div class="super">' + superclass + '<br />' + super_name + '</div>', {});
-                var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
-                r.push(newdiv);
-
-                var c = mm.addCanvas(0, 0, root.position().left, root.position().top + root.outerHeight());
-                c.addNodes(r);
-
-                var p = [];
-                var drgs = data.drgs;
-                for (var i = 0; i < Math.min(MAX_DRGS, drgs.length); i++) {
-                    //mm.addNode(root, '<div class="drg">' + drgs[i] + '</div>', {});
-                    var newdiv = $('<div class="drg node ui-draggable">' + drgs[i] + '</div>');
-                    p.push(newdiv);
+                if(superclass) {
+                  var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
+                  var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
+                  synonyms.push(newdiv);
                 }
+
                 var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
-              c.addNodes(p);
+                c.addNodes(synonyms);
+
+                var drgs = mindmapper.generateHTML(data.drgs, MAX_DRGS, 'drg');
+                var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
+                c.addNodes(drgs);
+
+                var exclusiva = mindmapper.generateHTML(data.exclusiva, MAX_EXCLUSIVA, 'exclusiva');
+
+                var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
                 var s = [];
-                var exclusiva = data.exclusiva;
-                for (var i = 0; i < Math.min(MAX_EXCLUSIVA, exclusiva.length); i++) {
-                    //mm.addNode(root, '<div class="exclusiva">' + exclusiva[i] + '</div>', {});
-                  var newdiv = $('<div class="exclusiva node ui-draggable">' + exclusiva[i] + '</div>');
-                    s.push(newdiv);
-                }
-
-                var inclusiva = data.inclusiva;
-                for (var i = 0; i < Math.min(MAX_INCLUSIVA, inclusiva.length); i++) {
-                    //mm.addNode(root, '<div class="inclusiva">' + inclusiva[i] + '</div>', {});
-                    var newdiv = $('<div class="inclusiva node ui-draggable">' + inclusiva[i] + '</div>');
-                    s.push(newdiv);
-                }
-
                 var fields = response.fields;
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
@@ -177,20 +164,29 @@ var mindmapper = {
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    //mm.addNode(root, '<div class="cat" style="background-color:' + color +'">' + f + ': ' + n + '</div>', {});
-                    //$newdiv = $('<div id=speciality class="cat node ui-draggable" style="background-color:' + color +'">' + f + ': ' + n + '</div>');
-                  var newdiv = $('<div class="cat node ui-draggable" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    var newdiv = $('<div class="cat" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
                     s.push(newdiv);
                 }
 
-              var c = mm.addCanvas(0, root.position().top + root.outerHeight(), root.position().left + root.outerWidth(), container.height() - root.position().top - root.outerHeight());
-                  c.addNodes(s);
+              var c = mm.addCanvas(0, 0, root.position().left - 100, container.height());
+                  c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 
             error: function (xhr, status, error) {
                 alert(error);
             }
         });
+    },
+
+    generateHTML: function(collection, limit, className, nameFunction) {
+      var elements = [];
+      if(!collection) return elements;
+      collection = collection.slice(0, limit);
+      $.each(collection, function(index, name) {
+        var element = jQuery('<div/>').addClass(className).html(name);
+        elements.push(element);
+      });
+      return elements;
     },
 
     //Get the doctors from the db specific to the field and the users location
@@ -248,43 +244,17 @@ function getUrlVars() {
     return vars;
 }
 
-function getSpinner() {
-    var opts = {
-        lines: 13, // The number of lines to draw
-        length: 7, // The length of each line
-        width: 4, // The line thickness
-        radius: 10, // The radius of the inner circle
-        corners: 1, // Corner roundness (0..1)
-        rotate: 0, // The rotation offset
-        color: '#000', // #rgb or #rrggbb
-        speed: 1, // Rounds per second
-        trail: 60, // Afterglow percentage
-        shadow: false, // Whether to render a shadow
-        hwaccel: false, // Whether to use hardware acceleration
-        className: 'spinner', // The CSS class to assign to the spinner
-        zIndex: 2e9, // The z-index (defaults to 2000000000)
-        top: 'auto', // Top position relative to parent in px
-        left: 'auto' // Left position relative to parent in px
-    };
-
-    return new Spinner(opts);
-}
-
 function setLocale(locale) {
     I18n.locale = locale || "de";
     displayLegend();
 }
 
 function displayLegend() {
+    $('#legend').empty();
 
-    var text = ('<div class="syn legend">' + I18n.t("syn") + '</div>'
-        + '<div class="cat legend">' + I18n.t("cat") + '</div>'
-        + '<div class="doc legend">' + I18n.t("doc") + '</div>'
-        + '<div class="super legend">' + I18n.t("super") + '</div>'
-        + '<div class="drg legend">' + I18n.t("drg") + '</div>'
-        + '<div class="exclusiva legend">' + I18n.t("exclusiva") + '</div>'
-        + '<div class="inclusiva legend">' + I18n.t("inclusiva") + '</div>');
+    var identifiers = ['syn', 'cat', 'doc', 'super', 'drg', 'exclusiva', 'inclusiva'];
 
-    document.getElementById("legend").innerHTML = text;
-
+    $.each(identifiers, function(index, name) {
+        $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
+    });
 }

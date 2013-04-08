@@ -12,7 +12,8 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require jquery.ui.all
+//= require jquery.ui.slider
 //= require i18n
 //= require i18n/translations
+//= require spin.min
 //= require_tree .
