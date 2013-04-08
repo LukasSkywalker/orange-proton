@@ -6,3 +6,6 @@ de:
   drg: "DRG"
   exclusiva: "Exklusiva"
   inclusiva: "Inklusiva"
+
+#errors
+  no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"
