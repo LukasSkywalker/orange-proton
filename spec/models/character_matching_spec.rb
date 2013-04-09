@@ -13,14 +13,14 @@ describe CharacterMatcher do
     assert_equal(@cm.character_matching('kardiographie', 'pathologie'), 0)
     assert_equal(@cm.character_matching('sportmedizin', 'tauchmedizin'), 0)
     assert_equal(@cm.character_matching('psychotherapie', 'sporttherapie'), 4)
-    assert_equal(@cm.character_matching('allgemeinchirurgie', 'augenchirurgie'), 0)
+    assert_equal(@cm.character_matching('allgemeinchirurgie', 'augenchirurgie'), 6)
     assert_equal(@cm.character_matching('gastroskopie', 'teleskopie'), 0)
     assert_equal(@cm.character_matching('psychiatrie', 'entwicklungspaediatrie'), 0)
     assert_equal(@cm.character_matching('homoeopathie', 'animalopathie'), 0)
 
     assert_equal(@cm.character_matching('psychotherapie', 'psychiatrie'), 1)
     assert_equal(@cm.character_matching('sportmedizin', 'sporttherapie'), 1)
-    assert_equal(@cm.character_matching('interventionelle schmerztherapie', 'operative neuraltherapie'), 0)
+    assert_equal(@cm.character_matching('interventionelle schmerztherapie', 'operative neuraltherapie'), 4)
     assert_equal(@cm.character_matching('schmerztherapie', 'schmerz'), 3)
   end
 
@@ -39,7 +39,7 @@ describe CharacterMatcher do
 
     assert_equal(@cm.sequence_matching('psychotherapie', 'psychiatrie'), 5)
     assert_equal(@cm.sequence_matching('sportmedizin', 'sporttherapie'), 5)
-    assert_equal(@cm.sequence_matching('interventionelle schmerztherapie', 'operative neuraltherapie'), 1)
+    assert_equal(@cm.sequence_matching('interventionelle schmerztherapie', 'operative neuraltherapie'), 0)
     assert_equal(@cm.sequence_matching('schmerztherapie', 'schmerz'), 7)
   end
 end
