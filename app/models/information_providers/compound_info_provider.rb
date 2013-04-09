@@ -27,7 +27,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     # is this even necessary now?
     fields = get_provider_results(self.to_icd_superclass(code), max_count, language) if
-        fields.size <= 0 and self.is_icd_subclass(code)
+        fields.size <= 0 and self.icd_subclass?(code)
 
     fields = remove_duplicate_fields fields
 
