@@ -95,8 +95,14 @@ var mindmapper = {
             success: function (response, status) {
               $('#mindmap').cleanUp();
               History.pushState(null, "OrangeProton", params);
+              
+              var status = response.status;
+              if( status === 'error' ) {
+                var message = jQuery.parseJSON(xhr.responseText).message;
+                alert(message);
+              }
 
-              var data = response.data; // text is already parsed by JQuery
+              var data = response.data.data; // text is already parsed by JQuery
 
               var name = data.text;
 
@@ -181,7 +187,7 @@ var mindmapper = {
                 var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
                 var s = [];
-                var fields = response.fields;
+                var fields = response.data.fields;
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
@@ -198,8 +204,7 @@ var mindmapper = {
             },
 
             error: function (xhr, httpStatus, error) {
-                message = jQuery.parseJSON(xhr.responseText).message;
-                alert(message);
+                alert(error);
             },
             
             complete: function(xhr, status) {
