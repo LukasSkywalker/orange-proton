@@ -95,8 +95,14 @@ var mindmapper = {
             success: function (response, status) {
               $('#mindmap').cleanUp();
               History.pushState(null, "OrangeProton", params);
+              
+              var status = response.status;
+              if( status === 'error' ) {
+                var message = jQuery.parseJSON(xhr.responseText).message;
+                alert(message);
+              }
 
-              var data = response.data; // text is already parsed by JQuery
+              var data = response.data.data; // text is already parsed by JQuery
 
               var name = data.text;
 
@@ -181,14 +187,15 @@ var mindmapper = {
                 var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
                 var s = [];
-                var fields = response.fields;
+                var fields = response.data.fields;
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    var newdiv = $('<div class="cat" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(7.444, 46.947, e.data.field); });
                     s.push(newdiv);
                 }
 
@@ -197,8 +204,7 @@ var mindmapper = {
             },
 
             error: function (xhr, httpStatus, error) {
-                message = jQuery.parseJSON(xhr.responseText).message;
-                alert(message);
+                alert(error);
             },
             
             complete: function(xhr, status) {
@@ -235,15 +241,14 @@ var mindmapper = {
                 var s = [];
                 for (var i = 0; i < Math.min(DOC_COUNT, response.length); i++) {
                     //TODO add and Format the other Attributes to the Output
-                    //mm.addNode(root, '<div class="doctors">' + response[i].name + '</div>', {});
-                    $newdiv = $('<div class="doc node ui-draggable">'
+                    var newdiv = $('<div class="doc">'
                         + response[i].name + '<br />'
                         + response[i].address + ' <br />'
                         + response[i].phone2 + ' <br />' + '</div>');
-                    $newdiv.appendTo('body');
-                    s.push($newdiv);
+                    newdiv.appendTo(mm);
+                    s.push(newdiv);
                 }
-                new Canvas(50, 120, 500, 600).addNodes(s).doLayout();
+                new Canvas(50, 120, 500, 600).addNodes(s);
 
             },
             error: function (xhr, status, error) {
