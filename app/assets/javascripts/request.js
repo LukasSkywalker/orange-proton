@@ -26,6 +26,12 @@ $(document).ready(function () {
         }
         setLocale(lang);
     });
+    
+    
+    function betterAlert( msg ) {
+      jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
+    }
+    window.alert = betterAlert;
 
     $("#code-name").focus();
 
