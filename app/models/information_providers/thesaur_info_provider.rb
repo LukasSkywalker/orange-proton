@@ -14,7 +14,6 @@ class ThesaurInfoProvider < DatabaseInfoProvider
           }
         end
     }
-
     fields
   end
 end

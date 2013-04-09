@@ -10,4 +10,8 @@ class FieldEntry
   def to_s
     "Name: #{self.name}, Relatedness: #{self.relatedness}, Code: #{self.code}"
   end
+
+  def ==(other)
+    self.code == other.code && self.name == other.name && self.relatedness == other.relatedness
+  end
 end

@@ -1,3 +1,5 @@
+require_rel '../models/information_providers'
+
 module ProviderFactory
   class << self
     def get
