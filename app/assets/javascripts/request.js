@@ -144,6 +144,12 @@ var mindmapper = {
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                   var newdiv = $('<div class="super">' + superclass + '<br />' + super_name + '</div>');
+                  newdiv.on('click', { superclass: superclass }, function getSuperData(e){
+                    var code = e.data.superclass;
+                    var lang = $("#lang").val();
+                    $("#code-name").val(code);
+                    mindmapper.sendRequest(code, lang);
+                  });
                   synonyms.push(newdiv);
                 }
 
