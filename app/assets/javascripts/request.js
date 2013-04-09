@@ -215,7 +215,7 @@ var mindmapper = {
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
-                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(e.data.field); });
+                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(e.data.field,lang); });
                     s.push(newdiv);
                 }
 
@@ -250,17 +250,17 @@ var mindmapper = {
     },
 
     //Get the doctors from the db specific to the field and the users location
-    //TODO long & lat from interface
-    //TODO delete previous Doctor node in Megamind and get Parent note to adjust the Layout
-    getDoctors: function (fields) {
+    //TODO delete previous Lines of Doctor nodes in Megamind
+    getDoctors: function (fields, lang) {
         var DOC_COUNT = 4;
+        $('.doc').remove();  //delete previously loaded stuff
+
         jQuery.ajax({
             url: '/api/v1/docs/get?long=' + mindmapper.long + '&lat=' + mindmapper.lat + '&field=' + fields + '&count=' + DOC_COUNT,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-                //Get the already created MM from the get ICD request
                 
                 var status = response.status;
                 if( status === 'error' ) {
@@ -268,21 +268,33 @@ var mindmapper = {
                   alert(message);
                   return;
                 }
-                
-                var mm = $('#mindmap');
 
                 var s = [];
                 var docs = response.result;
                 for (var i = 0; i < Math.min(DOC_COUNT, docs.length); i++) {
-                    //TODO add and Format the other Attributes to the Output
                     var newdiv = $('<div class="doc">'
-                        + docs[i].name + '<br />'
+                        + docs[i].title + ',<br />'
+                        + docs[i].name + ', <br />'
+                        + '<a class="doctor-map fancybox.iframe" href="http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+'&q='+docs[i].name+',+'+docs[i].address+',+Schweiz&t=h&z=17&output=embed">'
                         + docs[i].address + ' <br />'
-                        + docs[i].phone2 + ' <br />' + '</div>');
-                    s.push(newdiv);
+                        + '</a></div>'
+                        );
+                        s.push(newdiv);
                 }
-                new Canvas(50, 120, 500, 600).addNodes(s);
 
+                new Canvas(440,550, 800, 400).addNodes(s);
+
+                $(".doctor-map").fancybox({
+                    maxWidth	: 800,
+                    maxHeight	: 600,
+                    fitToView	: false,
+                    width		: '70%',
+                    height		: '70%',
+                    autoSize	: false,
+                    closeClick	: false,
+                    openEffect	: 'none',
+                    closeEffect	: 'none'
+                });
             },
             error: function (xhr, status, error) {
               try{
@@ -298,10 +310,6 @@ var mindmapper = {
     getSpeciality: function (input) {
         // TODO
     }
-}
-
-function getGeolocation() {
-
 }
 
 // Read a page's GET URL variables and return them as an associative array.
