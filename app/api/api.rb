@@ -103,7 +103,8 @@ class API < Grape::API
   desc 'Handles admin queries, such as setting the relatedness bias'
   resource :admin do
     params do
-      requires :values, type: String, desc: 'The weight values the frontend sends'
+      requires :values, type: String, desc: 'The weight values the frontend sends',
+               regexp: /\A\[(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\]\z/
     end
 
     post 'setWeight' do

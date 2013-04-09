@@ -12,7 +12,6 @@ class MockInfoProvider < BaseInformationProvider
   end
 
   def get_icd_or_chop_data(code, language)
-    raise ProviderLookupError.new('no_icd_chop_data', 'de') if code == 'X32'
     {
         :superclass => 'B26',
         :text => 'Mumps',
