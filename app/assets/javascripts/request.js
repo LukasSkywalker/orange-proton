@@ -113,7 +113,6 @@ var mindmapper = {
             contentType: "charset=UTF-8",
             success: function (response, status) {
               $('#mindmap').cleanUp();
-              History.pushState(null, "OrangeProton", params);
               
               var status = response.status;
               if( status === 'error' ) {
@@ -122,7 +121,7 @@ var mindmapper = {
                 return;
               }
 
-              var data = response.data.data; // text is already parsed by JQuery
+              var data = response.result.data; // text is already parsed by JQuery
 
               var name = data.text;
 
@@ -207,7 +206,7 @@ var mindmapper = {
                 var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
                 var s = [];
-                var fields = response.data.fields;
+                var fields = response.result.fields;
                 for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
