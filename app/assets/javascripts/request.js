@@ -35,8 +35,6 @@ $(document).ready(function () {
         var lang = getUrlVars()["lang"] || "de";
 
         mindmapper.sendRequest(code, lang);
-        $("#code-name").val(code);
-        $("#lang").val(lang);
     }
 
     setLocale($("#lang").val());
@@ -52,10 +50,17 @@ var mindmapper = {
         shadow: false, // Whether to render a shadow
         hwaccel: false // Whether to use hardware acceleration
     },
+    
+    updateUI: function(code, lang) {
+      $("#code-name").val(code);
+      $("#lang").val(lang);
+      History.pushState(null, "OrangeProton", "?code="+code+"&lang="+lang);
+    },
 
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
         this.log(input);
+        this.updateUI(input, lang);
         this.getICD(input, lang);
         // TODO mindmapper.getSpeciality(input);
     },
@@ -144,6 +149,12 @@ var mindmapper = {
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                   var newdiv = $('<div class="super">' + superclass + '<br />' + super_name + '</div>');
+                  newdiv.on('click', { superclass: superclass }, function getSuperData(e){
+                    var code = e.data.superclass;
+                    var lang = $("#lang").val();
+                    $("#code-name").val(code);
+                    mindmapper.sendRequest(code, lang);
+                  });
                   synonyms.push(newdiv);
                 }
 
@@ -154,7 +165,18 @@ var mindmapper = {
                 var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
                 c.addNodes(drgs);
 
-                var exclusiva = mindmapper.generateHTML(data.exclusiva, MAX_EXCLUSIVA, 'exclusiva');
+                var exclusiva = [];
+                var exc = data.exclusiva.slice(0, MAX_EXCLUSIVA);
+                $.each(exc, function(index, name) {
+                  var icd_pattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/;
+                  var code = icd_pattern.exec(name)[1];
+                  var element = jQuery('<div/>').addClass('exclusiva').html(name).on('click', { code: code }, function(e){
+                    var code = e.data.code;
+                    var lang = $('#lang').val();
+                    mindmapper.sendRequest(code, lang);
+                  });
+                  exclusiva.push(element);
+                });
 
                 var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
 
