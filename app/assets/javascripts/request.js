@@ -98,8 +98,9 @@ var mindmapper = {
               
               var status = response.status;
               if( status === 'error' ) {
-                var message = jQuery.parseJSON(xhr.responseText).message;
+                var message = response.message;
                 alert(message);
+                return;
               }
 
               var data = response.data.data; // text is already parsed by JQuery
@@ -204,7 +205,12 @@ var mindmapper = {
             },
 
             error: function (xhr, httpStatus, error) {
-                alert(error);
+                try{
+                  var message = jQuery.parseJSON(xhr.responseText).error;
+-                 alert(message);
+                }catch(e) {
+                  alert(error);
+                }
             },
             
             complete: function(xhr, status) {
@@ -252,7 +258,12 @@ var mindmapper = {
 
             },
             error: function (xhr, status, error) {
-                alert(error);
+                try{
+                  var message = jQuery.parseJSON(xhr.responseText).error;
+-                 alert(message);
+                }catch(e){
+                  alert(error);
+                }
             }
         });
     },
