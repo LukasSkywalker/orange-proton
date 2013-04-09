@@ -41,7 +41,7 @@ class API < Grape::API
   resource :fields do
     params do
       requires :code, type: String, 
-        regexp: /(\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?)|(\d{2}\.\w{0,2}(\.\w{0,2})?)/,
+        regexp: /(^\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?)$|(\d{2}\.\w{0,2}(\.\w{0,2})?)$/,
         desc: 'ICD or CHOP Code'
       requires :count, type: Integer, desc: 'Number of fields to be displayed'
       requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/, desc: 'The language of the response'
@@ -76,7 +76,8 @@ class API < Grape::API
       longitude = params[:long]
       max_count = params[:count]
 
-      API.provider.get_doctors(field_code, latitude, longitude, max_count)
+      doctors = API.provider.get_doctors(field_code, latitude, longitude, max_count)
+      ApiResponse::Success.response(doctors)
     end
   end
 
