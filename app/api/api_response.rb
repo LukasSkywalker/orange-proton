@@ -4,7 +4,7 @@ module ApiResponse
       def response(data = '')
         {
             :status => 'ok',
-            :data => data
+            :result => data
         }
       end
 
