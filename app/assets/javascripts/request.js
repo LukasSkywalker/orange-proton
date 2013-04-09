@@ -188,7 +188,8 @@ var mindmapper = {
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    var newdiv = $('<div class="cat" onclick="mindmapper.getDoctors(7.444,46.947,' + f + ');" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(7.444, 46.947, e.data.field); });
                     s.push(newdiv);
                 }
 
@@ -235,15 +236,14 @@ var mindmapper = {
                 var s = [];
                 for (var i = 0; i < Math.min(DOC_COUNT, response.length); i++) {
                     //TODO add and Format the other Attributes to the Output
-                    //mm.addNode(root, '<div class="doctors">' + response[i].name + '</div>', {});
-                    $newdiv = $('<div class="doc node ui-draggable">'
+                    var newdiv = $('<div class="doc">'
                         + response[i].name + '<br />'
                         + response[i].address + ' <br />'
                         + response[i].phone2 + ' <br />' + '</div>');
-                    $newdiv.appendTo('body');
-                    s.push($newdiv);
+                    newdiv.appendTo(mm);
+                    s.push(newdiv);
                 }
-                new Canvas(50, 120, 500, 600).addNodes(s).doLayout();
+                new Canvas(50, 120, 500, 600).addNodes(s);
 
             },
             error: function (xhr, status, error) {
