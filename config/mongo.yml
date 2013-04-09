@@ -1,26 +1,21 @@
 defaults: &defaults
+  host: pse4.iam.unibe.ch
   port: 27017
+  database: admin
+  username: pse4_read
+  password: plokij
 
 development:
   <<: *defaults
   host: localhost
-  database: admin
+  username:
+  password:
 
 development-remote:
   <<: *defaults
-  host: pse4.iam.unibe.ch
-  database: admin
-  username: pse4_read
-  password: plokij
 
 test:
   <<: *defaults
-  host: localhost
-  database: admin
 
-# set these environment variables on your prod server
 production:
   <<: *defaults
-  database: admin
-  username: pse4_read
-  password: plokij
