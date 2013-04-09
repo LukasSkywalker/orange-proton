@@ -93,8 +93,6 @@ jQuery.fn.extend({
 
     Canvas.prototype.doLayout = function() {
       this.space();
-      var root = megamind.rootNode;
-      var center = { x: root.position().left + root.outerWidth() / 2, y: root.position().top + root.outerHeight() / 2 };
       for(var i=0; i<this.rows.length; i++){
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
@@ -103,7 +101,7 @@ jQuery.fn.extend({
             top: n.top(),
             opacity: 1
           }, {duration: 1000, easing: 'linear'} );
-          megamind.canvas.path('M'+center.x+' '+center.y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
+          megamind.canvas.path('M'+n.parent.getCenter().x+' '+n.parent.getCenter().y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
         }
       }
     }
@@ -361,4 +359,10 @@ jQuery.fn.extend({
       this.css("left", Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
                                                   $(parent).scrollLeft()));
       return this;
+    }
+    
+    jQuery.fn.getCenter = function() {
+      var x = this.position().left + this.outerWidth() / 2;
+      var y = this.position().top + this.outerHeight() / 2;
+      return new Point(x, y);
     }
