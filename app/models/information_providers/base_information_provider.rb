@@ -6,7 +6,7 @@ class BaseInformationProvider
   
   # Handle queries
   # /api/v1/fields/get?code=string&count=integer&lang=string
-  def get_fields(field_code, max_count, language)
+  def get_fields(code, max_count, language)
     raise NotImplementedError
   end
 

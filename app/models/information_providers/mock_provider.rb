@@ -3,7 +3,7 @@
 # It can also be used for testing.
 class MockInfoProvider < BaseInformationProvider
 
-  def get_fields(field_code, count, lang)
+  def get_fields(code, count, lang)
     [
         FieldEntry.new('Allgemeine Medizin', 0.8, 200),
         FieldEntry.new('Allgemeine Medizin', 0.7, 200),
@@ -12,6 +12,7 @@ class MockInfoProvider < BaseInformationProvider
   end
 
   def get_icd_or_chop_data(code, language)
+    raise ProviderLookupError.new('no_icd_chop_data', 'de') if code == 'X32'
     {
         :superclass => 'B26',
         :text => 'Mumps',

@@ -1,20 +1,26 @@
 module ApiResponse
   module ApiResponse::Success
     class << self
-      def field_response(icd_data, fields, type)
+      def response(data = '')
         {
             :status => 'ok',
-            :data => icd_data,
-            :fields => format_fields(fields),
-            :type => type
+            :data => data
         }
       end
 
+      def field_response(icd_data, fields, type)
+        response({
+            :data => icd_data,
+            :fields => format_fields(fields),
+            :type => type
+        })
+
+      end
+
       def name_response(field_name)
-        {
-            :status => 'ok',
+        response({
             :name => field_name
-        }
+        })
       end
 
       private
