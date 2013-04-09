@@ -27,6 +27,16 @@ $(document).ready(function () {
         setLocale(lang);
     });
     
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function success( position ) {
+        mindmapper.lat = position.coords.latitude;
+        mindmapper.long = position.coords.longitude;
+      }, function error( msg ) {
+        alert(typeof msg == 'string' ? msg : "error");
+      });
+    }
+
+    
     
     function betterAlert( msg ) {
       jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
@@ -48,6 +58,9 @@ $(document).ready(function () {
 
 
 var mindmapper = {
+
+    lat: 7.438637,
+    long : 46.951081,
 
     spinner_opts : {
         lines: 13, // The number of lines to draw
@@ -202,7 +215,7 @@ var mindmapper = {
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
-                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(7.444, 46.947, e.data.field); });
+                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(e.data.field); });
                     s.push(newdiv);
                 }
 
@@ -239,37 +252,45 @@ var mindmapper = {
     //Get the doctors from the db specific to the field and the users location
     //TODO long & lat from interface
     //TODO delete previous Doctor node in Megamind and get Parent note to adjust the Layout
-    getDoctors: function (long, lat, fields) {
+    getDoctors: function (fields) {
         var DOC_COUNT = 4;
         jQuery.ajax({
-            url: '/api/v1/docs/get?long=' + long + '&lat=' + lat + '&field=' + fields + '&count=' + DOC_COUNT,
+            url: '/api/v1/docs/get?long=' + mindmapper.long + '&lat=' + mindmapper.lat + '&field=' + fields + '&count=' + DOC_COUNT,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
                 //Get the already created MM from the get ICD request
+                
+                var status = response.status;
+                if( status === 'error' ) {
+                  var message = response.message;
+                  alert(message);
+                  return;
+                }
+                
                 var mm = $('#mindmap');
 
                 var s = [];
-                for (var i = 0; i < Math.min(DOC_COUNT, response.length); i++) {
+                var docs = response.data;
+                for (var i = 0; i < Math.min(DOC_COUNT, docs.length); i++) {
                     //TODO add and Format the other Attributes to the Output
                     var newdiv = $('<div class="doc">'
-                        + response[i].name + '<br />'
-                        + response[i].address + ' <br />'
-                        + response[i].phone2 + ' <br />' + '</div>');
-                    newdiv.appendTo(mm);
+                        + docs[i].name + '<br />'
+                        + docs[i].address + ' <br />'
+                        + docs[i].phone2 + ' <br />' + '</div>');
                     s.push(newdiv);
                 }
                 new Canvas(50, 120, 500, 600).addNodes(s);
 
             },
             error: function (xhr, status, error) {
-                try{
-                  var message = jQuery.parseJSON(xhr.responseText).error;
--                 alert(message);
-                }catch(e){
-                  alert(error);
-                }
+              try{
+                var message = jQuery.parseJSON(xhr.responseText).error;
+-               alert(message);
+              }catch(e) {
+                alert(error);
+              }
             }
         });
     },
