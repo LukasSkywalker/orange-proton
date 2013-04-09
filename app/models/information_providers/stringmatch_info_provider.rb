@@ -27,9 +27,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
         cmatch_prepare(self.db.get_fs_name(fs_code, 'de')).length
       fs << new_fs_field_entry(fs_code, relatedness, language)
     end
-
     normalize_relatedness(fs)
-
     fs
   end
 

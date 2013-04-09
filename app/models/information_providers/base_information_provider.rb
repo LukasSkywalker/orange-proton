@@ -40,8 +40,8 @@ class BaseInformationProvider
   end
 
   # @return true if the given code is an icd subclass code
-  def is_icd_subclass(input)
-    get_code_type(input) == :icd && input.match(/.*\.*./)
+  def icd_subclass?(input)
+    get_code_type(input) == :icd && input.match(/^(.*\..+)$/)
   end
 
   # @return the icd code with the subclass part removed, e.g. B26.9 => B26
@@ -63,7 +63,6 @@ class BaseInformationProvider
     api_fields_array.each {|e| 
       e.relatedness = (1.0*e.relatedness)/tot
     }
-
     api_fields_array
   end
 end
