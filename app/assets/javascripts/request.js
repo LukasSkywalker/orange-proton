@@ -129,10 +129,11 @@ var mindmapper = {
                 {
                     var syn = data.synonyms.slice(0, MAX_SYN);
                     var newdiv = $.map(syn, function(el) {
-                      return '<li><div class="syn">' + el + '</div></li>';
-                    }).join();
+                      return '<li>' + el + '</li>';
+                    }).join('');
 
-                    synonyms.push($('<ul>' + newdiv + '</ul>'));
+                    if(newdiv != '')
+                      synonyms.push($('<div class="syn"><ul>' + newdiv + '</ul></div>'));
                 }
                 else
                 {
@@ -142,7 +143,7 @@ var mindmapper = {
                 var superclass = data.superclass;
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
-                  var newdiv = $('<div class="super node ui-draggable">' + superclass + '<br />' + super_name + '</div>');
+                  var newdiv = $('<div class="super">' + superclass + '<br />' + super_name + '</div>');
                   synonyms.push(newdiv);
                 }
 
@@ -173,8 +174,9 @@ var mindmapper = {
                   c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 
-            error: function (xhr, status, error) {
-                alert(error);
+            error: function (xhr, httpStatus, error) {
+                message = jQuery.parseJSON(xhr.responseText).message;
+                alert(message);
             },
             
             complete: function(xhr, status) {

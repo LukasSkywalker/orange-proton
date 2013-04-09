@@ -42,6 +42,7 @@ gem 'yard'
 gem 'geocoder'
 gem 'parallel-each'
 gem 'i18n-js', git: 'git://github.com/sientia-phi/i18n-js.git', branch: 'fix_utf8_encoding'
+gem 'require_all'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

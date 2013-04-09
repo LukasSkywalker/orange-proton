@@ -1,28 +1,32 @@
 var megamind = {
   rootNode : null,
   container : null,
-  canvases : []
+  canvases : [],
+  options: {
+    horizontalFillAmount: 0.8,
+    verticalFillAmount: 0.8,
+    verticalWobbling: 0.6,
+    horizontalWobbling: 0.6,
+    animationDuration: 1000
+  }
 }
 
-const HORIZONTAL_FILL_AMOUNT = 0.9;  // how much should a row be filled in [0,1]
-const HORIZONTAL_WOBBLING = 1;       // how much the horiz. spacing should vary (in [0,1])
-
-const VERTICAL_WOBBLING = 1;
-
 jQuery.fn.extend({
-  megamind: function(){
+  megamind: function(options){
     var mm = $(this.first());
     megamind.container = mm;
+    megamind.canvas = Raphael('mindmap');
+    megamind.options = $.extend({}, megamind.options, options);
     return mm;
   },
 
-  addCanvas: function( left, top, width, height) {
+  addCanvas: function( left, top, width, height, options) {
     var mm = $(this.first());
     if(left + width > mm.width() || top + height > mm.height()){
       console.log('### Canvas with size '+left+','+top+','+width+','+height+
           ' does not fit in container ['+mm.width()+','+mm.height()+']!');
     }
-    var cv = new Canvas(left, top, width, height);
+    var cv = new Canvas(left, top, width, height, options);
     megamind.canvases.push(cv);
     return cv;
   },
@@ -32,9 +36,7 @@ jQuery.fn.extend({
     var ele = $(element);
     ele.addClass("node");
     ele.appendTo(mm);
-    var top = (mm.height() - ele.outerHeight()) / 2;
-    var left = (mm.width() - ele.outerWidth()) / 2;
-    ele.css({ top: top, left: left });
+    ele.center(mm);
     megamind.rootNode = ele;
     return ele;
   },
@@ -74,13 +76,14 @@ jQuery.fn.extend({
   }
 });
 
-    function Canvas(left, top, width, height) {
+    function Canvas(left, top, width, height, options) {
       this.rows = [];
       this.xOffset = left;
       this.yOffset = top;
       this.width = width;
       this.height = height;
       this.container = $(megamind.container);
+      this.options = $.extend({}, megamind.options, options);
       return this;
     }
 
@@ -97,10 +100,12 @@ jQuery.fn.extend({
       for(var i=0; i<this.rows.length; i++){
         for(var j=0; j< this.rows[i].nodes.length; j++) {
           var n = this.rows[i].nodes[j];
-          n.el.css({
+          n.el.animate({
             left: n.left(),
-            top: n.top()
-          });
+            top: n.top(),
+            opacity: 1
+          }, {duration: this.options.animationDuration, easing: 'linear'} );
+          megamind.canvas.path('M'+n.parent.getCenter().x+' '+n.parent.getCenter().y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
         }
       }
     }
@@ -134,8 +139,8 @@ jQuery.fn.extend({
       var gaps = this.rows.length + 1;
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.rows.length; i++) {
-        var amount = (1 - VERTICAL_WOBBLING/2) * spacing
-            + Math.random() * VERTICAL_WOBBLING * spacing;
+        var amount = (1 - this.options.verticalWobbling/2) * spacing
+            + Math.random() * this.options.verticalWobbling * spacing;
         this.rows[i].move(0, amount);
         this.rows[i].space();
       }
@@ -157,6 +162,8 @@ jQuery.fn.extend({
       for(var i = 0; i < elements.length; i++) {
         var element = $(elements[i]);
         element.addClass("node");
+        element.center(megamind.container);
+        element.css({opacity: 0});
       }
 
       for (var i = 0; i < elements.length; i++) {
@@ -185,7 +192,7 @@ jQuery.fn.extend({
             }else{
               alert('no space left');   // no more space left for new row
             }
-          }else if(n.width() + this.currentRow().spaceUsed() <= this.width * HORIZONTAL_FILL_AMOUNT) { //fits in this row
+          }else if(n.width() + this.currentRow().spaceUsed() <= this.width * this.options.horizontalFillAmount) { //fits in this row
             this.currentRow().addNode(n);
           } else if(this.spaceUsed() + n.height() <= this.height) {    // no more space left, new row
             this.addRow(n);
@@ -249,8 +256,8 @@ jQuery.fn.extend({
       var spacing = spaceLeft / gaps;
       for(var i=0; i<this.nodes.length; i++) {
         var n = this.nodes[i];
-        var amount = (1 - HORIZONTAL_WOBBLING/2) * spacing
-            + Math.random() * HORIZONTAL_WOBBLING * spacing;  // if WOBBLING is 0.4 or 40%:
+        var amount = (1 - this.canvas.options.horizontalWobbling/2) * spacing
+            + Math.random() * this.canvas.options.horizontalWobbling * spacing;  // if WOBBLING is 0.4 or 40%:
                                                               // move between 80 and 120% of the spacing
         n.move(amount, 0);
       }
@@ -347,4 +354,19 @@ jQuery.fn.extend({
     function Point(x, y) {
       this.x = x;
       this.y = y;
+    }
+    
+    jQuery.fn.center = function ( parent ) {
+      this.css("position","absolute");
+      this.css("top", Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) + 
+                                                  $(parent).scrollTop()));
+      this.css("left", Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
+                                                  $(parent).scrollLeft()));
+      return this;
+    }
+    
+    jQuery.fn.getCenter = function() {
+      var x = this.position().left + this.outerWidth() / 2;
+      var y = this.position().top + this.outerHeight() / 2;
+      return new Point(x, y);
     }

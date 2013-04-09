@@ -3,6 +3,7 @@ function displayAdmin(){
     var providers = ["Manual", "MDC", "Range", "Thesaur", "StringMatcher"];
     var panel = $("#admin");
     panel.empty();
+    panel.append('<input type="button" onclick="debugMindmap();" value="Debug Mindmap">');
     $.each(providers, function(index, name) {
       panel.append($('<p/>').html(name).addClass('provider'));
       var slider = $('<p/>').addClass('admin-slider');
@@ -23,3 +24,8 @@ function sendAdmin(){
     });
     mindmapper.sendRequest($("#code-name").val().toUpperCase(), $("#lang").val());
 }
+
+function debugMindmap() {
+    $("#mindmap").debug();
+}
+
