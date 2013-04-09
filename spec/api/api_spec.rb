@@ -50,7 +50,7 @@ describe API do
       API.provider.stub(:get_field_name) {raise ProviderLookupError.new('unknown_fs_code', 'de')}
       get '/api/v1/codenames/get?code=7&lang=de'
 
-      response.status.should == 500
+      response.status.should == 200
       json_response = JSON.parse(response.body)
       json_response.should include('status' => 'error')
       json_response.should include('message')

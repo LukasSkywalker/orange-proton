@@ -32,7 +32,7 @@ class API < Grape::API
   # Always rescue ProviderLookupErrors and
   rescue_from ProviderLookupError do |error|
     response = ApiResponse::Error.error_response(error.message, error.language).to_json
-    Rack::Response.new(response, 500, { 'Content-type' => 'application/json' }).finish
+    Rack::Response.new(response, 200, { 'Content-type' => 'application/json' }).finish
   end
 
   # Handles the most important queries:
