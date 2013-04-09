@@ -17,9 +17,9 @@ describe API do
       response.status.should == 200
       json_response = JSON.parse(response.body)
       json_response.should include('status' => 'ok')
-      json_response.should include('data')
+      json_response.should include('result')
 
-      doctors = json_response['data']
+      doctors = json_response['result']
       doctors.first.should include('name', 'title', 'address')
     end
   end
@@ -40,9 +40,9 @@ describe API do
       response.status.should == 200
       json_response = JSON.parse(response.body)
       json_response.should include('status' => 'ok')
-      json_response.should include('data')
+      json_response.should include('result')
 
-      name = json_response['data']
+      name = json_response['result']
       name.should include('name' => 'Allgemeine Medizin')
     end
 
