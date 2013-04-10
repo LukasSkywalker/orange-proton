@@ -3,6 +3,7 @@ it:
   cat: "Branca"
   doc: "Dottore"
   super: "Ceto alto"
+  sub: "Ceto basso"
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"

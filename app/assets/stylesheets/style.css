@@ -62,6 +62,10 @@ div.node {
     border: 2px solid gray;
 }
 
+.sub {
+    border: 2px solid cyan;
+}
+
 .legend {
     margin: 10px;
     padding-left: 10px;
