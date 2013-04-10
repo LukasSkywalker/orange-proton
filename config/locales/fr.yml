@@ -3,6 +3,7 @@ fr:
   cat: "Branche"
   doc: "Médcin"
   super: "Classe supérieure"
+  sub: "Classe inférieure"
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"

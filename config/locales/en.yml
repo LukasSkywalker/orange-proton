@@ -6,6 +6,7 @@ en:
   cat: "Speciality"
   doc: "Doctor"
   super: "Superclass"
+  sub: "Subclass"
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"

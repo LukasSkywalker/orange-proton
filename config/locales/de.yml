@@ -3,6 +3,7 @@ de:
   cat: "Fachrichtung"
   doc: "Doktor"
   super: "Oberklasse"
+  sub: "Unterklasse"
   drg: "DRG"
   exclusiva: "Exklusiva"
   inclusiva: "Inklusiva"

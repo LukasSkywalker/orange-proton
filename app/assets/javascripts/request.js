@@ -102,6 +102,7 @@ var mindmapper = {
         var MAX_SYN = 100; // max number of synonyms to display
         var MAX_FIELDS = 100; // max number of fields
         var MAX_DRGS = 100;
+        var MAX_SUB = 100;
         var MAX_INCLUSIVA = 100;
         var MAX_EXCLUSIVA = 100;
         var AS_LIST = true; // if synonyms should be in a list instead of bubbles
@@ -192,6 +193,16 @@ var mindmapper = {
                   synonyms.push(newdiv);
                 }
 
+                $.each(data.subclasses, function(index, name) {
+                  var element = jQuery('<div/>').addClass('sub').html(name).on('click', { code: name }, function(e){
+                    var code = e.data.code;
+                    var lang = $('#lang').val();
+                    mindmapper.sendRequest(code, lang);
+                    $('#mindmap').setRoot(this, true)
+                  });
+                  synonyms.push(element);
+                });
+
                 var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
                 c.addNodes(synonyms);
 
@@ -208,6 +219,7 @@ var mindmapper = {
                     var code = e.data.code;
                     var lang = $('#lang').val();
                     mindmapper.sendRequest(code, lang);
+                    $('#mindmap').setRoot(this, true)
                   });
                   exclusiva.push(element);
                 });
@@ -343,7 +355,7 @@ function setLocale(locale) {
 function displayLegend() {
     $('#legend').empty();
 
-    var identifiers = ['syn', 'cat', 'doc', 'super', 'drg', 'exclusiva', 'inclusiva'];
+    var identifiers = ['syn', 'cat', 'doc', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
     $.each(identifiers, function(index, name) {
         $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
