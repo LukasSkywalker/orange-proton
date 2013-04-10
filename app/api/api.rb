@@ -20,7 +20,6 @@ class API < Grape::API
 
     # Extract integer values from a string array [val1, val2,...]
     def extract_weight_values(values)
-      values = values.gsub('[','').gsub(']','')
       vals = values.split(',')
       vals.map! do |val|
         val.to_i / 100.0
@@ -104,7 +103,7 @@ class API < Grape::API
   resource :admin do
     params do
       requires :values, type: String, desc: 'The weight values the frontend sends',
-               regexp: /\A\[(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\]\z/
+               regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
     end
 
     post 'setWeight' do
