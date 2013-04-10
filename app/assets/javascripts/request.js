@@ -180,6 +180,7 @@ var mindmapper = {
                     var lang = $("#lang").val();
                     $("#code-name").val(code);
                     mindmapper.sendRequest(code, lang);
+                    $('#mindmap').setRoot(this, true);
                   });
                   synonyms.push(newdiv);
                 }

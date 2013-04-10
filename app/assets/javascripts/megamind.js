@@ -31,12 +31,12 @@ jQuery.fn.extend({
     return cv;
   },
 
-  setRoot: function( element ) {
+  setRoot: function( element, animate ) {
     var mm = $(this.first());
     var ele = $(element);
     ele.addClass("node");
     ele.appendTo(mm);
-    ele.center(mm);
+    ele.center(mm, animate || false);
     megamind.rootNode = ele;
     return ele;
   },
@@ -356,12 +356,15 @@ jQuery.fn.extend({
       this.y = y;
     }
     
-    jQuery.fn.center = function ( parent ) {
+    jQuery.fn.center = function ( parent, animate ) {
       this.css("position","absolute");
-      this.css("top", Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) + 
-                                                  $(parent).scrollTop()));
-      this.css("left", Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
-                                                  $(parent).scrollLeft()));
+      var duration = animate ? 600 : 0;
+      this.animate({
+        top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) + 
+                                                  $(parent).scrollTop()),
+        left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
+                                                  $(parent).scrollLeft())
+      }, {duration: duration, easing: 'linear'});
       return this;
     }
     
