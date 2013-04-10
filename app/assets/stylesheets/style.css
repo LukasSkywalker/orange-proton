@@ -137,7 +137,24 @@ div.node {
     -webkit-appearance: none;
 }
 
-.hide-arrow {
+.svg .hide-arrow {
+    margin-top: 10px;
+    border: 1px solid #cccccc;
+    display: inline;
+    position: absolute;
+    right: 10px;
+    background: url(arrow.svg) no-repeat right white;
+	background-size: 30px 15px; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
+    width: 100px;
+    padding-top: 3px;
+    height: 27px;
+    overflow: hidden;
+    border-radius: 15px;
+    float: right;
+}
+
+/* todo collapse shared code with above style (?) */
+.no-svg .hide-arrow {
     margin-top: 10px;
     border: 1px solid #cccccc;
     display: inline;
@@ -172,7 +189,8 @@ input[type=button] {
     border-radius: 15px;
     padding-left: 15px;
     padding-right: 15px;
-    height: 28px;
+    height: 32px;
+	padding-top: 3px;
     border: 1px solid #ccc;
 }
 
@@ -182,5 +200,7 @@ input[type=button]:hover {
 }
 
 #search-button{
+  margin-left: 16px;
   margin-top: 10px;
+  float: left;
 }

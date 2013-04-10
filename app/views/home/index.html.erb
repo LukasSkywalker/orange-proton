@@ -14,7 +14,7 @@
             <input id="code-name" type="text" placeholder="ICD Code">
             <input type="button" id="search-button" value="Suchen">
             <div class="hide-arrow">
-              <select name="lang" id="lang" size="1">
+                <select name="lang" id="lang" size="1">
                     <option value="de">Deutsch</option>
                     <option value="fr">Français</option>
                     <option value="it">Italiano</option>
@@ -25,5 +25,25 @@
         <div id="legend"></div>
         <div id="mindmap"></div>
         <div id="admin"></div>
+        <script>
+            /* from http://toddmotto.com/mastering-svg-use-for-a-retina-web-fallbacks-with-png-script/ */
+            /* TODO Move somewhere else */
+            function supportsSVG() {
+                return !! document.createElementNS && !! document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect;  
+            }
+            if (supportsSVG()) {
+                document.documentElement.className += ' svg';
+                } else {
+                document.documentElement.className += ' no-svg';
+                var imgs = document.getElementsByTagName('img');
+                var dotSVG = /.*\.svg$/;
+                for (var i = 0; i != imgs.length; ++i) {
+                    if(imgs[i].src.match(dotSVG)) {
+                        imgs[i].src = imgs[i].src.slice(0, -3) + 'png';
+                    }
+                }
+            }
+        </script>
+
     </body>
 </html>
