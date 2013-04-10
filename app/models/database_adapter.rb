@@ -39,6 +39,7 @@ class DatabaseAdapter
 
     @r_icd_fs = @client['relationFSZuICD']['relationFSZuICD']
     @r_mdc_fs = @client['mdc']['mdcCodeToFSCode']
+    @thesaurusToFSCode = 'thesaurusToFSCode';
   end
 
   # @return The drgs (most common diagnoses) for a given ICD.
@@ -63,6 +64,17 @@ class DatabaseAdapter
     @chop[language.to_sym].find_one({code: code})
   end
 
+  # @return The fachgebieteKeywords table as a hash keyword (e.g. "Hand", "Lunge") => fs_code (2 - 210)
+  def get_fachgebiete_keywords()
+    # TODO Cache result?
+    f = {}
+    documents = @client['fachgebieteKeywords']['fachgebieteKeywords'].find()
+    documents.each do |document|
+      puts "found fachgebieteKeywords #{document}"
+      f[document['keyword']] = document['fs_code']
+    end
+    return f
+  end
   # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
   # Used for icd > drg > mdc > fs mapping.
   # This is based on a manually set up table.
@@ -77,7 +89,7 @@ class DatabaseAdapter
 
   # @return All FS codes manually mapped to this icd code.
   def get_manually_mapped_fs_codes_for_icd(icd_code)
-    documents = @r_icd_fs.find({icd_code: icd_code, manually: 1})
+    documents = @client['manualMappings']['manualMappings'].find({icd_code: icd_code})
     fs = []
     documents.each do |document|
       fs << document['fs_code']
@@ -89,14 +101,14 @@ class DatabaseAdapter
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
     a = @client['thesauren'].collection_names
-    a.delete('thesaurusToFSCode')
-    a.delete('thesaurusToFSCode2')
+    a.delete(@thesaurusToFSCode)
     a.delete('system.indexes')
     a
   end
 
   # @return A hash fs_code (Integer) to fs_name (localised to lang)
   def get_fs_names(lang)
+    # TODO  Cache result
     fs = {}
     @fs.find().each { |b| 
       fs[Integer(b['code'])] =
@@ -111,10 +123,12 @@ class DatabaseAdapter
     @client['thesauren'][thesaur_name].find_one({icd_code: icd_code}) != nil
   end
 
-  # All fs codes related to the given thesaur.
+  # @return An array of all fs codes associated to the given thesaur.
+  # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
-      a = @client['thesauren']['thesaurusToFSCode2'].find(
-          { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0})
+      a = @client['thesauren'][@thesaurusToFSCode].find(
+          { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
+      )
       fs_codes= []
       a.each {|fs|
           fs_codes << fs['fs_code']

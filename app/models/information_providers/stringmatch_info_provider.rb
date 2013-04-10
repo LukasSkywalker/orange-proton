@@ -7,34 +7,34 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
   def initialize
     super
-    @map ={'ologie' => '', 'opathie' => '', 'iatrie' => '', 'medizin' => '', 'enter' => '', 'exter' => '',
-           'ische' => '', 'ierte' => '', 'ative' => '', 'tion' => ' ', ' und '=> ' ', ' durch ' => ' ',
-           'krankheit' => '', 'endo' => '', 'chungen' => '', 'klassisch' => '', 'mato' => '', 'gesichert' => '',
-           'ologisch' => '', ' der '=> ' ', ' des '=>' ', ' am ' => ' ', ' an '=>' ', 'akut' => '', 'schwer' => '',
-           'sonstige' =>  '', 'opth' => '', 'nicht' => '', 'näher' => '', 'ohne' => '', 'angabe' =>'', ' mit '=> '',
-           ' für '=>'', 'blindh' => 'blindhh', 'haut' => 'hautt', 'heit' => '', 'hiv' => 'hi-virus', 'behandlung' => '',
-           'lunge' => 'l{unge}', 'ungen' => '', 'erkrankung' => '', 'übertragbar' => '' }
   end
 
   def get_fields(icd_code, max_count, language)
-    best_fields = self.db.get_fields_by_char_match(icd_code, max_count)
+    entry = self.db.get_icd_entry(icd_code, "de") # all the keywords are in German so... 
+    puts entry
+    keywords = self.db.get_fachgebiete_keywords() 
+
+    names = []
+    names << entry['text']
+    names.concat(entry['synonyms'])
 
     fs = []
-    best_fields.each do |field|
-      fs_code = field['fs_code']
-      # scale relatedness (this somehow has to consider synonyms and synonymlength!)
-      relatedness = field['by_seq_match'].to_f / 
-        cmatch_prepare(self.db.get_fs_name(fs_code, 'de')).length
-      fs << new_fs_field_entry(fs_code, relatedness, language)
+    names.each do |name|
+      puts "name '#{name}'..." # TODO remove puts
+      keywords.each do |(keyword, fs_code)|
+        puts "keyword '#{keyword}', code #{fs_code}"
+        next unless name.include? keyword # keep case! we don't want "Hand" to match "Behandlung"
+        puts "matches keyword #{keyword}"
+        relatedness = 1 # TODO Increase if already there?
+
+        fs << new_fs_field_entry(fs_code, relatedness, language)
+      end
     end
+
+    # TODO Remove duplicates
+
     normalize_relatedness(fs)
-    fs
+    return fs
   end
 
-  private
-  def cmatch_prepare(s)
-    s.downcase!
-    @map.each{|a,b| s.gsub!(a, b)}
-    s
-  end
 end

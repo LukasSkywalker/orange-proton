@@ -13,7 +13,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
         MDCInfoProvider => PComp.new(MDCInfoProvider.new, 0.75),
         RangeInfoProvider => PComp.new(RangeInfoProvider.new, 0.75),
         ThesaurInfoProvider => PComp.new(ThesaurInfoProvider.new, 0.5),
-        StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, 0.3),
+        StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, 0.6),
     }
   end
   
@@ -24,10 +24,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     # Let all information providers return their results into fields
     fields = get_provider_results(code, max_count, language)
-
-    # is this even necessary now?
-    fields = get_provider_results(self.to_icd_superclass(code), max_count, language) if
-        fields.size <= 0 and self.icd_subclass?(code)
 
     fields = remove_duplicate_fields fields
 
@@ -50,7 +46,9 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
   def get_provider_results(code, max_count, language)
     fields = []
-    @components.p_each(10) do |provider_name, component|
+    @components.each do |provider_name, component|
+      #p_each(10) # This makes the stacktrace useless - reports all errors here as "Worker error", also loses all puts
+
       relatedness = component.relatedness
       # skip provider if relatedness was set to zero
       next unless relatedness > 0.0
@@ -78,6 +76,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
       fs_code = field.code.to_i
 
       if out_fields.has_key? fs_code
+        # PF: We could argue about this algorithm...
         out_fields[fs_code].relatedness += field.relatedness
         out_fields[fs_code].relatedness = 1.0 if out_fields[fs_code].relatedness > 1.0
       else
