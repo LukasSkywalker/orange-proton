@@ -28,6 +28,31 @@ describe API do
       response.status.should == 400
     end
 
+    it 'should accept these codes' do
+      codes = %w(C41.32 B26.3 C62.0 C64)
+
+      codes.each do |code|
+        get "/api/v1/fields/get?lang=de&code=#{code}&count=4"
+
+        response.status.should eq(200), "Did not accept: #{code} when it should have!"
+      end
+    end
+
+    it 'should not accept these codes' do
+      codes = ['    B26.3', '.3', 'B26.', 'B26,3']
+
+      codes.each do |code|
+        get "/api/v1/fields/get?lang=de&code=#{CGI.escape(code)}&count=4"
+
+        response.status.should eq(400), "Accepted: #{code} when it should not have!"
+      end
+    end
+
+    it 'should respond with bad request if not all required parameters are sent' do
+      get '/api/v1/fields/get?code=B26'
+      response.status.should == 400
+    end
+
     it 'should respond with hash if required parameters are sent' do
       API.provider.should_receive(:get_code_type).with('B26.3').and_call_original
       API.provider.should_receive(:get_icd_or_chop_data).with('B26.3', 'de').and_call_original
