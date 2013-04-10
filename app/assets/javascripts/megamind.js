@@ -164,11 +164,11 @@ jQuery.fn.extend({
         element.addClass("node");
         element.center(megamind.container);
         element.css({opacity: 0});
+        element.appendTo(megamind.container);
       }
 
       for (var i = 0; i < elements.length; i++) {
         var element = $(elements[i]);
-        $(element).appendTo(megamind.container);
         var n = new Node(element, null);
         if( n.width() > this.width || n.height() > this.height ) {
           console.log("### unable to add node, is "+n.width()+"x"+ n.height()+
@@ -355,19 +355,19 @@ jQuery.fn.extend({
       this.x = x;
       this.y = y;
     }
-    
+
     jQuery.fn.center = function ( parent, animate ) {
       this.css("position","absolute");
       var duration = animate ? 600 : 0;
       this.animate({
-        top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) + 
+        top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) +
                                                   $(parent).scrollTop()),
-        left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) + 
+        left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
                                                   $(parent).scrollLeft())
       }, {duration: duration, easing: 'linear'});
       return this;
     }
-    
+
     jQuery.fn.getCenter = function() {
       var x = this.position().left + this.outerWidth() / 2;
       var y = this.position().top + this.outerHeight() / 2;

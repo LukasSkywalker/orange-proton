@@ -16,7 +16,7 @@ $(document).ready(function () {
             mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
         }
     });
-    
+
     $("#search-button").on('click', null, function(){
       var code = $('#code-name').val().toUpperCase();
       var lang = $('#lang').val();
@@ -32,7 +32,7 @@ $(document).ready(function () {
         }
         setLocale(lang);
     });
-    
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function success( position ) {
         mindmapper.lat = position.coords.latitude;
@@ -42,10 +42,11 @@ $(document).ready(function () {
       });
     }
 
-    
-    
+
+
     function betterAlert( msg ) {
-      jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
+      jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
+      $('.confirm-button').focus();
     }
     window.alert = betterAlert;
 
@@ -75,7 +76,7 @@ var mindmapper = {
         shadow: false, // Whether to render a shadow
         hwaccel: false // Whether to use hardware acceleration
     },
-    
+
     updateUI: function(code, lang) {
       $("#code-name").val(code);
       $("#lang").val(lang);
@@ -98,11 +99,11 @@ var mindmapper = {
     },
 
     getICD: function (input, lang) {
-        var MAX_SYN = 5; // max number of synonyms to display
-        var MAX_FIELDS = 5; // max number of fields
-        var MAX_DRGS = 5;
-        var MAX_INCLUSIVA = 5;
-        var MAX_EXCLUSIVA = 5;
+        var MAX_SYN = 100; // max number of synonyms to display
+        var MAX_FIELDS = 100; // max number of fields
+        var MAX_DRGS = 100;
+        var MAX_INCLUSIVA = 100;
+        var MAX_EXCLUSIVA = 100;
         var AS_LIST = true; // if synonyms should be in a list instead of bubbles
 
         var params = '?code=' + input + '&lang=' + lang;
@@ -120,7 +121,7 @@ var mindmapper = {
             success: function (response, status) {
               $('#mindmap').cleanUp();
               History.pushState(null, "OrangeProton", params);
-              
+
               var status = response.status;
               if( status === 'error' ) {
                 var message = response.message;
@@ -238,7 +239,7 @@ var mindmapper = {
                   alert(error);
                 }
             },
-            
+
             complete: function(xhr, status) {
                 $('#mindmap').spin(false);
             }
