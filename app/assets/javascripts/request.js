@@ -273,10 +273,11 @@ var mindmapper = {
                 var s = [];
                 var docs = response.result;
                 for (var i = 0; i < Math.min(DOC_COUNT, docs.length); i++) {
+                    var url = encodeURI('http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+'&q='+docs[i].name+',+'+docs[i].address+',+Schweiz&t=h&z=17&output=embed');
                     var newdiv = $('<div class="doc">'
                         + docs[i].title + ',<br />'
                         + docs[i].name + ', <br />'
-                        + '<a class="doctor-map fancybox.iframe" href="http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+'&q='+docs[i].name+',+'+docs[i].address+',+Schweiz&t=h&z=17&output=embed">'
+                        + '<a class="doctor-map fancybox.iframe" href='+url+'>'
                         + docs[i].address + ' <br />'
                         + '</a></div>'
                         );
