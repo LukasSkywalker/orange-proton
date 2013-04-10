@@ -32,7 +32,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields = remove_duplicate_fields fields
 
     fields.sort! do |x, y|
-      y.relatedness - x.relatedness
+      y.relatedness <=> x.relatedness
     end
 
     fields[0..max_count-1]
@@ -69,6 +69,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # relatedness.
   # TODO Maybe we should just take the max. That is take the first and sort
   # before we do this.
+
   private
   def remove_duplicate_fields(fields)
     out_fields = {}
@@ -86,6 +87,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     out_fields.values
   end
+
 
   # Multipliy the relatedness of the fields in fcs by fac (0-1).
   def fields_multiply_relatedness(fcs, fac)
