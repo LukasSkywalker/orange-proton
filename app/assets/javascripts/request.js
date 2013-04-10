@@ -262,7 +262,8 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-                
+
+                $('.doc').remove();  //delete previously loaded stuff
                 var status = response.status;
                 if( status === 'error' ) {
                   var message = response.message;
