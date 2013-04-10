@@ -330,6 +330,7 @@ function getUrlVars() {
 function setLocale(locale) {
     I18n.locale = locale || "de";
     displayLegend();
+    displaySendButton();
 }
 
 function displayLegend() {
@@ -340,4 +341,8 @@ function displayLegend() {
     $.each(identifiers, function(index, name) {
         $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
     });
+}
+
+function displaySendButton(){
+    $('#search-button').val(I18n.t('search'));
 }

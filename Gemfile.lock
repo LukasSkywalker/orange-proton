@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/sientia-phi/i18n-js.git
   revision: 7032652b484ff88ae19f09ee6aefca1ab4a985cf
-  branch: fix_utf8_encoding
+  ref: 703265
   specs:
     i18n-js (3.0.0.rc5)
       i18n

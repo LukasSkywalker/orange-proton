@@ -6,6 +6,7 @@ fr:
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
+  search: "Chercher"
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"

@@ -9,6 +9,7 @@ en:
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
+  search: "Search"
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

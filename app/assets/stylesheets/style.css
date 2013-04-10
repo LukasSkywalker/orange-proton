@@ -162,3 +162,21 @@ html, body {
     min-height: 100%;
     width: 99%;
 }
+
+input[type=button] {
+    background-color: #eee;
+    border-radius: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+    height: 28px;
+    border: 1px solid #ccc;
+}
+
+input[type=button]:hover {
+    cursor: pointer;
+    background-color: #aaa;
+}
+
+#search-button{
+  margin-top: 10px;
+}

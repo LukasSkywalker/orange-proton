@@ -6,6 +6,7 @@ it:
   drg: "DRG"
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
+  search: "Cercare"
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"
