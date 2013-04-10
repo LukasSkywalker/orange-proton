@@ -16,6 +16,12 @@ $(document).ready(function () {
             mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
         }
     });
+    
+    $("#search-button").on('click', null, function(){
+      var code = $('#code-name').val().toUpperCase();
+      var lang = $('#lang').val();
+      mindmapper.sendRequest(code, lang);
+    });
 
     // event handler for language change on UI element
     $("#lang").change(function () {
