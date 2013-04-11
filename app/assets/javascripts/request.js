@@ -279,6 +279,9 @@ var mindmapper = {
                     +   '</label>'
                     + '</input>';
                     var menuitem = $(element.format(i, title, name, address));
+
+
+
                     menuitem.on('change', {url: url, details: doc}, function doctorClick(e) {
                       $('#map-frame').first().attr('src', e.data.url);
                     });
@@ -286,6 +289,11 @@ var mindmapper = {
                 }
 
                 $.fancybox(overlay[0], orangeproton.options.libraries.fancybox);
+
+                //Show First your current Location
+                $('#map-frame').first().attr('src', 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
+                    '&q={1}&t=h&z=17&output=embed'
+                        .format(lang, encodeURIComponent(mindmapper.lat+","+mindmapper.long)));
             },
 
             error: mindmapper.handleApiError,
