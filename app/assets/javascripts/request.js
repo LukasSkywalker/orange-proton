@@ -54,12 +54,21 @@ $(document).ready(function () {
 
     $("#code-name").focus();
 
+    History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+      var State = History.getState(); // Note: We are using History.getState() instead of event.state
+      var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
+      var lang = State.data.lang;
+      mindmapper.getICD(code, lang);
+    });
+
     var codeParam = generic.getUrlVars()["code"];
     if (codeParam !== undefined && codeParam !== '') {
-        var code = codeParam.toUpperCase();
-        var lang = generic.getUrlVars()["lang"] || "de";
+      var code = codeParam.toUpperCase();
+      var lang = generic.getUrlVars()["lang"] || "de";
 
-        mindmapper.sendRequest(code, lang);
+      $("#code-name").val(code);
+      $("#lang").val(lang);
+      mindmapper.getICD(code, lang);
     }
 
     // set the locale and load translations
@@ -72,18 +81,13 @@ $(document).ready(function () {
 });
 
 var mindmapper = {
-    // updates the variable UI components. call after code and language change
-    updateUI: function(code, lang) {
+    // This method sends ajax requests to the API
+    sendRequest: function (code, lang) {
       $("#code-name").val(code);
       $("#lang").val(lang);
-      History.pushState(null, "OrangeProton", "?code="+code+"&lang="+lang);
-    },
-
-    // This method sends ajax requests to the API
-    sendRequest: function (input, lang) {
-        this.updateUI(input, lang);
-        this.getICD(input, lang);
-        // TODO mindmapper.getSpeciality(input);
+      History.pushState({code: code, lang: lang}, "OrangeProton", "?code="+code+"&lang="+lang);
+      //this.getICD(input, lang);
+      // TODO mindmapper.getSpeciality(input);
     },
 
     getICD: function (input, lang) {
@@ -99,7 +103,6 @@ var mindmapper = {
             contentType: "charset=UTF-8",
             success: function (response, status) {
               $('#mindmap').cleanUp();
-              History.pushState(null, "OrangeProton", params);
 
               var status = response.status;
               if( status === 'error' ) {
