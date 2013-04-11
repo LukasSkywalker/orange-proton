@@ -35,13 +35,19 @@ $(document).ready(function () {
 
     // start position detection
     // TODO: add shim for IE
-    if (navigator.geolocation) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function success( position ) {
-        mindmapper.lat = position.coords.latitude;
-        mindmapper.long = position.coords.longitude;
-      }, function error( msg ) {
-        alert(typeof msg == 'string' ? msg : "error");
+        var lat = mindmapper.lat = position.coords.latitude;
+        var lng = mindmapper.lng = position.coords.longitude;
+        $('#location').html('{0}, {1}'.format(lat, lng));
+      }, function error( error ) {
+        alert(error.message);
+        var lat = orangeproton.options.defaultLocation.lat;
+        var lng = orangeproton.options.defaultLocation.lng;
+        $('#location').html('{0}, {1}'.format(lat, lng));
       });
+    }else{
+      alert("I'm sorry, but Geolocation services are not supported by your browser.");
     }
 
 
@@ -244,8 +250,8 @@ var mindmapper = {
     //TODO delete previous Lines of Doctor nodes in Megamind
     getDoctors: function (fields, lang) {
         $('.docoverlay').remove();  //delete previously loaded stuff
-        var lat = orangeproton.options.defaultLocation.lat;
-        var lng = orangeproton.options.defaultLocation.lng;
+        var lat = mindmapper.lat || orangeproton.options.defaultLocation.lat;
+        var lng = mindmapper.lng || orangeproton.options.defaultLocation.lng;
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
@@ -300,7 +306,7 @@ var mindmapper = {
                 //Show First your current Location
                 $('#map-frame').first().attr('src', 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
                     '&q={1}&t=h&z=17&output=embed'
-                        .format(lang, encodeURIComponent(mindmapper.lat+","+mindmapper.long)));
+                        .format(lang, encodeURIComponent(mindmapper.lat+","+mindmapper.lng)));
             },
 
             error: mindmapper.handleApiError,
