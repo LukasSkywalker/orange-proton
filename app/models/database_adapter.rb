@@ -141,7 +141,7 @@ class DatabaseAdapter
     db = @client['mdc']
     col = db['mdcNames']
     document=col.find_one({drgprefix: drg_prefix})
-    document['code']
+    document.nil? ? nil : document['code']
   end
 
   # @return The name of a Fachgebiet/Spezialisierung of the given code in the language specified.
