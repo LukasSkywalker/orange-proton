@@ -11,7 +11,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
   def get_fields(icd_code, max_count, language)
     entry = self.db.get_icd_entry(icd_code, "de") # all the keywords are in German so... 
-    puts entry
+    Rails.logger.info entry
     keywords = self.db.get_fachgebiete_keywords() 
 
     names = []
@@ -20,11 +20,11 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
     fs = []
     names.each do |name|
-      puts "name '#{name}'..." # TODO remove puts
+      Rails.logger.info "name '#{name}'..."
       keywords.each do |(keyword, fs_code)|
-        puts "keyword '#{keyword}', code #{fs_code}"
+        Rails.logger.info "keyword '#{keyword}', code #{fs_code}"
         next unless name.include? keyword # keep case! we don't want "Hand" to match "Behandlung"
-        puts "matches keyword #{keyword}"
+        Rails.logger.info "matches keyword #{keyword}"
         relatedness = 1 # TODO Increase if already there?
 
         fs << new_fs_field_entry(fs_code, relatedness, language)

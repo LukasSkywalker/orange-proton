@@ -70,7 +70,7 @@ class DatabaseAdapter
     f = {}
     documents = @client['fachgebieteKeywords']['fachgebieteKeywords'].find()
     documents.each do |document|
-      puts "found fachgebieteKeywords #{document}"
+      Rails.logger.info "found fachgebieteKeywords #{document}"
       f[document['keyword']] = document['fs_code']
     end
     return f

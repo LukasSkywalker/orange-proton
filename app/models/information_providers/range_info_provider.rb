@@ -15,9 +15,9 @@ class RangeInfoProvider < DatabaseInfoProvider
         else
           unless (fields.select{|f| f.code==code and f.relatedness<relatedness}).empty?
             existing = fields.select{|f| f.code==code and f.relatedness<relatedness}[0]
-            puts existing
+            Rails.logger.info existing
             existing.relatedness = relatedness
-            puts existing
+            Rails.logger.info existing
           end
         end
       end

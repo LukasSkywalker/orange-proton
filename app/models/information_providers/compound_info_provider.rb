@@ -54,8 +54,8 @@ class CompoundInfoProvider < DatabaseInfoProvider
       next unless relatedness > 0.0
 
       tf = component.provider.get_fields(code, max_count, language)
-      puts "#{provider_name} found: "
-      puts tf.empty? ? 'nothing' : tf
+      Rails.logger.info "#{provider_name} found: "
+      Rails.logger.info tf.empty? ? 'nothing' : tf
 
       # TODO Couldn't we get a race if we do this in parallel?
       fields.concat(fields_multiply_relatedness(tf, relatedness))
