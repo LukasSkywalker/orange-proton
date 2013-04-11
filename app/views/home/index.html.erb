@@ -6,14 +6,11 @@
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyAjPl4yzI4xYU9yw2GgptYV547pFo3ounE"></script>
         <%= javascript_include_tag "application" %>
         <%= csrf_meta_tags %>
-        <script type="text/javascript" src="https://raw.github.com/LukasSkywalker/js-helpers/master/arrayHelpers.js"></script>
-        <script type="text/javascript" src="https://raw.github.com/LukasSkywalker/js-helpers/master/stringHelpers.js"></script>
-        <script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
     </head>
     <body>
         <div id="search-bar">
             <input id="code-name" type="text" placeholder="ICD Code">
-            <i id="search-button" class="icon-search icon-large"></i>
+            <i id="search-button" class="icon-search icon-large clickable"></i>
             <div class="hide-arrow">
                 <select name="lang" id="lang" size="1">
                     <option value="de">Deutsch</option>
