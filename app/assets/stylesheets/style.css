@@ -201,6 +201,10 @@ input[type=button]:hover {
     overflow-x: hidden;
 }
 
+#doclabel{
+    width: 100%;
+}
+
 .docoverlay {
     height: 100%;
     width: 100%;
@@ -210,6 +214,7 @@ input[type=button]:hover {
     float:left;
     display:inline;
     width: 60%;
+    height: 100%;
 }
 
 #map-frame{

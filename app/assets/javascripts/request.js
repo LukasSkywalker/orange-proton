@@ -273,7 +273,7 @@ var mindmapper = {
                             .format(lang, encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz'));
                     var element =
                       '<input id="docitem-{0}" class="docitem" type="radio" name="doctors">'
-                    +   '<label for="docitem-{0}" >'
+                    +   '<label id="doclabel" for="docitem-{0}" >'
                     +   '  <p class="doc title">{1}</p>'
                     +   '  <p class="doc address">{2}<br />{3}</p>'
                     +   '</label>'
@@ -281,9 +281,10 @@ var mindmapper = {
                     var menuitem = $(element.format(i, title, name, address));
 
 
-
                     menuitem.on('change', {url: url, details: doc}, function doctorClick(e) {
                       $('#map-frame').first().attr('src', e.data.url);
+
+
                     });
                     doclist.append(menuitem);
                 }
