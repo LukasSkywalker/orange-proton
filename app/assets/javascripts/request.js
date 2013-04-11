@@ -47,7 +47,7 @@ $(document).ready(function () {
 
     // overwrite window.alert() with a much fancier alternative
     function betterAlert( msg ) {
-      jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
+      jQuery.fancybox({'modal' : true, 'content' : '<i class="icon-info-sign icon-large"></i><div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
       $('.confirm-button').focus();
     }
     window.alert = betterAlert;
@@ -187,13 +187,13 @@ var mindmapper = {
 
                 var s = [];
                 var fields = response.result.fields;
-                for (var i = 0; i < Math.min(orangeproton.options.display.max_inclusiva, fields.length); i++) {
+                for (var i = 0; i < Math.min(orangeproton.options.display.max_fields, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    var newdiv = $('<div class="cat" style="background-color:{0}">{1}: {2}</div>'.format(color, f, n));
+                    var newdiv = $('<div class="cat" style="background-color:{0}">{1}: {2}</i></div>'.format(color, f, n));
                     newdiv.on('click', { field: f }, function(e){
                       $(this).spin(orangeproton.options.libraries.spinner);
                       mindmapper.getDoctors(e.data.field,lang);

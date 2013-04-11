@@ -30,12 +30,12 @@ div.node {
 }
 
 .syn {
-    border-radius: 20px;
+    border-radius: 10px;
     border: 2px solid black;
 }
 
 .cat {
-    border-radius: 20px;
+    border-radius: 10px;
     border: 3px double blue;
 }
 
@@ -44,17 +44,17 @@ div.node {
 }
 
 .drg {
-    border-radius: 20px;
+    border-radius: 10px;
     border: 2px dashed red;
 }
 
 .exclusiva {
-    border-radius: 20px;
+    border-radius: 10px;
     border: 2px dotted green;
 }
 
 .inclusiva {
-    border-radius: 20px;
+    border-radius: 10px;
     border: 2px solid orange;
 }
 
@@ -115,7 +115,7 @@ div.node {
     height: 28px;
     margin-top: 10px;
     margin-left: 15px;
-    border-radius: 15px;
+    border-radius: 5px;
     border: 1px solid #cccccc;
     padding-left: 15px;
     float:left;
@@ -170,11 +170,10 @@ html, body {
 
 input[type=button] {
     background-color: #eee;
-    border-radius: 15px;
-    padding-left: 15px;
-    padding-right: 15px;
+    border-radius: 5px;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
     height: 32px;
-	padding-top: 3px;
     border: 1px solid #ccc;
 }
 
