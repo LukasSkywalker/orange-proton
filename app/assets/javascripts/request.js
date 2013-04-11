@@ -320,7 +320,7 @@ function setLocale(locale) {
 function updateUiLanguage() {
   $('#legend').empty();
 
-  var identifiers = ['syn', 'cat', 'doc', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
+  var identifiers = ['syn', 'cat', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
   $.each(identifiers, function(index, name) {
     $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
