@@ -58,6 +58,8 @@ $(document).ready(function () {
       var State = History.getState(); // Note: We are using History.getState() instead of event.state
       var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
       var lang = State.data.lang;
+      $("#code-name").val(code);
+      $("#lang").val(lang);
       mindmapper.getICD(code, lang);
     });
 
