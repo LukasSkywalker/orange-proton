@@ -20,7 +20,7 @@ describe RangeInfoProvider do
 
   it 'S69.9 should include these specialities' do
     icd = "S69.9"
-    field1 = FieldEntry.new('Handchirurgie', 1.0, 129)
+    field1 = FieldEntry.new('Handchirurgie', 0.8, 129)
 
     var = @provider.get_fields(icd, 4, 'de')
     var.should include(field1)

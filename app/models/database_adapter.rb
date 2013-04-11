@@ -185,6 +185,7 @@ class DatabaseAdapter
   # Every range contains an array 'fmhcodes' of codes related to it.
   # This is based on a manually set up table.
   def get_ranges (icd)
+    icd = icd[0]+icd[1]+icd[2]
     db = @client['ICDRangeFSH']
     col = db['mappings']
     ranges = []
