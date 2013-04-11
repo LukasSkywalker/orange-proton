@@ -17,7 +17,7 @@ describe ThesaurInfoProvider do
     @db.stub(:get_fs_name).with(4, anything).and_return('Invasive Gynäkologie')
   end
 
-  it 'should work only return fields of first thesaur fs codes' do
+  it 'should only return fields of first thesaur fs codes' do
     @db.stub(:is_icd_code_in_thesaur_named?).and_return true, false
 
     @db.should_receive(:get_available_thesaur_names).exactly(:once)
@@ -35,7 +35,7 @@ describe ThesaurInfoProvider do
     fields.should ==[FieldEntry.new('Allg. Chirurgie', 1, 1), FieldEntry.new('Plast. Chirurgie', 1, 2)]
   end
 
-  it 'should work only return fields of second thesaur fs codes' do
+  it 'should only return fields of second thesaur fs codes' do
     @db.stub(:is_icd_code_in_thesaur_named?).and_return false, true
 
     @db.should_receive(:get_available_thesaur_names).exactly(:once)
@@ -53,7 +53,7 @@ describe ThesaurInfoProvider do
     fields.should ==[FieldEntry.new('Allg. Gynäkologie', 1, 3), FieldEntry.new('Invasive Gynäkologie', 1, 4)]
   end
 
-  it 'should work return all fields of all thesaurs' do
+  it 'should return all fields of all thesaurs' do
     @db.stub(:is_icd_code_in_thesaur_named?).and_return true
 
     @db.should_receive(:get_available_thesaur_names).exactly(:once)
@@ -75,7 +75,7 @@ describe ThesaurInfoProvider do
 
   end
 
-  it 'should work return empty array if ICD is not in any thesaur' do
+  it 'should return empty array if ICD is not in any thesaur' do
     @db.stub(:is_icd_code_in_thesaur_named?).and_return false
 
     @db.should_receive(:get_available_thesaur_names).exactly(:once)
