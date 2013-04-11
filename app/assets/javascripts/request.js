@@ -138,15 +138,16 @@ var mindmapper = {
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                   var newdiv = $('<div class="super">{0}<br />{1}</div>'.format(superclass, super_name));
-                  newdiv.on('click', { superclass: superclass }, function getSuperData(e){
-                    var code = e.data.superclass;
-                    if( code.indexOf('-') === -1 ) {    //only search non-ranges
+                  if( superclass.indexOf('-') === -1 ) {    //only allow click for non-ranges
+                    newdiv.addClass('clickable');
+                    newdiv.on('click', { superclass: superclass }, function getSuperData(e){
+                      var code = e.data.superclass;
                       var lang = $("#lang").val();
                       $("#code-name").val(code);
                       mindmapper.sendRequest(code, lang);
                       $('#mindmap').setRoot(this, true);
-                    }
-                  });
+                    });
+                  }
                   synonyms.push(newdiv);
                 }
 
