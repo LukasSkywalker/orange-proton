@@ -274,7 +274,7 @@ var mindmapper = {
                             .format(lang, encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz'));
                     var element =
                       '<input id="docitem-{0}" class="docitem" type="radio" name="doctors">'
-                    +   '<label id="doclabel" for="docitem-{0}" >'
+                    +   '<label class="doclabel" for="docitem-{0}" >'
                     +   '  <p class="doc title">{1}</p>'
                     +   '  <p class="doc address">{2}<br />{3}</p>'
                     +   '</label>'

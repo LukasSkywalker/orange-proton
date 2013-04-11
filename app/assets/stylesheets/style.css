@@ -200,7 +200,7 @@ input[type=button]:hover {
     overflow-x: hidden;
 }
 
-#doclabel{
+.doclabel{
     width: 100%;
 }
 
