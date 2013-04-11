@@ -195,16 +195,25 @@ input[type=button]:hover {
     float:left;
     display:inline;
     width: 40%;
-    margin:5px;
-    height: 415px;
+    height: 100%;
     overflow: scroll;
     overflow-x: hidden;
+}
+
+#doclabel{
+    width: 100%;
+}
+
+.docoverlay {
+    height: 100%;
+    width: 100%;
 }
 
 #map{
     float:left;
     display:inline;
-    width: 55%;
+    width: 60%;
+    height: 100%;
 }
 
 #map-frame{

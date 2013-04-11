@@ -28,7 +28,7 @@ var megamind = {
     verticalFillAmount: 0.8,
     verticalWobbling: 0.6,
     horizontalWobbling: 0.6,
-    animationDuration: 1000
+    animationDuration: 400
   }
 }
 

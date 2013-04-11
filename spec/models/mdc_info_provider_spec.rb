@@ -16,4 +16,5 @@ describe MDCInfoProvider do
     var = @provider.get_fields(@icd, 3, 'it')
     var.should include(field1, field2, field3)
   end
+
 end

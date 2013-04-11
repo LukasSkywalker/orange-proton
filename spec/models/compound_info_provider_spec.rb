@@ -30,10 +30,10 @@ describe CompoundInfoProvider do
     var.should include(field_one, field_two)
   end
 
-  it 'should get all provider results' do
-    var = @provider.get_provider_results(@icd, 7, 'en')
-    var.should include(@field1, @field2, @field3, @field4, @field5, @field6, @field7)
-  end
+  #it 'should get all provider results' do
+  #  var = @provider.get_provider_results(@icd, 7, 'en')
+  #  var.should include(@field1, @field2, @field3, @field4, @field5, @field6, @field7)
+  #end
 
   it 'should remove duplicate fields' do
     var = @provider.remove_duplicate_fields([@field1, @field2, @field3])
