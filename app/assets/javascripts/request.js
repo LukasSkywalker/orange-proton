@@ -17,6 +17,7 @@ $(document).ready(function () {
         }
     });
 
+    // click handler for search button
     $("#search-button").on('click', null, function(){
       var code = $('#code-name').val().toUpperCase();
       var lang = $('#lang').val();
@@ -33,6 +34,8 @@ $(document).ready(function () {
         setLocale(lang);
     });
 
+    // start position detection
+    // TODO: add shim for IE
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(function success( position ) {
         mindmapper.lat = position.coords.latitude;
@@ -43,7 +46,7 @@ $(document).ready(function () {
     }
 
 
-
+    // overwrite window.alert() with a much fancier alternative
     function betterAlert( msg ) {
       jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
       $('.confirm-button').focus();
@@ -60,7 +63,18 @@ $(document).ready(function () {
         mindmapper.sendRequest(code, lang);
     }
 
+    // set the locale and load translations
     setLocale($("#lang").val());
+
+    // detect SVG support, by Modernizr
+    function supportsSVG() {
+      return !! document.createElementNS && !! document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect;
+    }
+
+    // add svg class to elements with SVG components
+    if (supportsSVG()) {
+      $('.hide-arrow').addClass('svg');
+    }
 });
 
 
@@ -77,6 +91,7 @@ var mindmapper = {
         hwaccel: false // Whether to use hardware acceleration
     },
 
+    // updates the variable UI components. call after code and language change
     updateUI: function(code, lang) {
       $("#code-name").val(code);
       $("#lang").val(lang);
@@ -91,6 +106,7 @@ var mindmapper = {
         // TODO mindmapper.getSpeciality(input);
     },
 
+    // check for console.log becaues IE does not implement it
     log: function (text) {
         // IE does not know the console object
         if (window.console) {
@@ -239,7 +255,10 @@ var mindmapper = {
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
                     var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
-                    newdiv.on('click', { field: f }, function(e){ mindmapper.getDoctors(e.data.field,lang); });
+                    newdiv.on('click', { field: f }, function(e){
+                      $(this).spin(mindmapper.spinner_opts);
+                      mindmapper.getDoctors(e.data.field,lang);
+                    });
                     s.push(newdiv);
                 }
 
@@ -250,7 +269,7 @@ var mindmapper = {
             error: function (xhr, httpStatus, error) {
                 try{
                   var message = jQuery.parseJSON(xhr.responseText).error;
--                 alert(message);
+                  alert(message);
                 }catch(e) {
                   alert(error);
                 }
@@ -262,7 +281,8 @@ var mindmapper = {
         });
     },
 
-    generateHTML: function(collection, limit, className, nameFunction) {
+    // generates a div from a collection of strings and returns their jQuery objects
+    generateHTML: function(collection, limit, className) {
       var elements = [];
       if(!collection) return elements;
       collection = collection.slice(0, limit);
@@ -277,7 +297,7 @@ var mindmapper = {
     //TODO delete previous Lines of Doctor nodes in Megamind
     getDoctors: function (fields, lang) {
         var DOC_COUNT = 4;
-        $('.doc').remove();  //delete previously loaded stuff
+        $('.docoverlay').remove();  //delete previously loaded stuff
 
         jQuery.ajax({
             url: '/api/v1/docs/get?long=' + mindmapper.long + '&lat=' + mindmapper.lat + '&field=' + fields + '&count=' + DOC_COUNT,
@@ -285,8 +305,7 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-
-                $('.doc').remove();  //delete previously loaded stuff
+                $('.docoverlay').remove();  //delete previously loaded stuff
                 var status = response.status;
                 if( status === 'error' ) {
                   var message = response.message;
@@ -294,21 +313,42 @@ var mindmapper = {
                   return;
                 }
 
-                var s = [];
+                var overlay = $('<div class="docoverlay"/>');
+                var doclist = $('<div id="doclist"><ul></ul></div>');
+                var map = $('<div id="map"/>');
+                var mapframe = $('<iframe align="center" id="map-frame"/>');
+                map.append(mapframe);
+                overlay.append(doclist).append(map).append('<div style="clear:both;"/>');
                 var docs = response.result;
-                for (var i = 0; i < Math.min(DOC_COUNT, docs.length); i++) {
-                    var url = encodeURI('http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+'&q='+docs[i].name+',+'+docs[i].address+',+Schweiz&t=h&z=17&output=embed');
-                    var newdiv = $('<div class="doc">'
-                        + docs[i].title + ',<br />'
-                        + docs[i].name + ', <br />'
-                        + '<a class="doctor-map fancybox.iframe" href='+url+'>'
-                        + docs[i].address + ' <br />'
-                        + '</a></div>'
-                        );
-                        s.push(newdiv);
+                for (var i = 0; i < docs.length; i++) {
+                    var doc = docs[i];
+                    var url = 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+
+                        '&q='+encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz')+
+                        '&t=h&z=17&output=embed';
+                    var menuitem = $('<input id="docitem-'+i+'" class="docitem" type="radio" name="doctors">'
+                        + '<label for="docitem-'+i+'" ><p class="doc title">'
+                        + doc.title + '</p><p class="doc address">'
+                        + doc.name + '<br />'
+                        + doc.address.replace(/,\s*/gi, "<br />") + '</p></label></input>');
+                    menuitem.on('change', {url: url, details: doc}, function doctorClick(e) {
+                      $('#map-frame').first().attr('src', e.data.url);
+                    });
+                    doclist.append(menuitem);
                 }
 
-                new Canvas(440,550, 800, 400).addNodes(s);
+                $.fancybox(overlay[0], {
+                  maxWidth	: 1000,
+                  maxHeight	: 600,
+                  fitToView	: false,
+                  width		: '70%',
+                  height		: '70%',
+                  autoSize	: false,
+                  closeClick	: false,
+                  openEffect	: 'none',
+                  closeEffect	: 'none'
+                });
+                /*new Canvas(440,550, 800, 400).addNodes(s);
+
 
                 $(".doctor-map").fancybox({
                     maxWidth	: 800,
@@ -320,15 +360,18 @@ var mindmapper = {
                     closeClick	: false,
                     openEffect	: 'none',
                     closeEffect	: 'none'
-                });
+                });*/
             },
             error: function (xhr, status, error) {
               try{
                 var message = jQuery.parseJSON(xhr.responseText).error;
--               alert(message);
+                alert(message);
               }catch(e) {
                 alert(error);
               }
+            },
+            complete: function() {
+              $('.spinner').remove();
             }
         });
     },
@@ -352,20 +395,18 @@ function getUrlVars() {
 
 function setLocale(locale) {
     I18n.locale = locale || "de";
-    displayLegend();
-    displaySendButton();
+    updateUiLanguage();
 }
 
-function displayLegend() {
-    $('#legend').empty();
+// load the legend and search button in the right translation
+function updateUiLanguage() {
+  $('#legend').empty();
 
-    var identifiers = ['syn', 'cat', 'doc', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
+  var identifiers = ['syn', 'cat', 'doc', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
-    $.each(identifiers, function(index, name) {
-        $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
-    });
-}
+  $.each(identifiers, function(index, name) {
+    $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
+  });
 
-function displaySendButton(){
-    $('#search-button').val(I18n.t('search'));
+  $('#search-button').val(I18n.t('search'));
 }

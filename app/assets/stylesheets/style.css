@@ -88,11 +88,6 @@ div.node {
     font-size: 15px;
 }
 
-.doc {
-    border-radius: 20px;
-    border: 1px dashed darkviolet;
-}
-
 #legend {
     width: 200px;
     margin: 10px;
@@ -137,36 +132,25 @@ div.node {
     -webkit-appearance: none;
 }
 
-.svg .hide-arrow {
+.hide-arrow {
     margin-top: 10px;
     border: 1px solid #cccccc;
     display: inline;
     position: absolute;
     right: 10px;
-    background: url(arrow.svg) no-repeat right white;
-	background-size: 30px 15px; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
     width: 100px;
     padding-top: 3px;
-    height: 27px;
     overflow: hidden;
     border-radius: 15px;
     float: right;
+    background: url(arrow.png) no-repeat right white;
+    height: 32px;
 }
 
-/* todo collapse shared code with above style (?) */
-.no-svg .hide-arrow {
-    margin-top: 10px;
-    border: 1px solid #cccccc;
-    display: inline;
-    position: absolute;
-    right: 10px;
-    background: url(arrow.png) no-repeat right white;
-    width: 100px;
-    padding-top: 3px;
-    height: 27px;
-    overflow: hidden;
-    border-radius: 15px;
-    float: right;
+.hide-arrow.svg {
+    background: url(arrow.svg) no-repeat right white !important;
+	background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
+    height: 27px !important;
 }
 
 html, body {
@@ -199,8 +183,59 @@ input[type=button]:hover {
     background-color: #aaa;
 }
 
-#search-button{
-  margin-left: 16px;
-  margin-top: 10px;
-  float: left;
+#search-button {
+    margin-left: 16px;
+    margin-top: 10px;
+    float: left;
+}
+
+#main {
+    width:100%;
+}
+#doclist {
+    float:left;
+    display:inline;
+    width: 40%;
+    margin:5px;
+    height: 415px;
+    overflow: scroll;
+    overflow-x: hidden;
+}
+
+#map{
+    float:left;
+    display:inline;
+    width: 55%;
+}
+
+#map-frame{
+    height: 100%;
+    width: 100%;
+}
+
+.docitem.active:after {
+  content: url(arrow.png);
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin: 10px;
+}
+
+#doclist input[type="radio"] {
+    display:none;
+}
+
+#doclist label {
+    display:inline-block;
+    background-color:#ddd;
+    padding:4px 11px;
+}
+
+#doclist input[type="radio"]:checked + label {
+    background-color: #bbb;
+}
+
+#doclist label:hover {
+    background-color: #666 !important;
+    color: #fff !important;
 }

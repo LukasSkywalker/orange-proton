@@ -3,11 +3,11 @@
     <head>
         <title>OrangeProton</title>
         <%= stylesheet_link_tag    "application", :media => "all" %>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyAjPl4yzI4xYU9yw2GgptYV547pFo3ounE"></script>
         <%= javascript_include_tag "application" %>
         <%= csrf_meta_tags %>
         <script type="text/javascript" src="https://raw.github.com/LukasSkywalker/js-helpers/master/arrayHelpers.js"></script>
         <script type="text/javascript" src="https://raw.github.com/DmitryBaranovskiy/raphael/master/raphael-min.js"></script>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
     </head>
     <body>
         <div id="search-bar">
@@ -25,25 +25,5 @@
         <div id="legend"></div>
         <div id="mindmap"></div>
         <div id="admin"></div>
-        <script>
-            /* from http://toddmotto.com/mastering-svg-use-for-a-retina-web-fallbacks-with-png-script/ */
-            /* TODO Move somewhere else */
-            function supportsSVG() {
-                return !! document.createElementNS && !! document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect;  
-            }
-            if (supportsSVG()) {
-                document.documentElement.className += ' svg';
-                } else {
-                document.documentElement.className += ' no-svg';
-                var imgs = document.getElementsByTagName('img');
-                var dotSVG = /.*\.svg$/;
-                for (var i = 0; i != imgs.length; ++i) {
-                    if(imgs[i].src.match(dotSVG)) {
-                        imgs[i].src = imgs[i].src.slice(0, -3) + 'png';
-                    }
-                }
-            }
-        </script>
-
     </body>
 </html>
