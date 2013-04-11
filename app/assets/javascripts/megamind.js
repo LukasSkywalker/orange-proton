@@ -1,3 +1,24 @@
+/*###################################*/
+/*#####   How to use MEGAMIND   #####*/
+/*###################################*/
+
+/* Megamind has a concept of different containers where the different nodes are put. This allows us to
+ split up the page to organize the nodes as we wish. Inside the containers, the nodes are automatically
+ laid out and distributed. Here are the instructions for generating a new container and adding nodes:
+ - initialize a mindmap. call megamind() on a jQuery object [let that be 'mm' here] that represents a
+ DOM node to do so
+ - set a root node by calling setRoot() on mm, with the HTML string of the node as parameter
+ - create an array which holds HTML-strings of the nodes. This is pretty straightforward, just see the examples below
+ - Call the Canvas constructor on mm: mm.addCanvas(left,top,width,height). All are CSS-pixel values
+ - Call .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
+ this array. You can also add click handlers or images or the <cat> element to the nodes.
+
+ Notes:
+ - elements that are too tall are discarded. We will have to find a better solution for this
+
+ You get the picture.
+ */
+
 var megamind = {
   rootNode : null,
   container : null,

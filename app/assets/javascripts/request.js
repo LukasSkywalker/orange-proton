@@ -1,6 +1,5 @@
 // This file handes search requests. It makes the AJAX-request and parses and displays the result.
 // TODO:
-// -define action when clicking a node
 // -namespace the whole file so we don't pollute 'window' too much (low priority)
 // -rethink the for-loops. maybe we could simplify them
 
@@ -55,10 +54,10 @@ $(document).ready(function () {
 
     $("#code-name").focus();
 
-    var codeParam = getUrlVars()["code"];
+    var codeParam = generic.getUrlVars()["code"];
     if (codeParam !== undefined && codeParam !== '') {
         var code = codeParam.toUpperCase();
-        var lang = getUrlVars()["lang"] || "de";
+        var lang = generic.getUrlVars()["lang"] || "de";
 
         mindmapper.sendRequest(code, lang);
     }
@@ -66,31 +65,13 @@ $(document).ready(function () {
     // set the locale and load translations
     setLocale($("#lang").val());
 
-    // detect SVG support, by Modernizr
-    function supportsSVG() {
-      return !! document.createElementNS && !! document.createElementNS('http://www.w3.org/2000/svg','svg').createSVGRect;
-    }
-
     // add svg class to elements with SVG components
-    if (supportsSVG()) {
+    if (generic.supportsSVG()) {
       $('.hide-arrow').addClass('svg');
     }
 });
 
-
 var mindmapper = {
-
-    lat: 7.438637,
-    long : 46.951081,
-
-    spinner_opts : {
-        lines: 13, // The number of lines to draw
-        width: 4, // The line thickness
-        trail: 60, // Afterglow percentage
-        shadow: false, // Whether to render a shadow
-        hwaccel: false // Whether to use hardware acceleration
-    },
-
     // updates the variable UI components. call after code and language change
     updateUI: function(code, lang) {
       $("#code-name").val(code);
@@ -100,35 +81,16 @@ var mindmapper = {
 
     // This method sends ajax requests to the API
     sendRequest: function (input, lang) {
-        this.log(input);
         this.updateUI(input, lang);
         this.getICD(input, lang);
         // TODO mindmapper.getSpeciality(input);
     },
 
-    // check for console.log becaues IE does not implement it
-    log: function (text) {
-        // IE does not know the console object
-        if (window.console) {
-            console.log(text);
-        }
-    },
-
     getICD: function (input, lang) {
-        var MAX_SYN = 5; // max number of synonyms to display
-        var MAX_FIELDS = 7; // max number of fields
-        var MAX_DRGS = 10;
-        var MAX_SUB = 5;
-        var MAX_INCLUSIVA = 3;
-        var MAX_EXCLUSIVA = 3;
-        var AS_LIST = true; // if synonyms should be in a list instead of bubbles
-
-        var params = '?code=' + input + '&lang=' + lang;
-
-
+        var params = '?code={0}&lang={1}'.format(input, lang);
         $('#mindmap').cleanUp();
 
-        $('#mindmap').spin(mindmapper.spinner_opts);
+        $('#mindmap').spin(orangeproton.options.libraries.spinner);
 
         jQuery.ajax({
             url: '/api/v1/fields/get' + params + '&count=4',
@@ -153,52 +115,29 @@ var mindmapper = {
               var mm = $('#mindmap');
 
               var container = mm.megamind();      //initialize
-              var rootNode = "<div class='root'>" + input + "</br>" + name + "</div>";
+              var rootNode = "<div class='root'>{0}</br>{1}</div>".format(input, name);
               var root = mm.setRoot(rootNode);
-
-
-                /*###################################*/
-                /*#####   How to use MEGAMIND   #####*/
-                /*###################################*/
-
-                /* Megamind has a concept of different containers where the different nodes are put. This allows us to
-                 split up the page to organize the nodes as we wish. Inside the containers, the nodes are automatically
-                 laid out and distributed. Here are the instructions for generating a new container and adding nodes:
-                 - initialize a mindmap. call megamind() on a jQuery object [let that be 'mm' here] that represents a
-                 DOM node to do so
-                 - set a root node by calling setRoot() on mm, with the HTML string of the node as parameter
-                 - create an array which holds HTML-strings of the nodes. This is pretty straightforward, just see the examples below
-                 - Call the Canvas constructor on mm: mm.addCanvas(left,top,width,height). All are CSS-pixel values
-                 - Call .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
-                 this array. You can also add click handlers or images or the <cat> element to the nodes.
-
-                 Notes:
-                 - elements that are too tall are discarded. We will have to find a better solution for this
-
-                 You get the picture.
-                 */
-
                 var synonyms = [];
 
-                if(AS_LIST)
+                if(orangeproton.options.display.as_list)
                 {
-                    var syn = data.synonyms.slice(0, MAX_SYN);
+                    var syn = data.synonyms.slice(0, orangeproton.options.display.max_syn);
                     var newdiv = $.map(syn, function(el) {
-                      return '<li>' + el + '</li>';
+                      return '<li>{0}</li>'.format(el);
                     }).join('');
 
                     if(newdiv != '')
-                      synonyms.push($('<div class="syn"><ul>' + newdiv + '</ul></div>'));
+                      synonyms.push($('<div class="syn"><ul>{0}</ul></div>'.format(newdiv)));
                 }
                 else
                 {
-                    synonyms = mindmapper.generateHTML(data.synonyms, MAX_SYN, 'syn');
+                    synonyms = mindmapper.generateHTML(data.synonyms, orangeproton.options.display.max_syn, 'syn');
                 }
 
                 var superclass = data.superclass;
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
-                  var newdiv = $('<div class="super">' + superclass + '<br />' + super_name + '</div>');
+                  var newdiv = $('<div class="super">{0}<br />{1}</div>'.format(superclass, super_name));
                   newdiv.on('click', { superclass: superclass }, function getSuperData(e){
                     var code = e.data.superclass;
                     if( code.indexOf('-') === -1 ) {    //only search non-ranges
@@ -211,7 +150,7 @@ var mindmapper = {
                   synonyms.push(newdiv);
                 }
 
-                $.each(data.subclasses.slice(0, MAX_SUB), function(index, name) {
+                $.each(data.subclasses.slice(0, orangeproton.options.display.max_sub), function(index, name) {
                   var element = jQuery('<div/>').addClass('sub').html(name).on('click', { code: name }, function(e){
                     var code = e.data.code;
                     var lang = $('#lang').val();
@@ -224,12 +163,12 @@ var mindmapper = {
                 var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
                 c.addNodes(synonyms);
 
-                var drgs = mindmapper.generateHTML(data.drgs, MAX_DRGS, 'drg');
+                var drgs = mindmapper.generateHTML(data.drgs, orangeproton.options.display.max_drgs, 'drg');
                 var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
                 c.addNodes(drgs);
 
                 var exclusiva = [];
-                var exc = data.exclusiva.slice(0, MAX_EXCLUSIVA);
+                var exc = data.exclusiva.slice(0, orangeproton.options.display.max_exclusiva);
                 $.each(exc, function(index, name) {
                   var icd_pattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/;
                   var result = icd_pattern.exec(name);
@@ -244,19 +183,19 @@ var mindmapper = {
                   exclusiva.push(element);
                 });
 
-                var inclusiva = mindmapper.generateHTML(data.inclusiva, MAX_INCLUSIVA, 'inclusiva');
+                var inclusiva = mindmapper.generateHTML(data.inclusiva, orangeproton.options.display.max_inclusiva, 'inclusiva');
 
                 var s = [];
                 var fields = response.result.fields;
-                for (var i = 0; i < Math.min(MAX_FIELDS, fields.length); i++) {
+                for (var i = 0; i < Math.min(orangeproton.options.display.max_inclusiva, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    var newdiv = $('<div class="cat" style="background-color:' + color + '">' +  f + ': ' + n +'</div>');
+                    var newdiv = $('<div class="cat" style="background-color:{0}">{1}: {2}</div>'.format(color, f, n));
                     newdiv.on('click', { field: f }, function(e){
-                      $(this).spin(mindmapper.spinner_opts);
+                      $(this).spin(orangeproton.options.libraries.spinner);
                       mindmapper.getDoctors(e.data.field,lang);
                     });
                     s.push(newdiv);
@@ -266,19 +205,21 @@ var mindmapper = {
                   c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 
-            error: function (xhr, httpStatus, error) {
-                try{
-                  var message = jQuery.parseJSON(xhr.responseText).error;
-                  alert(message);
-                }catch(e) {
-                  alert(error);
-                }
-            },
+            error: mindmapper.handleApiError,
 
             complete: function(xhr, status) {
                 $('#mindmap').spin(false);
             }
         });
+    },
+
+    handleApiError: function(xhr, httpStatus, error) {
+      try{
+        var message = jQuery.parseJSON(xhr.responseText).error;
+        alert(message);
+      }catch(e) {
+        alert(error);
+      }
     },
 
     // generates a div from a collection of strings and returns their jQuery objects
@@ -296,11 +237,13 @@ var mindmapper = {
     //Get the doctors from the db specific to the field and the users location
     //TODO delete previous Lines of Doctor nodes in Megamind
     getDoctors: function (fields, lang) {
-        var DOC_COUNT = 4;
         $('.docoverlay').remove();  //delete previously loaded stuff
+        var lat = orangeproton.options.defaultLocation.lat;
+        var lng = orangeproton.options.defaultLocation.lng;
+        var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
-            url: '/api/v1/docs/get?long=' + mindmapper.long + '&lat=' + mindmapper.lat + '&field=' + fields + '&count=' + DOC_COUNT,
+            url: '/api/v1/docs/get?lat={0}&long={1}&field={2}&count={3}'.format(lat, lng, fields, count),
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
@@ -322,54 +265,31 @@ var mindmapper = {
                 var docs = response.result;
                 for (var i = 0; i < docs.length; i++) {
                     var doc = docs[i];
-                    var url = 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl='+lang+
-                        '&q='+encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz')+
-                        '&t=h&z=17&output=embed';
-                    var menuitem = $('<input id="docitem-'+i+'" class="docitem" type="radio" name="doctors">'
-                        + '<label for="docitem-'+i+'" ><p class="doc title">'
-                        + doc.title + '</p><p class="doc address">'
-                        + doc.name + '<br />'
-                        + doc.address.replace(/,\s*/gi, "<br />") + '</p></label></input>');
+                    var title = doc.title;
+                    var name = doc.name;
+                    var address = doc.address.replace(/,\s*/gi, "<br />");
+                    var url = 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
+                        '&q={1}&t=h&z=17&output=embed'
+                            .format(lang, encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz'));
+                    var element =
+                      '<input id="docitem-{0}" class="docitem" type="radio" name="doctors">'
+                    +   '<label for="docitem-{0}" >'
+                    +   '  <p class="doc title">{1}</p>'
+                    +   '  <p class="doc address">{2}<br />{3}</p>'
+                    +   '</label>'
+                    + '</input>';
+                    var menuitem = $(element.format(i, title, name, address));
                     menuitem.on('change', {url: url, details: doc}, function doctorClick(e) {
                       $('#map-frame').first().attr('src', e.data.url);
                     });
                     doclist.append(menuitem);
                 }
 
-                $.fancybox(overlay[0], {
-                  maxWidth	: 1000,
-                  maxHeight	: 600,
-                  fitToView	: false,
-                  width		: '70%',
-                  height		: '70%',
-                  autoSize	: false,
-                  closeClick	: false,
-                  openEffect	: 'none',
-                  closeEffect	: 'none'
-                });
-                /*new Canvas(440,550, 800, 400).addNodes(s);
-
-
-                $(".doctor-map").fancybox({
-                    maxWidth	: 800,
-                    maxHeight	: 600,
-                    fitToView	: false,
-                    width		: '70%',
-                    height		: '70%',
-                    autoSize	: false,
-                    closeClick	: false,
-                    openEffect	: 'none',
-                    closeEffect	: 'none'
-                });*/
+                $.fancybox(overlay[0], orangeproton.options.libraries.fancybox);
             },
-            error: function (xhr, status, error) {
-              try{
-                var message = jQuery.parseJSON(xhr.responseText).error;
-                alert(message);
-              }catch(e) {
-                alert(error);
-              }
-            },
+
+            error: mindmapper.handleApiError,
+
             complete: function() {
               $('.spinner').remove();
             }
@@ -379,18 +299,6 @@ var mindmapper = {
     getSpeciality: function (input) {
         // TODO
     }
-}
-
-// Read a page's GET URL variables and return them as an associative array.
-function getUrlVars() {
-    var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-    for (var i = 0; i < hashes.length; i++) {
-        hash = hashes[i].split('=');
-        vars.push(hash[0]);
-        vars[hash[0]] = hash[1];
-    }
-    return vars;
 }
 
 function setLocale(locale) {
