@@ -62,10 +62,17 @@ div.node {
     border: 2px solid gray;
 }
 
+.super:hover{
+    cursor: pointer;
+}
+
 .sub {
     border: 2px solid cyan;
 }
 
+.sub:hover{
+    cursor: pointer;
+}
 .legend {
     margin: 10px;
     padding-left: 10px;
