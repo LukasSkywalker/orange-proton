@@ -148,8 +148,6 @@ div.node, div.legend {
     height: 28px;
     margin-top: 10px;
     margin-left: 15px;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
     padding-left: 15px;
     float:left;
   }
@@ -205,6 +203,16 @@ div.node, div.legend {
     background: url(arrow.svg) no-repeat right white !important;
     background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
     height: 27px !important;
+  }
+}
+
+input[type=text] {
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  padding: {
+    left: 2px;
+    top: 2px;
+    bottom: 2px;
   }
 }
 
