@@ -17,7 +17,6 @@ describe DatabaseAdapter do
     @t_paediatrie = client['thesauren']['Paediatrie']
     @t_psycho = client['thesauren']['Psycho']
     @tfs1 = client['thesauren']['thesaurusToFSCode']
-    @tfs2 = client['thesauren']['thesaurusToFSCode2']
 
     @icd_de = client['icd_2012_ch']['de']
     @icd_fr = client['icd_2012_ch']['fr']
@@ -52,8 +51,7 @@ describe DatabaseAdapter do
     @t_orthopdie.count().should eq(551)
     @t_paediatrie.count().should eq(465)
     @t_psycho.count().should eq(456)
-    @tfs1.count().should eq(96)
-    @tfs2.count().should eq(19)
+    @tfs1.count().should eq(8)
   end
 
   it 'should match the icd collections' do
