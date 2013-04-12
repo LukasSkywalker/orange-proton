@@ -5,7 +5,7 @@
 
 $(document).ready(function () {
     // load the admin interface
-    displayAdmin();
+    orangeproton.admin.loadPanel();
 
     // add event handler for code searches
     $("#code-name").keyup(function (e) {
