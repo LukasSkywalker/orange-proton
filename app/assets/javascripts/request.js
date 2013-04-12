@@ -23,6 +23,15 @@ $(document).ready(function () {
       mindmapper.sendRequest(code, lang);
     });
 
+    $("#location-config").on('click', null, function() {
+      function getLocation() {
+        jQuery.fancybox.close();
+        mindmapper.getUserLocation($('#userLocation').val());
+      }
+      var content = 'Ort: <input type="text" id="userLocation">'
+      messageBox('Location', content, ['Ok'], [getLocation]);
+    });
+
     // event handler for language change on UI element
     $("#lang").change(function () {
         var code =  $("#code-name").val().toUpperCase();
@@ -36,15 +45,22 @@ $(document).ready(function () {
     // start position detection
     // TODO: add shim for IE
     if ("geolocation" in navigator) {
+      var lat = orangeproton.options.defaultLocation.lat;
+      var lng = orangeproton.options.defaultLocation.lng;
       navigator.geolocation.getCurrentPosition(function success( position ) {
-        var lat = mindmapper.lat = position.coords.latitude;
-        var lng = mindmapper.lng = position.coords.longitude;
-        $('#location').html('{0}, {1}'.format(lat, lng));
+        lat = mindmapper.geoLocation.lat = position.coords.latitude;
+        lng = mindmapper.geoLocation.lng = position.coords.longitude;
       }, function error( error ) {
         alert(error.message);
-        var lat = orangeproton.options.defaultLocation.lat;
-        var lng = orangeproton.options.defaultLocation.lng;
-        $('#location').html('{0}, {1}'.format(lat, lng));
+      });
+      GMaps.geocode({
+        lat: lat,
+        lng: lng,
+        callback: function(results, status) {
+          if (status == 'OK') {
+            $('#location').html(results[0].formatted_address.ellipses(30));
+          }
+        }
       });
     }else{
       alert("I'm sorry, but Geolocation services are not supported by your browser.");
@@ -53,8 +69,8 @@ $(document).ready(function () {
 
     // overwrite window.alert() with a much fancier alternative
     function betterAlert( msg ) {
-      jQuery.fancybox({'modal' : true, 'content' : '<i class="icon-info-sign icon-large"></i><div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
-      $('.confirm-button').focus();
+      function closeBox(){ jQuery.fancybox.close(); };
+      messageBox('Info', msg, ['Ok'], [closeBox], 0);
     }
     window.alert = betterAlert;
 
@@ -89,6 +105,12 @@ $(document).ready(function () {
 });
 
 var mindmapper = {
+  userLocation: null,
+  geoLocation: {
+    lat: orangeproton.options.defaultLocation.lat,
+    lng: orangeproton.options.defaultLocation.lng
+  },
+
     // This method sends ajax requests to the API
     sendRequest: function (code, lang) {
       $("#code-name").val(code);
@@ -250,8 +272,8 @@ var mindmapper = {
     //TODO delete previous Lines of Doctor nodes in Megamind
     getDoctors: function (fields, lang) {
         $('.docoverlay').remove();  //delete previously loaded stuff
-        var lat = mindmapper.lat || orangeproton.options.defaultLocation.lat;
-        var lng = mindmapper.lng || orangeproton.options.defaultLocation.lng;
+        var lat = mindmapper.getLocation().lat;
+        var lng = mindmapper.getLocation().lng;
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
@@ -319,7 +341,25 @@ var mindmapper = {
 
     getSpeciality: function (input) {
         // TODO
-    }
+    },
+
+  getLocation: function() {
+    return this.userLocation ? this.userLocation : this.geoLocation;
+  },
+
+  getUserLocation: function( userInput ) {
+    GMaps.geocode({
+      address: userInput,
+      callback: function(results, status) {
+        if (status == 'OK') {
+          var address = results[0].formatted_address;
+          var latlng = results[0].geometry.location;
+          $('#location').html(address);
+          mindmapper.userLocation = {lat: latlng.lat(), lng: latlng.lng()};
+        }
+      }
+    });
+  }
 }
 
 function setLocale(locale) {
@@ -338,4 +378,18 @@ function updateUiLanguage() {
   });
 
   $('#search-button').val(I18n.t('search'));
+}
+
+function messageBox(title, content, buttons, actions, focusIndex){
+  var inputBox = $('<div class="messagebox"><h3>'+title+'</h3><p>'+content+'</p><div class="messagebox-buttons"></div></div>');
+  for(var i=0; i<buttons.length; i++){
+    var text = buttons[i];
+    var action = actions[i];
+    var button = $('<input type="button" value="'+text+'">');
+    button.on('click', null, action);
+    if(focusIndex && focusIndex === i)
+      button.focus();
+    inputBox.children('.messagebox-buttons').first().append(button);
+  }
+  jQuery.fancybox({'modal' : true, 'content' : inputBox});
 }

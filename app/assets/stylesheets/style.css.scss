@@ -88,11 +88,11 @@ div.node, div.legend {
     @include border-radius(20px);
     z-index: 10;
   }
+}
 
-  /* for the nodes that sometimes are and sometimes not */
-  &.clickable {
-    @include clickable;
-  }
+/* all clickable elements */
+.clickable {
+  @include clickable;
 }
 
 /* the admin panel */
@@ -165,6 +165,12 @@ div.node, div.legend {
   #location {
     margin-left: 500px;
     margin-top: 16px;
+    float: left;
+    font-size: 0.8em;
+  }
+  #location-config {
+    margin-top: 16px;
+    margin-left: 20px;
     float: left;
     font-size: 0.8em;
   }
@@ -268,5 +274,15 @@ input[type=button] {
         margin: 10px;
       }
     }
+  }
+}
+
+.messagebox {
+  margin: 1px;
+  width: 240px;
+
+  div.messagebox-buttons {
+    text-align: right;
+    margin-top: 10px;
   }
 }
