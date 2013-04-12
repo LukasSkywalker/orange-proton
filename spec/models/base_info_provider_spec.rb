@@ -7,48 +7,30 @@ describe BaseInformationProvider do
   end
 
   it 'should find code type of chop' do
-    chop1 = '00.4D'
-    chop2 = '89.d3.5C'
-    chop3 = '99.B6.11'
-
-    @provider.get_code_type(chop1).should be :chop
-    @provider.get_code_type(chop2).should be :chop
-    @provider.get_code_type(chop3).should be :chop
+    @provider.get_code_type('00.4D').should be :chop
+    @provider.get_code_type('89.d3.5C').should be :chop
+    @provider.get_code_type('99.B6.11').should be :chop
+    @provider.get_code_type('Z55.69.0').should be :chop
   end
 
   it 'should find code type of icd' do
-    icd1 = 'A66.0'
-    icd2 = 'K58'
-    icd3 = 'Z09.22'
-
-    @provider.get_code_type(icd1).should be :icd
-    @provider.get_code_type(icd2).should be :icd
-    @provider.get_code_type(icd3).should be :icd
+    @provider.get_code_type('A66.0').should be :icd
+    @provider.get_code_type('K58').should be :icd
+    @provider.get_code_type('Z09.22').should be :icd
   end
 
   it 'should find code type of unknown' do
-    unknown1 = 'A'
-    unknown2 = 'C0.4d'
-    unknown3 = 'z45.P'
-    unknown4 = 'G33.66.66'
-    unknown5 = '999.b6.11'
-    unknown6 = 'SS5.22'
-
-    @provider.get_code_type(unknown1).should be :unknown
-    @provider.get_code_type(unknown2).should be :unknown
-    @provider.get_code_type(unknown3).should be :unknown
-    @provider.get_code_type(unknown4).should be :unknown
-    @provider.get_code_type(unknown5).should be :unknown
-    @provider.get_code_type(unknown6).should be :unknown
+    @provider.get_code_type('A').should be :unknown
+    @provider.get_code_type('C0.4d').should be :unknown
+    @provider.get_code_type('z45.P').should be :unknown
+    @provider.get_code_type('SS5.22').should be :unknown
+    @provider.get_code_type('999.b6.11').should be :unknown
   end
 
   it 'should recognize super and subclasses' do
-    sub = 'A00.9'
-    sup = 'A00'
-
-    @provider.icd_subclass?(sub).should be_true
-    @provider.icd_subclass?(sup).should be_false
-    @provider.to_icd_superclass(sub).should eq(sup)
+    @provider.icd_subclass?('A00.9').should be_true
+    @provider.icd_subclass?('A00').should be_false
+    @provider.to_icd_superclass('A00.9').should eq('A00')
   end
 
   it 'should normalize relatedness' do
@@ -63,7 +45,7 @@ describe BaseInformationProvider do
     @provider.normalize_relatedness(before_normalizing).should eq(after_normalizing)
   end
 
-  it 'should raise errors' do
+  it 'should raise errors if unimplemented methods are called' do
     expect {@provider.get_fields('code', 0, 'language')}.to raise_error(NotImplementedError)
     expect {@provider.get_doctors('field_code', 0, 0, 0)}.to raise_error(NotImplementedError)
     expect {@provider.get_field_name('fieldcode', 'language')}.to raise_error(NotImplementedError)

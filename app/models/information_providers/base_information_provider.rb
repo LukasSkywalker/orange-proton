@@ -33,7 +33,7 @@ class BaseInformationProvider
   def get_code_type(input)
     if input.match(/(^\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?$)/)
       :icd
-    elsif input.match(/(^(\d{2}(\.\w{2}){0,2})$)/)
+    elsif input.match(/(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/)
       :chop
     else :unknown
     end

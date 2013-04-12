@@ -31,7 +31,7 @@ class API < Grape::API
   resource :fields do
     params do
       requires :code, type: String, 
-        regexp: /(^\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?$)|(^(\d{2}(\.\w{2}){0,2})$)/,
+        regexp: /(^[A-Z]\d{2}(?:\.\d{1,2})?[*+!]?$)|(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/,
         desc: 'ICD or CHOP Code'
       requires :count, type: Integer, desc: 'Number of fields to be displayed'
       requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/, desc: 'The language of the response'

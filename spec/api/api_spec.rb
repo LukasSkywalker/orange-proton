@@ -28,17 +28,27 @@ describe API do
       response.status.should == 400
     end
 
-    it 'should accept these codes' do
+    it 'should accept these CHOP codes' do
+      codes = %w(Z55.69.0)
+
+      codes.each do |code|
+        get "/api/v1/fields/get?lang=de&code=#{code}&count=4"
+
+        response.status.should eq(200), "Rejected: #{code} when it should have accepted!"
+      end
+    end
+
+    it 'should accept these ICD codes' do
       codes = %w(C41.32 B26.3 C62.0 C64)
 
       codes.each do |code|
         get "/api/v1/fields/get?lang=de&code=#{code}&count=4"
 
-        response.status.should eq(200), "Did not accept: #{code} when it should have!"
+        response.status.should eq(200), "Rejected: #{code} when it should have accepted!"
       end
     end
 
-    it 'should not accept these codes' do
+    it 'should not accept these ICD codes' do
       codes = ['    B26.3', '.3', 'B26.', 'B26,3']
 
       codes.each do |code|
