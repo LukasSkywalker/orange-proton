@@ -35,31 +35,48 @@ $(document).ready(function () {
 
     // start position detection
     // TODO: add shim for IE
-    if (navigator.geolocation) {
+    if ("geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(function success( position ) {
-        mindmapper.lat = position.coords.latitude;
-        mindmapper.long = position.coords.longitude;
-      }, function error( msg ) {
-        alert(typeof msg == 'string' ? msg : "error");
+        var lat = mindmapper.lat = position.coords.latitude;
+        var lng = mindmapper.lng = position.coords.longitude;
+        $('#location').html('{0}, {1}'.format(lat, lng));
+      }, function error( error ) {
+        alert(error.message);
+        var lat = orangeproton.options.defaultLocation.lat;
+        var lng = orangeproton.options.defaultLocation.lng;
+        $('#location').html('{0}, {1}'.format(lat, lng));
       });
+    }else{
+      alert("I'm sorry, but Geolocation services are not supported by your browser.");
     }
 
 
     // overwrite window.alert() with a much fancier alternative
     function betterAlert( msg ) {
-      jQuery.fancybox({'modal' : true, 'content' : '<div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
+      jQuery.fancybox({'modal' : true, 'content' : '<i class="icon-info-sign icon-large"></i><div style="margin:1px;width:240px;">'+msg+'<div style="text-align:right;margin-top:10px;"><input class="confirm-button" style="margin:3px;padding:0px;" type="button" onclick="jQuery.fancybox.close();" value="Ok"></div></div>'});
       $('.confirm-button').focus();
     }
     window.alert = betterAlert;
 
     $("#code-name").focus();
 
+    History.Adapter.bind(window,'statechange',function(){ // Note: We are using statechange instead of popstate
+      var State = History.getState(); // Note: We are using History.getState() instead of event.state
+      var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
+      var lang = State.data.lang;
+      $("#code-name").val(code);
+      $("#lang").val(lang);
+      mindmapper.getICD(code, lang);
+    });
+
     var codeParam = generic.getUrlVars()["code"];
     if (codeParam !== undefined && codeParam !== '') {
-        var code = codeParam.toUpperCase();
-        var lang = generic.getUrlVars()["lang"] || "de";
+      var code = codeParam.toUpperCase();
+      var lang = generic.getUrlVars()["lang"] || "de";
 
-        mindmapper.sendRequest(code, lang);
+      $("#code-name").val(code);
+      $("#lang").val(lang);
+      mindmapper.getICD(code, lang);
     }
 
     // set the locale and load translations
@@ -72,18 +89,13 @@ $(document).ready(function () {
 });
 
 var mindmapper = {
-    // updates the variable UI components. call after code and language change
-    updateUI: function(code, lang) {
+    // This method sends ajax requests to the API
+    sendRequest: function (code, lang) {
       $("#code-name").val(code);
       $("#lang").val(lang);
-      History.pushState(null, "OrangeProton", "?code="+code+"&lang="+lang);
-    },
-
-    // This method sends ajax requests to the API
-    sendRequest: function (input, lang) {
-        this.updateUI(input, lang);
-        this.getICD(input, lang);
-        // TODO mindmapper.getSpeciality(input);
+      History.pushState({code: code, lang: lang}, "OrangeProton", "?code="+code+"&lang="+lang);
+      //this.getICD(input, lang);
+      // TODO mindmapper.getSpeciality(input);
     },
 
     getICD: function (input, lang) {
@@ -99,7 +111,6 @@ var mindmapper = {
             contentType: "charset=UTF-8",
             success: function (response, status) {
               $('#mindmap').cleanUp();
-              History.pushState(null, "OrangeProton", params);
 
               var status = response.status;
               if( status === 'error' ) {
@@ -138,15 +149,16 @@ var mindmapper = {
                 if(superclass) {
                   var super_name = data.superclass_text == undefined ? "" : data.superclass_text;
                   var newdiv = $('<div class="super">{0}<br />{1}</div>'.format(superclass, super_name));
-                  newdiv.on('click', { superclass: superclass }, function getSuperData(e){
-                    var code = e.data.superclass;
-                    if( code.indexOf('-') === -1 ) {    //only search non-ranges
+                  if( superclass.indexOf('-') === -1 ) {    //only allow click for non-ranges
+                    newdiv.addClass('clickable');
+                    newdiv.on('click', { superclass: superclass }, function getSuperData(e){
+                      var code = e.data.superclass;
                       var lang = $("#lang").val();
                       $("#code-name").val(code);
                       mindmapper.sendRequest(code, lang);
                       $('#mindmap').setRoot(this, true);
-                    }
-                  });
+                    });
+                  }
                   synonyms.push(newdiv);
                 }
 
@@ -187,13 +199,13 @@ var mindmapper = {
 
                 var s = [];
                 var fields = response.result.fields;
-                for (var i = 0; i < Math.min(orangeproton.options.display.max_inclusiva, fields.length); i++) {
+                for (var i = 0; i < Math.min(orangeproton.options.display.max_fields, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
                     var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
                     var color = '#' + c + c + c; //Color is three times c, so it's always grey
-                    var newdiv = $('<div class="cat" style="background-color:{0}">{1}: {2}</div>'.format(color, f, n));
+                    var newdiv = $('<div class="cat" style="background-color:{0}">{1}: {2}</i></div>'.format(color, f, n));
                     newdiv.on('click', { field: f }, function(e){
                       $(this).spin(orangeproton.options.libraries.spinner);
                       mindmapper.getDoctors(e.data.field,lang);
@@ -238,8 +250,8 @@ var mindmapper = {
     //TODO delete previous Lines of Doctor nodes in Megamind
     getDoctors: function (fields, lang) {
         $('.docoverlay').remove();  //delete previously loaded stuff
-        var lat = orangeproton.options.defaultLocation.lat;
-        var lng = orangeproton.options.defaultLocation.lng;
+        var lat = mindmapper.lat || orangeproton.options.defaultLocation.lat;
+        var lng = mindmapper.lng || orangeproton.options.defaultLocation.lng;
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
@@ -273,19 +285,28 @@ var mindmapper = {
                             .format(lang, encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz'));
                     var element =
                       '<input id="docitem-{0}" class="docitem" type="radio" name="doctors">'
-                    +   '<label for="docitem-{0}" >'
+                    +   '<label class="doclabel" for="docitem-{0}" >'
                     +   '  <p class="doc title">{1}</p>'
                     +   '  <p class="doc address">{2}<br />{3}</p>'
                     +   '</label>'
                     + '</input>';
                     var menuitem = $(element.format(i, title, name, address));
+
+
                     menuitem.on('change', {url: url, details: doc}, function doctorClick(e) {
                       $('#map-frame').first().attr('src', e.data.url);
+
+
                     });
                     doclist.append(menuitem);
                 }
 
                 $.fancybox(overlay[0], orangeproton.options.libraries.fancybox);
+
+                //Show First your current Location
+                $('#map-frame').first().attr('src', 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
+                    '&q={1}&t=h&z=17&output=embed'
+                        .format(lang, encodeURIComponent(mindmapper.lat+","+mindmapper.lng)));
             },
 
             error: mindmapper.handleApiError,
@@ -310,7 +331,7 @@ function setLocale(locale) {
 function updateUiLanguage() {
   $('#legend').empty();
 
-  var identifiers = ['syn', 'cat', 'doc', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
+  var identifiers = ['syn', 'cat', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
   $.each(identifiers, function(index, name) {
     $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');

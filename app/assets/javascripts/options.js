@@ -26,7 +26,7 @@ var orangeproton = {
       max_syn : 5, // max number of synonyms to display
       max_fields : 7, // max number of fields
       max_drgs : 10,
-      max_sub : 5,
+      max_sub : Infinity,
       max_inclusiva : 3,
       max_exclusiva : 3,
       max_docs: 5,

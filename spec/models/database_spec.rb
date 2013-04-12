@@ -34,8 +34,6 @@ describe DatabaseAdapter do
 
     @doc_fs = client['doctors']['docfieldToFSCode']
     @docs = client['doctors']['doctors']
-
-    @relation_fs_icd = client ['relationFSZuICD']['relationFSZuICD']
   end
 
   it 'should match the fachgebieteUndSpezialisierungen collections' do
@@ -81,7 +79,12 @@ describe DatabaseAdapter do
     @docs.count().should be(25528)
   end
 
-  it 'should match the relation fs to icd collections' do
-    @relation_fs_icd.count().should be(1239260)
+  it 'should not raise error when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
+    expect{@db.get_mdc_code('9')}.to_not raise_error NoMethodError
   end
+
+  it 'should return nil when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
+    @db.get_mdc_code('9').should be nil
+  end
+
 end
