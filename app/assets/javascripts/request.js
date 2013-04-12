@@ -42,8 +42,22 @@ $(document).ready(function () {
         setLocale(lang);
     });
 
-    // start position detection
-    // TODO: add shim for IE
+    /*
+      start position detection
+      geoLocationFallback is used when an error occurs or native geolocation
+      is unsupported
+     */
+    function geoLocationFallback() {
+      function geoIpSuccess(lat, lng, country, city) {
+        var location = city + ", " + country;
+        $('#location').html(location.ellipses(30));
+        mindmapper.geoLocation.lat = lat;
+        mindmapper.geoLocation.lng = lng;
+      }
+      function geoIpError() {/* just fail silently */}
+      orangeproton.location.getGeoIp(geoIpSuccess, geoIpError);
+    }
+
     if ("geolocation" in navigator) {
       var lat = orangeproton.options.defaultLocation.lat;
       var lng = orangeproton.options.defaultLocation.lng;
@@ -52,6 +66,7 @@ $(document).ready(function () {
         lng = mindmapper.geoLocation.lng = position.coords.longitude;
       }, function error( error ) {
         alert(error.message);
+        geoLocationFallback();
       });
       GMaps.geocode({
         lat: lat,
@@ -63,9 +78,8 @@ $(document).ready(function () {
         }
       });
     }else{
-      alert("I'm sorry, but Geolocation services are not supported by your browser.");
+      geoLocationFallback();
     }
-
 
     // overwrite window.alert() with a much fancier alternative
     function betterAlert( msg ) {
@@ -352,21 +366,10 @@ var mindmapper = {
       $('#location').html(address);
       mindmapper.userLocation = {lat: lat, lng: lng};
     }
-    mindmapper.geoCode(userInput, cb)
-  },
-
-  geoCode: function(input, callback) {
-    GMaps.geocode({
-      address: input,
-      callback: function(results, status) {
-        if (status == 'OK') {
-          var address = results[0].formatted_address;
-          var latlng = results[0].geometry.location;
-          callback(latlng.lat(), latlng.lng(), address);
-        }
-      }
-    });
+    orangeproton.location.geoCode(userInput, cb)
   }
+
+
 }
 
 function setLocale(locale) {
