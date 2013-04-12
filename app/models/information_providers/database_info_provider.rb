@@ -10,7 +10,7 @@ class DatabaseInfoProvider <  BaseInformationProvider
   end
 
   def get_doctors(field_code, lat, long, count)
-    self.locator.find_doctors_within(field_code, lat, long, count)
+    self.locator.find_doctors(field_code, lat, long, count)
   end
 
   def get_icd_or_chop_data (code, language)

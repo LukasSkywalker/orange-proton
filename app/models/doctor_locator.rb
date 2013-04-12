@@ -15,7 +15,7 @@ class DoctorLocator
   end
 
   # @return The raw db entries of at most doctors with a given field of specialization (fs_code), sorted by distance to the position specified.
-  def find_doctors_within(field_code, lat, long, count)
+  def find_doctors(field_code, lat, long, count)
     field_doctors = @db.get_doctors_by_fs field_code
 
     field_doctors.each do |doc|
