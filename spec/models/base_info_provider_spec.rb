@@ -17,7 +17,7 @@ describe BaseInformationProvider do
   end
 
   it 'should find code type of icd' do
-    icd1 = 'a66.0'
+    icd1 = 'A66.0'
     icd2 = 'K58'
     icd3 = 'Z09.22'
 
@@ -28,11 +28,11 @@ describe BaseInformationProvider do
 
   it 'should find code type of unknown' do
     unknown1 = 'A'
-    unknown2 = 'c0.4d'
+    unknown2 = 'C0.4d'
     unknown3 = 'z45.P'
-    unknown4 = 'g3.66.66'
+    unknown4 = 'G33.66.66'
     unknown5 = '999.b6.11'
-    unknown6 = 'ss5.22'
+    unknown6 = 'SS5.22'
 
     @provider.get_code_type(unknown1).should be :unknown
     @provider.get_code_type(unknown2).should be :unknown

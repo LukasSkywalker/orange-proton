@@ -31,9 +31,9 @@ class BaseInformationProvider
   # classifies the code from user input to icd or chop or unknown
   # accepts only exact matches and is case insensitive
   def get_code_type(input)
-    if input.match(/^.\d{2}(\.\d{1,2})?$/)
+    if input.match(/(^\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?$)/)
       :icd
-    elsif input.match(/^\d{2}\.\w{0,2}(\.\w{0,2})?$/)
+    elsif input.match(/(^(\d{2}(\.\w{2}){0,2})$)/)
       :chop
     else :unknown
     end

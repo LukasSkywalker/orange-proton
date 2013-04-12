@@ -43,7 +43,7 @@ describe CompoundInfoProvider do
 
   it 'should return max 4 specialities with highest relatedness' do
     # add the relatedness of duplicate fields and set it to 1 if > 1
-    new_field1 = FieldEntry.new('Gastroenterology', 1, 85)
+    new_field1 = FieldEntry.new('Gastroenterology', 1.0, 85)
 
     var = @provider.get_fields(@icd, 4, 'en')
     var.should include(new_field1, @field3, @field4, @field5)

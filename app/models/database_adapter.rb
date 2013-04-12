@@ -184,7 +184,7 @@ class DatabaseAdapter
   # @return An array of all ICD Code ranges (as specified by the who) a given ICD code lies within.
   # Every range contains an array 'fmhcodes' of codes related to it.
   # This is based on a manually set up table.
-  def get_ranges (icd)
+  def get_icd_ranges (icd)
     icd = icd[0]+icd[1]+icd[2]
     db = @client['ICDRangeFSH']
     col = db['mappings']
@@ -192,6 +192,22 @@ class DatabaseAdapter
     col.find().each do |doc|
       if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
         doc.delete('name')
+        ranges<<doc
+      end
+    end
+    ranges
+  end
+
+  # @return An array of all CHOP Code ranges (as specified by the who) a given ICD code lies within.
+  # Every range contains an array 'fmhcodes' of codes related to it.
+  # This is based on a manually set up table.
+  def get_chop_ranges (chop)
+    chop = chop[0]+chop[1]
+    db = @client['CHOPRangeFSH']
+    col = db['CHOPRangeFSH']
+    ranges = []
+    col.find().each do |doc|
+      if ((doc['beginning']<=> chop) <=0) and ((doc['ending']<=> chop) >=0)
         ranges<<doc
       end
     end
