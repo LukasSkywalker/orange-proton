@@ -3,6 +3,12 @@
 // -namespace the whole file so we don't pollute 'window' too much (low priority)
 // -rethink the for-loops. maybe we could simplify them
 
+/**
+ * @singleton
+ * Our great class.
+ */
+var orangeproton = orangeproton || {};
+
 $(document).ready(function () {
     // load the admin interface
     orangeproton.admin.loadPanel();

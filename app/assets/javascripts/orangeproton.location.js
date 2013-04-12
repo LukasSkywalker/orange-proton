@@ -1,10 +1,11 @@
-/* All location and geolocation-related methods and things */
-
+/**
+ * All location and geolocation-related methods and things
+ * @class orangeproton.location
+ */
+var orangeproton = orangeproton || {};
 orangeproton.location = {
   /**
    * Geolocates the user based on the IP via http://freegeoip.net
-   *
-   * @async
    * @param {Function} successHandler A callback function for a successful request
    * @param {Function} successHandler.lat The requesters latitude
    * @param {Function} successHandler.lng The requesters longitude
@@ -33,8 +34,6 @@ orangeproton.location = {
 
   /**
    * Geolocates the user based on the IP via http://ipinfodb.com
-   *
-   * @async
    * @param {Function} successHandler A callback function for a successful request
    * @param {Function} successHandler.lat The requesters latitude
    * @param {Function} successHandler.lng The requesters longitude
@@ -63,8 +62,6 @@ orangeproton.location = {
 
   /**
    * Geocode a street address
-   *
-   * @async
    * @param {String} address A street address to be geocoded
    * @param {Function} callback A callback when the geocoding is completed
    * @param {Function} callback.lat The geographical latitude

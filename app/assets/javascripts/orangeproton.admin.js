@@ -1,9 +1,11 @@
-/* This file implements the admin panel. */
+/**
+ * All adminpanel-related methods and requests
+ * @class orangeproton.admin
+ */
+var orangeproton = orangeproton || {};
 orangeproton.admin = {
   /**
    * Load and display weights sliders
-   *
-   * @async
    */
   loadPanel: function(){
       jQuery.ajax({
@@ -18,8 +20,6 @@ orangeproton.admin = {
   /**
    * Send the current user-set weight-sliders and saves
    * the data on the server
-   *
-   * @async
    */
   sendWeights: function(){
       var params = [];
@@ -35,8 +35,6 @@ orangeproton.admin = {
 
   /**
    * Display the sliders based on the response-array
-   *
-   * @private
    * @param {Array} response An array containing values for each weight slider
    * @param {String} status The HTTP-status code of the request
    */
@@ -61,8 +59,6 @@ orangeproton.admin = {
 
   /**
    * Reset the weights locally and remotely
-   *
-   * @async
    */
   resetWeights: function(){
       jQuery.ajax({
