@@ -79,5 +79,28 @@ orangeproton.location = {
         }
       }
     });
+  },
+
+  /**
+   * Reverse-Geocode a geographical position
+   * @param {Number} lat The latitude to be geocoded
+   * @param {Number} lng The longitude to be geocoded
+   * @param {Function} callback A callback when the geocoding is completed
+   * @param {Function} callback.lat The geographical latitude
+   * @param {Function} callback.lng The geographical longitude
+   * @param {Function} callback.address Street address of the geocoding
+   */
+  reverseGeoCode: function(lat, lng, callback) {
+    GMaps.geocode({
+      lat: lat,
+      lng: lng,
+      callback: function(results, status) {
+        if (status == 'OK') {
+          var address = results[0].formatted_address;
+          var latlng = results[0].geometry.location;
+          callback(latlng.lat(), latlng.lng(), address);
+        }
+      }
+    });
   }
 };
