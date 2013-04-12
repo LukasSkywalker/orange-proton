@@ -37,7 +37,7 @@ function displaySliders(response, status) {
     });
     panel.append('<input type="button" onclick="sendAdmin();" value="Apply">');
     panel.append('<input type="button" style="float:right" onclick="resetAdmin();" value="Reset">');
-    mindmapper.sendRequest($("#code-name").val().toUpperCase(), $("#lang").val());
+    History.Adapter.trigger(window, 'statechange')
 }
 
 function resetAdmin(){
