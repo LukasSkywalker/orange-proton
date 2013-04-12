@@ -204,15 +204,17 @@ var mindmapper = {
                   synonyms.push(newdiv);
                 }
 
-                $.each(data.subclasses.slice(0, orangeproton.options.display.max_sub), function(index, name) {
-                  var element = jQuery('<div/>').addClass('sub').html(name).on('click', { code: name }, function(e){
-                    var code = e.data.code;
-                    var lang = $('#lang').val();
-                    mindmapper.sendRequest(code, lang);
-                    $('#mindmap').setRoot(this, true)
+                if( data.subclasses ) {
+                  $.each(data.subclasses.slice(0, orangeproton.options.display.max_sub), function(index, name) {
+                    var element = jQuery('<div/>').addClass('sub').html(name).on('click', { code: name }, function(e){
+                      var code = e.data.code;
+                      var lang = $('#lang').val();
+                      mindmapper.sendRequest(code, lang);
+                      $('#mindmap').setRoot(this, true)
+                    });
+                    synonyms.push(element);
                   });
-                  synonyms.push(element);
-                });
+                }
 
                 var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
                 c.addNodes(synonyms);
@@ -222,22 +224,26 @@ var mindmapper = {
                 c.addNodes(drgs);
 
                 var exclusiva = [];
-                var exc = data.exclusiva.slice(0, orangeproton.options.display.max_exclusiva);
-                $.each(exc, function(index, name) {
-                  var icd_pattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/;
-                  var result = icd_pattern.exec(name);
-                  if( result == null ) return true; // skip to next iteration
-                  var code = result[1];
-                  var element = jQuery('<div/>').addClass('exclusiva').html(name).on('click', { code: code }, function(e){
-                    var code = e.data.code;
-                    var lang = $('#lang').val();
-                    mindmapper.sendRequest(code, lang);
-                    $('#mindmap').setRoot(this, true)
+                if( data.subclasses ) {
+                  var exc = data.exclusiva.slice(0, orangeproton.options.display.max_exclusiva);
+                  $.each(exc, function(index, name) {
+                    var icd_pattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/;
+                    var result = icd_pattern.exec(name);
+                    if( result == null ) return true; // skip to next iteration
+                    var code = result[1];
+                    var element = jQuery('<div/>').addClass('exclusiva').html(name).on('click', { code: code }, function(e){
+                      var code = e.data.code;
+                      var lang = $('#lang').val();
+                      mindmapper.sendRequest(code, lang);
+                      $('#mindmap').setRoot(this, true)
+                    });
+                    exclusiva.push(element);
                   });
-                  exclusiva.push(element);
-                });
+                }
 
-                var inclusiva = mindmapper.generateHTML(data.inclusiva, orangeproton.options.display.max_inclusiva, 'inclusiva');
+                var inclusiva = [];
+                if( data.inclusiva )
+                  inclusiva = mindmapper.generateHTML(data.inclusiva, orangeproton.options.display.max_inclusiva, 'inclusiva');
 
                 var s = [];
                 var fields = response.result.fields;
