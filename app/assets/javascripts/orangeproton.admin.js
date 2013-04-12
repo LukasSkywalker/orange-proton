@@ -49,7 +49,7 @@ orangeproton.admin = {
       $.each(providers, function(index, name) {
           panel.append($('<p/>').html(name).addClass('provider'));
           var slider = $('<p/>').addClass('admin-slider');
-          slider.slider({animate:"fast", value:values[index]});
+          slider.slider({animate:"fast", value:values[index], step:5});
           panel.append(slider);
       });
       panel.append('<input type="button" onclick="orangeproton.admin.sendWeights();" value="Apply">');
