@@ -348,14 +348,21 @@ var mindmapper = {
   },
 
   getUserLocation: function( userInput ) {
+    function cb(lat, lng, address) {
+      $('#location').html(address);
+      mindmapper.userLocation = {lat: lat, lng: lng};
+    }
+    mindmapper.geoCode(userInput, cb)
+  },
+
+  geoCode: function(input, callback) {
     GMaps.geocode({
-      address: userInput,
+      address: input,
       callback: function(results, status) {
         if (status == 'OK') {
           var address = results[0].formatted_address;
           var latlng = results[0].geometry.location;
-          $('#location').html(address);
-          mindmapper.userLocation = {lat: latlng.lat(), lng: latlng.lng()};
+          callback(latlng.lat(), latlng.lng(), address);
         }
       }
     });
