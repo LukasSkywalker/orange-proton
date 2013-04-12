@@ -5,15 +5,16 @@ require 'parallel_each'
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
   PComp = Struct.new(:provider, :relatedness)
+  @@dw = [1.0, 0.75, 0.75, 0.5, 0.3]
 
   def initialize
     super
     @components = {
-        ManualInfoProvider => PComp.new(ManualInfoProvider.new, 1.0),
-        MDCInfoProvider => PComp.new(MDCInfoProvider.new, 0.75),
-        RangeInfoProvider => PComp.new(RangeInfoProvider.new, 0.75),
-        ThesaurInfoProvider => PComp.new(ThesaurInfoProvider.new, 0.5),
-        StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, 0.6),
+        ManualInfoProvider => PComp.new(ManualInfoProvider.new, @@dw[0]),
+        MDCInfoProvider => PComp.new(MDCInfoProvider.new, @@dw[1]),
+        RangeInfoProvider => PComp.new(RangeInfoProvider.new, @@dw[2]),
+        ThesaurInfoProvider => PComp.new(ThesaurInfoProvider.new, @@dw[3]),
+        StringmatchInfoProvider => PComp.new(StringmatchInfoProvider.new, @@dw[4]),
     }
   end
   
@@ -38,10 +39,24 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # /api/v1/admin/set??? (values?)
   # TODO Document!
   # Assign new weights ot each info provider. Values is a simple list (?).
-  def set_relatedness_weight(values)
-    @components.each_with_index do |(key, value), index|
-      @components[key].relatedness = values[index]
+  def set_relatedness_weight(vals)
+    @components.values.each_with_index do |component, index|
+      Rails.logger.info vals[index]
+      component.relatedness = vals[index]
     end
+  end
+
+  # TODO Document!
+  def get_relatedness_weight
+    out = []
+    @components.values.each do |comp|
+      out << comp.relatedness
+    end
+    out
+  end
+
+  def reset_weights
+    self.set_relatedness_weight(@@dw)
   end
 
   def get_provider_results(code, max_count, language)
