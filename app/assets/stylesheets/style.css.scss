@@ -88,11 +88,11 @@ div.node, div.legend {
     @include border-radius(20px);
     z-index: 10;
   }
+}
 
-  /* for the nodes that sometimes are and sometimes not */
-  &.clickable {
-    @include clickable;
-  }
+/* all clickable elements */
+.clickable {
+  @include clickable;
 }
 
 /* the admin panel */
@@ -148,8 +148,6 @@ div.node, div.legend {
     height: 28px;
     margin-top: 10px;
     margin-left: 15px;
-    border-radius: 5px;
-    border: 1px solid #cccccc;
     padding-left: 15px;
     float:left;
   }
@@ -165,6 +163,12 @@ div.node, div.legend {
   #location {
     margin-left: 500px;
     margin-top: 16px;
+    float: left;
+    font-size: 0.8em;
+  }
+  #location-config {
+    margin-top: 16px;
+    margin-left: 20px;
     float: left;
     font-size: 0.8em;
   }
@@ -199,6 +203,16 @@ div.node, div.legend {
     background: url(arrow.svg) no-repeat right white !important;
     background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
     height: 27px !important;
+  }
+}
+
+input[type=text] {
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  padding: {
+    left: 2px;
+    top: 2px;
+    bottom: 2px;
   }
 }
 
@@ -268,5 +282,15 @@ input[type=button] {
         margin: 10px;
       }
     }
+  }
+}
+
+.messagebox {
+  margin: 1px;
+  width: 240px;
+
+  div.messagebox-buttons {
+    text-align: right;
+    margin-top: 10px;
   }
 }

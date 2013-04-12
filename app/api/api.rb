@@ -17,15 +17,6 @@ class API < Grape::API
     def lang
       params[:lang]
     end
-
-    # Extract integer values from a string array [val1, val2,...]
-    def extract_weight_values(values)
-      vals = values.split(',')
-      vals.map! do |val|
-        val.to_i / 100.0
-      end
-      vals
-    end
   end
 
   # Always rescue ProviderLookupErrors and
@@ -101,15 +92,51 @@ class API < Grape::API
   # /api/v1/admin/setWeight=[val1,val2,...]
   desc 'Handles admin queries, such as setting the relatedness bias'
   resource :admin do
-    params do
-      requires :values, type: String, desc: 'The weight values the frontend sends',
-               regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
-    end
+    namespace :weights do
 
-    post 'setWeight' do
-      values = extract_weight_values(params[:values])
+      helpers do
+        # Extract integer values from a string array [val1, val2,...]
+        def extract_weight_values(values)
+          vals = values.split(',')
+          vals.map! do |val|
+            val.to_i / 100.0
+          end
+          vals
+        end
 
-      API.provider.set_relatedness_weight(values)
+        def encode_weight_values
+          weights = API.provider.get_relatedness_weight
+          weights.map! do |val|
+            Integer(val * 100)
+          end
+          weights
+        end
+      end
+
+      desc 'Return provider weights'
+      get 'get' do
+        Rails.logger.info 'Got Get weights Request'
+        encode_weight_values
+      end
+
+      desc 'Reset weights to default values'
+      post 'reset' do
+        Rails.logger.info 'Got Reset Request'
+        API.provider.reset_weights
+        encode_weight_values
+      end
+
+      params do
+        requires :values, type: String, desc: 'The weight values the frontend sends',
+                 regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
+      end
+
+      post 'set' do
+        values = extract_weight_values(params[:values])
+        Rails.logger.info "Got Reset Request with #{values}"
+        API.provider.set_relatedness_weight(values)
+        encode_weight_values
+      end
     end
   end
 end
