@@ -83,14 +83,14 @@ describe API do
 
   describe 'POST /api/v1/admin/setWeight' do
     it 'should not accept no parameters' do
-      post '/api/v1/admin/setWeight'
+      post '/api/v1/admin/weights/set'
       response.status.should == 400
 
       API.provider.should_not_receive(:set_relatedness_weight)
     end
 
     it 'should not accept false parameters' do
-      post '/api/v1/admin/setWeight?values=ljasd'
+      post '/api/v1/admin/weights/set?values=ljasd'
       response.status.should == 400
 
       API.provider.should_not_receive(:set_relatedness_weight)
@@ -99,7 +99,7 @@ describe API do
     it 'should not accept array string with square brackets' do
       API.provider.should_not_receive(:set_relatedness_weight)
 
-      post '/api/v1/admin/setWeight?values=[10,20,30,40,50]'
+      post '/api/v1/admin/weights/set?values=[10,20,30,40,50]'
       response.status.should == 400
     end
 
@@ -107,7 +107,7 @@ describe API do
       API.provider.should_receive(:set_relatedness_weight).
           with([0.1,0.2,0.3,0.4,0.5])
 
-      post '/api/v1/admin/setWeight?values=10,20,30,40,50'
+      post '/api/v1/admin/weights/set?values=10,20,30,40,50'
       response.status.should == 201 #created
     end
 
@@ -115,7 +115,7 @@ describe API do
       API.provider.should_receive(:set_relatedness_weight).
           with([0.1,0.2,0.3,0.4,0.5])
 
-      post '/api/v1/admin/setWeight?values=10,20,30,40,50&bla=bla'
+      post '/api/v1/admin/weights/set?values=10,20,30,40,50&bla=bla'
       response.status.should == 201
     end
   end
