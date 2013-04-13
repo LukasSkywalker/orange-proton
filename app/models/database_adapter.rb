@@ -64,16 +64,12 @@ class DatabaseAdapter
     @chop[language.to_sym].find_one({code: code})
   end
 
-  # @return The fachgebieteKeywords table as a hash keyword (e.g. "Hand", "Lunge") => fs_code (2 - 210)
+  # @return The fachgebieteKeywords table as a cursor
   def get_fachgebiete_keywords()
     # TODO Cache result?
-    f = {}
     documents = @client['fachgebieteKeywords']['fachgebieteKeywords'].find()
-    documents.each do |document|
-      Rails.logger.info "found fachgebieteKeywords #{document}"
-      f[document['keyword']] = document['fs_code']
-    end
-    return f
+
+    return documents
   end
   # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
   # Used for icd > drg > mdc > fs mapping.
