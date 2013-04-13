@@ -72,6 +72,6 @@ orangeproton.admin = {
    * Toggle debug elements for the current mindmap
    */
   debugMindmap: function() {
-      $("#mindmap").debug();
+      $("#mindmap").megamind('debug');
   }
 };

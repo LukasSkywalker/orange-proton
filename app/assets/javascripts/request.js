@@ -142,7 +142,7 @@ var mindmapper = {
 
     getICD: function (input, lang) {
         var params = '?code={0}&lang={1}'.format(input, lang);
-        $('#mindmap').cleanUp();
+        $('#mindmap').megamind('cleanUp');
 
         $('#mindmap').spin(orangeproton.options.libraries.spinner);
 
@@ -152,7 +152,7 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response, status) {
-              $('#mindmap').cleanUp();
+              $('#mindmap').megamind('cleanUp');
 
               var status = response.status;
               if( status === 'error' ) {
@@ -169,7 +169,7 @@ var mindmapper = {
 
               var container = mm.megamind();      //initialize
               var rootNode = "<div class='root'>{0}</br>{1}</div>".format(input, name);
-              var root = mm.setRoot(rootNode);
+              var root = mm.megamind('setRoot', rootNode);
                 var synonyms = [];
 
                 if(orangeproton.options.display.as_list)
@@ -198,7 +198,7 @@ var mindmapper = {
                       var lang = $("#lang").val();
                       $("#code-name").val(code);
                       mindmapper.sendRequest(code, lang);
-                      $('#mindmap').setRoot(this, true);
+                      $('#mindmap').megamind('setRoot', this, true);
                     });
                   }
                   synonyms.push(newdiv);
@@ -210,17 +210,17 @@ var mindmapper = {
                       var code = e.data.code;
                       var lang = $('#lang').val();
                       mindmapper.sendRequest(code, lang);
-                      $('#mindmap').setRoot(this, true)
+                      $('#mindmap').megamind('setRoot', this, true);
                     });
                     synonyms.push(element);
                   });
                 }
 
-                var c = mm.addCanvas(root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
+                var c = mm.megamind('addCanvas', root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left - $('#legend').outerWidth(), container.height());
                 c.addNodes(synonyms);
 
                 var drgs = mindmapper.generateHTML(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                var c = mm.addCanvas(root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
+                var c = mm.megamind('addCanvas', root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
                 c.addNodes(drgs);
 
                 var exclusiva = [];
@@ -235,7 +235,7 @@ var mindmapper = {
                       var code = e.data.code;
                       var lang = $('#lang').val();
                       mindmapper.sendRequest(code, lang);
-                      $('#mindmap').setRoot(this, true)
+                      $('#mindmap').megamind('setRoot', this, true);
                     });
                     exclusiva.push(element);
                   });
@@ -261,7 +261,7 @@ var mindmapper = {
                     s.push(newdiv);
                 }
 
-              var c = mm.addCanvas(0, 0, root.position().left - 100, container.height());
+              var c = mm.megamind('addCanvas', 0, 0, root.position().left - 100, container.height());
                   c.addNodes(s.concat(exclusiva).concat(inclusiva));
             },
 

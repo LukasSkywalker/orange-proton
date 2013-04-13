@@ -20,9 +20,6 @@
  */
 
 var megamind = {
-  rootNode : null,
-  container : null,
-  canvases : [],
   options: {
     horizontalFillAmount: 0.8,
     verticalFillAmount: 0.8,
@@ -30,367 +27,389 @@ var megamind = {
     horizontalWobbling: 0.6,
     animationDuration: 400
   }
+};
+
+(function ($) {
+  var methods = {
+    init: function (options) {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      data.canvas = Raphael('mindmap');
+      data.options = $.extend({}, megamind.options, options);
+      data.canvases = [];
+      data.rootNode = null;
+      return $mm;
+    },
+
+    addCanvas: function (left, top, width, height, options) {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      if (left + width > $mm.width() || top + height > $mm.height()) {
+        console.log('### Canvas with size ' + left + ',' + top + ',' + width + ',' + height +
+            ' does not fit in container [' + $mm.width() + ',' + $mm.height() + ']!');
+      }
+      var cv = new Canvas($mm, left, top, width, height, options);
+      data.canvases.push(cv);
+      return cv;
+    },
+
+    setRoot: function (element, animate) {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      var ele = $(element);
+      ele.addClass("node");
+      ele.appendTo($mm);
+      ele.center($mm, animate || false);
+      data.rootNode = ele;
+      megamind.rootNode = ele;
+      //TODO remove above line
+      return ele;
+    },
+
+    debug: function () {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      var debugElements = $('.debug');
+      if (debugElements.length == 0) {
+        $.each(data.canvases, function (i, c) {
+          var canvas = $("<div class='debug' style='position: absolute; border: 1px solid black'>C" + i + "</div>");
+          canvas.appendTo($mm);
+          canvas.css({left: c.left(), top: c.top(), width: c.width, height: c.height});
+          $.each(c.rows, function (j, r) {
+            var row = $("<div class='debug' style='position: absolute; border: 1px solid blue'>R" + j + "</div>");
+            row.appendTo($mm);
+            row.css({left: r.left(), top: r.top(), width: r.width(), height: r.height()});
+            $.each(r.nodes, function (k, n) {
+              var node = $("<div class='debug' style='position: absolute; border: 1px solid red'>N" + k + "</div>");
+              node.appendTo($mm);
+              node.css({left: n.left(), top: n.top(), width: n.width(), height: n.height()});
+            })
+          });
+        });
+        return true;
+      } else {
+        debugElements.remove();
+        return false;
+      }
+    },
+
+    cleanUp: function () {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      $('.debug').remove();
+      $('.node').remove();
+      $mm.html('');
+      data.canvases = [];
+      data.rootNode = null;
+    }
+  };
+
+  $.fn.megamind = function (method) {
+    // Method calling logic
+    if (methods[method]) {
+      return methods[ method ].apply(this, Array.prototype.slice.call(arguments, 1));
+    } else if (typeof method === 'object' || !method) {
+      return methods.init.apply(this, arguments);
+    } else {
+      $.error('Method ' + method + ' does not exist on jQuery.megamind');
+    }
+  };
+})(jQuery);
+
+function Canvas(mm, left, top, width, height, options) {
+  this.rows = [];
+  this.xOffset = left;
+  this.yOffset = top;
+  this.width = width;
+  this.height = height;
+  this.container = mm;
+  this.options = $.extend({}, megamind.options, options);
+  return this;
 }
 
-jQuery.fn.extend({
-  megamind: function(options){
-    var mm = $(this.first());
-    megamind.container = mm;
-    megamind.canvas = Raphael('mindmap');
-    megamind.options = $.extend({}, megamind.options, options);
-    return mm;
-  },
+Canvas.prototype.left = function () {
+  return this.xOffset;// + this.container.position().left;
+};
 
-  addCanvas: function( left, top, width, height, options) {
-    var mm = $(this.first());
-    if(left + width > mm.width() || top + height > mm.height()){
-      console.log('### Canvas with size '+left+','+top+','+width+','+height+
-          ' does not fit in container ['+mm.width()+','+mm.height()+']!');
+Canvas.prototype.top = function () {
+  return this.yOffset;// + this.container.position().top;
+};
+
+Canvas.prototype.doLayout = function () {
+  this.space();
+  for (var i = 0; i < this.rows.length; i++) {
+    for (var j = 0; j < this.rows[i].nodes.length; j++) {
+      var n = this.rows[i].nodes[j];
+      n.el.animate({
+        left: n.left(),
+        top: n.top(),
+        opacity: 1
+      }, {duration: this.options.animationDuration, easing: 'linear'});
+      this.container.data().canvas.path('M' + n.parent.getCenter().x + ' ' + n.parent.getCenter().y + 'L' + n.getCenter().x + ' ' + n.getCenter().y).attr({stroke: n.el.css('border-left-color')});
     }
-    var cv = new Canvas(left, top, width, height, options);
-    megamind.canvases.push(cv);
-    return cv;
-  },
-
-  setRoot: function( element, animate ) {
-    var mm = $(this.first());
-    var ele = $(element);
-    ele.addClass("node");
-    ele.appendTo(mm);
-    ele.center(mm, animate || false);
-    megamind.rootNode = ele;
-    return ele;
-  },
-
-  debug: function() {
-    var debugElements = $('.debug');
-    if(debugElements.length == 0) {
-      $.each(megamind.canvases, function(i, c) {
-        var canvas = $("<div class='debug' style='position: absolute; border: 1px solid black'>C" + i + "</div>");
-        canvas.appendTo(megamind.container);
-        canvas.css({left: c.left(), top: c.top(), width: c.width, height: c.height});
-        $.each(c.rows, function(j, r) {
-          var row = $("<div class='debug' style='position: absolute; border: 1px solid blue'>R" + j + "</div>");
-          row.appendTo(megamind.container);
-          row.css({left: r.left(), top: r.top(), width: r.width(), height: r.height()});
-          $.each(r.nodes, function(k, n) {
-            var node = $("<div class='debug' style='position: absolute; border: 1px solid red'>N" + k + "</div>");
-            node.appendTo(megamind.container);
-            node.css({left: n.left(), top: n.top(), width: n.width(), height: n.height()});
-          })
-        });
-      });
-      return true;
-    }else{
-      debugElements.remove();
-      return false;
-    }
-  },
-
-  cleanUp: function() {
-    $('.debug').remove();
-    $('.node').remove();
-    $('#mindmap').html('');
-    megamind.canvases = [];
-    megamind.rootNode = null;
-    megamind.container = null;
   }
-});
+};
 
-    function Canvas(left, top, width, height, options) {
-      this.rows = [];
-      this.xOffset = left;
-      this.yOffset = top;
-      this.width = width;
-      this.height = height;
-      this.container = $(megamind.container);
-      this.options = $.extend({}, megamind.options, options);
-      return this;
+Canvas.prototype.currentRow = function () {
+  return this.rows[this.rows.length - 1];
+};
+
+
+Canvas.prototype.addRow = function (node) {
+  var row = new Row(node, this);
+  this.rows.push(row);
+  return row;
+};
+
+Canvas.prototype.bottom = function () {
+  var b = this.top();
+  for (var i = 0; i < this.rows.length; i++) {
+    var r = this.rows[i];
+    b += r.height();
+  }
+  return b;
+};
+
+Canvas.prototype.shuffle = function () {
+  this.rows.shuffle();
+};
+
+Canvas.prototype.space = function () {
+  var spaceLeft = this.height - this.spaceUsed();
+  var gaps = this.rows.length + 1;
+  var spacing = spaceLeft / gaps;
+  for (var i = 0; i < this.rows.length; i++) {
+    var amount = (1 - this.options.verticalWobbling / 2) * spacing
+        + Math.random() * this.options.verticalWobbling * spacing;
+    this.rows[i].move(0, amount);
+    this.rows[i].space();
+  }
+};
+
+Canvas.prototype.spaceUsed = function () {
+  var h = 0;
+  for (var i = 0; i < this.rows.length; i++) {
+    h += this.rows[i].height();
+  }
+  return h;
+};
+
+
+Canvas.prototype.addNodes = function (elements) {
+  elements.shuffle();
+
+  // some preprocessing: add required classes
+  for (var i = 0; i < elements.length; i++) {
+    var element = $(elements[i]);
+    element.addClass("node");
+    element.center(this.container);
+    element.css({opacity: 0});
+    element.appendTo(this.container);
+  }
+
+  for (var i = 0; i < elements.length; i++) {
+    var element = $(elements[i]);
+    var n = new Node(element, null);
+    if (n.width() > this.width || n.height() > this.height) {
+      console.log("### unable to add node, is " + n.width() + "x" + n.height() +
+          " px large, max is " + this.width + "x" + this.height);
+      element.remove();
+    } else if (n.width() > this.width / 2) {
+      this.addRow(n);
     }
+  }
 
-    Canvas.prototype.left = function() {
-      return this.xOffset// + this.container.position().left;
-    }
+  elements.sort(function (a, b) {
+    return b.height() - a.height();
+  });
 
-    Canvas.prototype.top = function() {
-      return this.yOffset// + this.container.position().top;
-    }
-
-    Canvas.prototype.doLayout = function() {
-      this.space();
-      for(var i=0; i<this.rows.length; i++){
-        for(var j=0; j< this.rows[i].nodes.length; j++) {
-          var n = this.rows[i].nodes[j];
-          n.el.animate({
-            left: n.left(),
-            top: n.top(),
-            opacity: 1
-          }, {duration: this.options.animationDuration, easing: 'linear'} );
-          megamind.canvas.path('M'+n.parent.getCenter().x+' '+n.parent.getCenter().y+'L'+n.getCenter().x+' '+n.getCenter().y).attr({stroke: n.el.css('border-left-color')});;
-        }
-      }
-    }
-
-    Canvas.prototype.currentRow = function(){
-      return this.rows[this.rows.length - 1];
-    }
-
-
-    Canvas.prototype.addRow = function(node) {
-      var row = new Row(node, this);
-      this.rows.push(row);
-      return row;
-    }
-
-    Canvas.prototype.bottom = function() {
-      var b = this.top();
-      for(var i=0; i<this.rows.length; i++){
-        var r = this.rows[i];
-        b += r.height();
-      }
-      return b;
-    }
-
-    Canvas.prototype.shuffle = function() {
-      this.rows.shuffle();
-    }
-
-    Canvas.prototype.space = function() {
-      var spaceLeft = this.height - this.spaceUsed();
-      var gaps = this.rows.length + 1;
-      var spacing = spaceLeft / gaps;
-      for(var i=0; i<this.rows.length; i++) {
-        var amount = (1 - this.options.verticalWobbling/2) * spacing
-            + Math.random() * this.options.verticalWobbling * spacing;
-        this.rows[i].move(0, amount);
-        this.rows[i].space();
-      }
-    }
-
-    Canvas.prototype.spaceUsed = function() {
-      var h = 0;
-      for(var i=0; i<this.rows.length; i++){
-        h += this.rows[i].height();
-      }
-      return h;
-    }
-
-
-    Canvas.prototype.addNodes = function(elements) {
-      elements.shuffle();
-
-      // some preprocessing: add required classes
-      for(var i = 0; i < elements.length; i++) {
-        var element = $(elements[i]);
-        element.addClass("node");
-        element.center(megamind.container);
-        element.css({opacity: 0});
-        element.appendTo(megamind.container);
-      }
-
-      for (var i = 0; i < elements.length; i++) {
-        var element = $(elements[i]);
-        var n = new Node(element, null);
-        if( n.width() > this.width || n.height() > this.height ) {
-          console.log("### unable to add node, is "+n.width()+"x"+ n.height()+
-              " px large, max is "+this.width+"x"+this.height);
-          element.remove();
-        }else if (n.width() > this.width / 2) {
+  for (var i = 0; i < elements.length; i++) {
+    var n = new Node(elements[i], null);
+    if (n.width() <= this.width / 2) {
+      if (this.currentRow() == undefined) { //no row yet
+        if (n.height() <= this.height) {
           this.addRow(n);
+        } else {
+          alert('no space left');   // no more space left for new row
         }
-      }
-
-      elements.sort(function (a, b) {
-        return b.height() - a.height();
-      });
-
-      for (var i = 0; i < elements.length; i++) {
-        var n = new Node(elements[i], null);
-        if (n.width() <= this.width / 2) {
-          if (this.currentRow() == undefined){ //no row yet
-            if(n.height() <= this.height){
-              this.addRow(n);
-            }else{
-              alert('no space left');   // no more space left for new row
-            }
-          }else if(n.width() + this.currentRow().spaceUsed() <= this.width * this.options.horizontalFillAmount) { //fits in this row
-            this.currentRow().addNode(n);
-          } else if(this.spaceUsed() + n.height() <= this.height) {    // no more space left, new row
-            this.addRow(n);
-          }else {
-            alert('no space left');   // no more space left for new row
-            elements[i].remove();
-          }
-        }
-      }
-      this.shuffle();
-      for(var i=0; i<this.rows.length; i++) {
-        this.rows[i].shuffle();
-      }
-
-      this.doLayout();
-
-      return this;
-    }
-
-    Canvas.prototype.rowsBefore = function(row) {
-      var r = [];
-      for(var i=0; i<this.rows.length && this.rows[i] != row; i++){
-        r.push(this.rows[i]);
-      }
-      return r;
-    }
-
-    function Row(node, canvas) {
-      this.xOffset = 0;
-      this.yOffset = 0;
-      this.nodes = [];
-      this.canvas = canvas;
-      this.addNode(node);
-    }
-
-    Row.prototype.top = function(){
-      var h = 0;
-      var previousRows = this.canvas.rowsBefore(this);
-      for(var i=0; i<previousRows.length; i++){
-        h += previousRows[i].height() + previousRows[i].yOffset;
-      }
-      return this.canvas.top() + h + this.yOffset;
-    }
-
-    Row.prototype.left = function(){
-      return this.canvas.left();
-    }
-
-    Row.prototype.addNode = function(node) {
-      this.nodes.push(node);
-      node.row = this;
-    }
-
-    Row.prototype.shuffle = function() {
-      this.nodes.shuffle();
-    }
-
-    Row.prototype.space = function() {
-      var spaceLeft = this.width() - this.spaceUsed();
-      var gaps = this.nodes.length + 1;
-      var spacing = spaceLeft / gaps;
-      for(var i=0; i<this.nodes.length; i++) {
-        var n = this.nodes[i];
-        var amount = (1 - this.canvas.options.horizontalWobbling/2) * spacing
-            + Math.random() * this.canvas.options.horizontalWobbling * spacing;  // if WOBBLING is 0.4 or 40%:
-                                                              // move between 80 and 120% of the spacing
-        n.move(amount, 0);
+      } else if (n.width() + this.currentRow().spaceUsed() <= this.width * this.options.horizontalFillAmount) { //fits in this row
+        this.currentRow().addNode(n);
+      } else if (this.spaceUsed() + n.height() <= this.height) {    // no more space left, new row
+        this.addRow(n);
+      } else {
+        alert('no space left');   // no more space left for new row
+        elements[i].remove();
       }
     }
+  }
+  this.shuffle();
+  for (var i = 0; i < this.rows.length; i++) {
+    this.rows[i].shuffle();
+  }
 
-    Row.prototype.move = function(x, y) {
-      this.xOffset = x;
-      this.yOffset = y;
-    }
+  this.doLayout();
 
-    Row.prototype.spaceUsed = function() {
-      var w = 0;
-      for(var i=0; i<this.nodes.length; i++){
-        w += this.nodes[i].width();
-      }
-      return w;
-    }
+  return this;
+};
 
-    Row.prototype.height = function() {
-      var h = this.nodes[0].height();
-      for(var i=0; i<this.nodes.length; i++) {
-        var r = this.nodes[i];
-        h = Math.max(h, r.height());
-      }
-      return h;
-    }
+Canvas.prototype.rowsBefore = function (row) {
+  var r = [];
+  for (var i = 0; i < this.rows.length && this.rows[i] != row; i++) {
+    r.push(this.rows[i]);
+  }
+  return r;
+};
 
-    Row.prototype.width = function() {
-      return this.canvas.width;
-    }
+function Row(node, canvas) {
+  this.xOffset = 0;
+  this.yOffset = 0;
+  this.nodes = [];
+  this.canvas = canvas;
+  this.addNode(node);
+}
 
-    Row.prototype.bottom = function() {
-      return this.top() + this.height();
-    }
+Row.prototype.top = function () {
+  var h = 0;
+  var previousRows = this.canvas.rowsBefore(this);
+  for (var i = 0; i < previousRows.length; i++) {
+    h += previousRows[i].height() + previousRows[i].yOffset;
+  }
+  return this.canvas.top() + h + this.yOffset;
+};
 
-    Row.prototype.nodesBefore = function(node) {
-      var n = [];
-      for(var i=0; i<this.nodes.length && this.nodes[i] != node; i++){
-        n.push(this.nodes[i]);
-      }
-      return n;
-    }
+Row.prototype.left = function () {
+  return this.canvas.left();
+};
 
-    function Node(el, parent) {
-      this.el = el;
-      if(parent){
-        this.parent = parent;
-      }else{
-        this.parent = megamind.rootNode;
-      }
-      this.row;
-      this.xOffset = 0;
-      this.yOffset = 0;
-    }
+Row.prototype.addNode = function (node) {
+  this.nodes.push(node);
+  node.row = this;
+};
 
-    Node.prototype.width = function() {
-      return this.el.outerWidth();
-    }
+Row.prototype.shuffle = function () {
+  this.nodes.shuffle();
+};
 
-    Node.prototype.height = function() {
-      return this.el.outerHeight();
-    }
+Row.prototype.space = function () {
+  var spaceLeft = this.width() - this.spaceUsed();
+  var gaps = this.nodes.length + 1;
+  var spacing = spaceLeft / gaps;
+  for (var i = 0; i < this.nodes.length; i++) {
+    var n = this.nodes[i];
+    var amount = (1 - this.canvas.options.horizontalWobbling / 2) * spacing
+        + Math.random() * this.canvas.options.horizontalWobbling * spacing;  // if WOBBLING is 0.4 or 40%:
+    // move between 80 and 120% of the spacing
+    n.move(amount, 0);
+  }
+};
 
-    Node.prototype.left = function() {
-      var w = 0;
-      var nodesBefore = this.row.nodesBefore(this);
-      for(var i=0; i<nodesBefore.length; i++){
-        var n = nodesBefore[i];
-        w += n.width() + n.xOffset;
-      }
-      return this.row.left() + w + this.xOffset;
-    }
+Row.prototype.move = function (x, y) {
+  this.xOffset = x;
+  this.yOffset = y;
+};
 
-    Node.prototype.top = function() {
-      return this.row.top() + this.yOffset;
-    }
+Row.prototype.spaceUsed = function () {
+  var w = 0;
+  for (var i = 0; i < this.nodes.length; i++) {
+    w += this.nodes[i].width();
+  }
+  return w;
+};
 
-    Node.prototype.move = function(x, y) {
-      this.xOffset = x;
-      this.yOffset = y;
-    }
+Row.prototype.height = function () {
+  var h = this.nodes[0].height();
+  for (var i = 0; i < this.nodes.length; i++) {
+    var r = this.nodes[i];
+    h = Math.max(h, r.height());
+  }
+  return h;
+};
 
-    Node.prototype.getCenter = function() {
-      return new Point(this.left() + this.width()/2, this.top() + this.height()/2);
-    }
+Row.prototype.width = function () {
+  return this.canvas.width;
+};
 
-    Node.prototype.remove = function() {
-      if(this.parent) {
-        this.parent.children.removeByValue(this);
-      }
-      this.el.remove();
-    }
+Row.prototype.bottom = function () {
+  return this.top() + this.height();
+};
 
-    function Point(x, y) {
-      this.x = x;
-      this.y = y;
-    }
+Row.prototype.nodesBefore = function (node) {
+  var n = [];
+  for (var i = 0; i < this.nodes.length && this.nodes[i] != node; i++) {
+    n.push(this.nodes[i]);
+  }
+  return n;
+};
 
-    jQuery.fn.center = function ( parent, animate ) {
-      this.css("position","absolute");
-      var duration = animate ? 600 : 0;
-      this.animate({
-        top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) +
-                                                  $(parent).scrollTop()),
-        left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
-                                                  $(parent).scrollLeft())
-      }, {duration: duration, easing: 'linear'});
-      return this;
-    }
+function Node(el, parent) {
+  this.el = el;
+  if (parent) {
+    this.parent = parent;
+  } else {
+    this.parent = megamind.rootNode;
+  }
+  this.row = null;
+  this.xOffset = 0;
+  this.yOffset = 0;
+}
 
-    jQuery.fn.getCenter = function() {
-      var x = this.position().left + this.outerWidth() / 2;
-      var y = this.position().top + this.outerHeight() / 2;
-      return new Point(x, y);
-    }
+Node.prototype.width = function () {
+  return this.el.outerWidth();
+};
+
+Node.prototype.height = function () {
+  return this.el.outerHeight();
+};
+
+Node.prototype.left = function () {
+  var w = 0;
+  var nodesBefore = this.row.nodesBefore(this);
+  for (var i = 0; i < nodesBefore.length; i++) {
+    var n = nodesBefore[i];
+    w += n.width() + n.xOffset;
+  }
+  return this.row.left() + w + this.xOffset;
+};
+
+Node.prototype.top = function () {
+  return this.row.top() + this.yOffset;
+};
+
+Node.prototype.move = function (x, y) {
+  this.xOffset = x;
+  this.yOffset = y;
+};
+
+Node.prototype.getCenter = function () {
+  return new Point(this.left() + this.width() / 2, this.top() + this.height() / 2);
+};
+
+Node.prototype.remove = function () {
+  if (this.parent) {
+    this.parent.children.removeByValue(this);
+  }
+  this.el.remove();
+};
+
+function Point(x, y) {
+  this.x = x;
+  this.y = y;
+}
+
+jQuery.fn.center = function (parent, animate) {
+  this.css("position", "absolute");
+  var duration = animate ? 600 : 0;
+  this.animate({
+    top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) +
+        $(parent).scrollTop()),
+    left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
+        $(parent).scrollLeft())
+  }, {duration: duration, easing: 'linear'});
+  return this;
+};
+
+jQuery.fn.getCenter = function () {
+  var x = this.position().left + this.outerWidth() / 2;
+  var y = this.position().top + this.outerHeight() / 2;
+  return new Point(x, y);
+};
