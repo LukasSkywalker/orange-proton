@@ -354,7 +354,7 @@ var mindmapper = {
                 //Show First your current Location
                 $('#map-frame').first().attr('src', 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
                     '&q={1}&t=h&z=17&output=embed'
-                        .format(lang, encodeURIComponent(mindmapper.lat+","+mindmapper.lng)));
+                        .format(lang, encodeURIComponent(mindmapper.getLocation().lat+","+mindmapper.getLocation().lng)));
             },
 
             error: mindmapper.handleApiError,
@@ -369,6 +369,10 @@ var mindmapper = {
         // TODO
     },
 
+  /**
+   * Get the current location, favoring user-set over automatic
+   * @returns {Object} the current location as {lat, lng}
+   */
   getLocation: function() {
     return this.userLocation ? this.userLocation : this.geoLocation;
   },
