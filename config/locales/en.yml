@@ -11,6 +11,7 @@ en:
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
   search: "Search"
+  legend: "Legend"
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

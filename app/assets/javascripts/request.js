@@ -22,6 +22,16 @@ $(document).ready(function () {
         }
     });
 
+    // Toggles the legend
+    $("#legend-title").click(function(){
+        $("#legend-text").toggle("blind");
+    });
+
+    // Toggles the admin panel
+    $("#admin-title").click(function(){
+        $("#admin-text").toggle("blind");
+    });
+
     // click handler for search button
     $("#search-button").on('click', null, function(){
       var code = $('#code-name').val().toUpperCase();
@@ -395,13 +405,16 @@ function setLocale(locale) {
 
 // load the legend and search button in the right translation
 function updateUiLanguage() {
-  $('#legend').empty();
+  $('#legend-text').empty();
 
   var identifiers = ['syn', 'cat', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
   $.each(identifiers, function(index, name) {
-    $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend');
+    $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend-text');
   });
+
+  $('#legend-title').html('<p>'+ I18n.t('legend') +'</p>');
+
 
   $('#search-button').val(I18n.t('search'));
 }
@@ -419,3 +432,4 @@ function messageBox(title, content, buttons, actions, focusIndex){
   }
   jQuery.fancybox({'modal' : true, 'content' : inputBox});
 }
+

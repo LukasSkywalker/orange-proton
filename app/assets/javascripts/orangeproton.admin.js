@@ -40,7 +40,7 @@ orangeproton.admin = {
    */
   displaySliders: function(response, status) {
       var providers = ["Manual", "MDC", "Range", "Thesaur", "StringMatcher", "Chop"];
-      var panel = $("#admin");
+      var panel = $("#admin-text");
 
       panel.empty();
       panel.append('<input type="button" onclick="orangeproton.admin.debugMindmap();" value="Debug Mindmap">');

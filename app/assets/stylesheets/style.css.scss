@@ -95,35 +95,39 @@ div.node, div.legend {
   @include clickable;
 }
 
+/* the bow with the legend and the admin panel*/
+#panels {
+  width:  210px;
+  position: absolute;
+  top: 50px;
+  right: 0;
+  z-index: 10;
+}
+
 /* the admin panel */
 #admin {
-  width: 200px;
   margin: 10px;
   border: 1px dashed #c5c5c5;
-  padding: 10px;
-  right: 0;
-  position: absolute;
-  border-radius: 20px;
-  top: 330px;
+  @include border-radius(7px);
   font-size: 10px;
+  padding: 0 10px 0 10px;
 
   /* the label of the sliders */
   .provider {
     font-size: 15px;
   }
+
+  input[type=button]{
+    margin: 5px;
+  }
 }
 
 /* the legend */
 #legend {
-  width: 200px;
   margin: 10px;
   border: 1px dashed #c5c5c5;
-  padding: 10px;
-  right: 0;
-  position: absolute;
-  border-radius: 20px;
-  top: 50px;
-  z-index: 10;
+  @include border-radius(7px);
+  padding: 0 10px 0 10px;
 
   /* the items of the legend */
   .legend {
@@ -132,16 +136,35 @@ div.node, div.legend {
     text-align: center;
     position:  relative;
   }
+
+
+}
+
+.title{
+  background: #eee;
+  border-bottom: 1px dashed #c5c5c5;
+  @include border-radius(7px);
+  margin: 0 -10px 0 -10px;
+  margin-bottom: 0;
+  font-size:  16px;
+  height: 25px;
+  text-align: center;
+  padding: 5px;
+
+  p{
+    margin: 0;
+  }
 }
 
 #search-bar {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 50px;
   background: #f5f5f5;
   border-bottom: 1px solid #c5c5c5;
   top: 0;
   left: 0;
+  z-index: 11;
 
   #code-name {
     width: 200px;
@@ -161,7 +184,6 @@ div.node, div.legend {
   }
 
   #location {
-    margin-left: 500px;
     margin-top: 16px;
     float: left;
     font-size: 0.8em;
@@ -171,6 +193,12 @@ div.node, div.legend {
     margin-left: 20px;
     float: left;
     font-size: 0.8em;
+  }
+
+  #location-container{
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
   }
 
   #lang {
@@ -194,7 +222,7 @@ div.node, div.legend {
   width: 100px;
   padding-top: 3px;
   overflow: hidden;
-  border-radius: 15px;
+  border-radius: 7px;
   float: right;
   background: url(arrow.png) no-repeat right white;
   height: 32px;

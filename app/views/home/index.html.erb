@@ -10,9 +10,11 @@
     <body>
         <div id="search-bar">
             <input id="code-name" type="text" placeholder="ICD Code">
-            <i id="search-button" class="icon-search icon-large clickable"></i>
-            <p id="location" class="icon-globe clickable"></p>
-            <p id="location-config" class="icon-cogs clickable"></p>
+            <p id="search-button" class="icon-search icon-large clickable"></p>
+            <div id="location-container">
+                <p id="location" class="icon-globe"></p>
+                <p id="location-config" class="icon-cogs clickable"></p>
+            </div>
             <div class="hide-arrow">
                 <select name="lang" id="lang" size="1">
                     <option value="de">Deutsch</option>
@@ -22,8 +24,17 @@
                 </select>
             </div>
         </div>
-        <div id="legend"></div>
+        <div id="panels">
+          <div id="legend">
+            <div id="legend-title" class="title clickable"></div>
+            <div id="legend-text"></div>
+          </div>
+          <div id="admin">
+            <div id="admin-title" class="title clickable"><p>Admin panel</p></div>
+            <div id="admin-text"></div>
+          </div>
+        </div>
         <div id="mindmap"></div>
-        <div id="admin"></div>
+
     </body>
 </html>

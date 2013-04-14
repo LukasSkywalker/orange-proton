@@ -8,6 +8,7 @@ de:
   exclusiva: "Exklusiva"
   inclusiva: "Inklusiva"
   search: "Suchen"
+  legend: "Legende"
 
 #errors
   no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"

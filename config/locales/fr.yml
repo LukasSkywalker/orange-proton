@@ -8,6 +8,7 @@ fr:
   exclusiva: "Exclusiva"
   inclusiva: "Inclusiva"
   search: "Chercher"
+  legend: "Légende"
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"
