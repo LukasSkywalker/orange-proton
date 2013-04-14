@@ -102,5 +102,25 @@ orangeproton.location = {
         }
       }
     });
+  },
+
+  /**
+   * Get the current location, favoring user-set over automatic
+   * @returns {Object} the current location as {lat, lng}
+   */
+  getLocation: function() {
+    return mindmapper.userLocation ? mindmapper.userLocation : mindmapper.geoLocation;
+  },
+
+  /**
+   * Geocodes and sets the user's location based on his address
+   * @param {String} userInput the user's address
+   */
+  getUserLocation: function( userInput ) {
+    function cb(lat, lng, address) {
+      $('#location').html(address);
+      mindmapper.userLocation = {lat: lat, lng: lng};
+    }
+    orangeproton.location.geoCode(userInput, cb)
   }
 };
