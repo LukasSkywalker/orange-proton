@@ -112,10 +112,14 @@ $(document).ready(function () {
       var lang = State.data.lang;
       $("#code-name").val(code);
       $("#lang").val(lang);
-      mindmapper.getICD(code, lang);
+
+      if (codeParam !== undefined && codeParam !== '') {
+          mindmapper.getICD(code, lang);
+      }
     });
 
     var codeParam = generic.getUrlVars()["code"];
+
     if (codeParam !== undefined && codeParam !== '') {
       var code = codeParam.toUpperCase();
       var lang = generic.getUrlVars()["lang"] || "de";
