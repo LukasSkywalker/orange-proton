@@ -150,7 +150,7 @@ var mindmapper = {
       $("#code-name").val(code);
       $("#lang").val(lang);
       History.pushState({code: code, lang: lang}, "OrangeProton", "?code="+code+"&lang="+lang);
-      //this.getICD(input, lang);
+      this.getICD($("#code-name").val(), $("#lang").val()); //Uncommented this, because if the url params were empty, it failed. We should find a better solution.
       // TODO mindmapper.getSpeciality(input);
     },
 
