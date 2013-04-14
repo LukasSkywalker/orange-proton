@@ -49,6 +49,7 @@ div.node, div.legend {
   max-width: 250px;
   word-wrap: break-word;
   position:absolute;
+  text-align: center;
 
   &.syn {
     @include node-border(black);
@@ -85,8 +86,11 @@ div.node, div.legend {
   &.root {
     background: #f5f5f5;
     @include node-border(#e3e3e3);
-    @include border-radius(20px);
+    @include border-radius(5px);
+    font-size: 20px;
+    font-weight: 500;
     z-index: 10;
+    max-width: 300px;
   }
 }
 
