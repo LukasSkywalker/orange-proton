@@ -269,9 +269,12 @@ var mindmapper = {
           synonyms = mindmapper.generateBubbles(data.synonyms, options.max_syn, 'syn');
         }
 
-        var patternNoDash = /^(.[0-9]{2}(\.[0-9]{1,2})?)</gi;  //matches a single ICD before a HTML-tag start
-        var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
-        var superclasses = mindmapper.generateBubbles([content], 1, 'super', patternNoDash);
+        var superclasses = [];
+        if(data.superclass) {
+          var patternNoDash = /^(.[0-9]{2}(\.[0-9]{1,2})?)</gi;  //matches a single ICD before a HTML-tag start
+          var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
+          superclasses = mindmapper.generateBubbles([content], 1, 'super', patternNoDash);
+        }
 
         var subclasses = mindmapper.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
 
