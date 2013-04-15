@@ -60,9 +60,9 @@ describe DatabaseAdapter do
   end
 
   it 'should match the chop collections' do
-    @chop_de.count().should be(14798)
-    @chop_fr.count().should be(14798)
-    @chop_it.count().should be(14798)
+    @chop_de.count().should be(14799)
+    @chop_fr.count().should be(14799)
+    @chop_it.count().should be(14799)
   end
 
   it 'should match the mdc collections' do
