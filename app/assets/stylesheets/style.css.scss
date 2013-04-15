@@ -79,7 +79,7 @@ div.node, div.legend {
   }
 
   &.sub {
-    @include node-border(cyan);
+    @include node-border(purple);
   }
 
   &.root {
@@ -112,13 +112,18 @@ div.node, div.legend {
   margin: 10px;
   border: 1px dashed #c5c5c5;
   @include border-radius(7px);
-  font-size: 10px;
+  font-size: 0.8em;
   padding: 0 10px 0 10px;
 
-  /* the label of the sliders */
-  .provider {
-    font-size: 15px;
-  }
+ p{
+   margin-bottom: 3px;
+ }
+
+ .admin-slider{
+   margin-top: 3px;
+ }
+
+
 
   input[type=button]{
     margin: 5px;
