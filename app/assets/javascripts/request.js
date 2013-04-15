@@ -315,7 +315,7 @@ var mindmapper = {
    * @param {Object} [data] Additional data to pass to the click handler
    * @param {Function} [click] Click handler method. use data to access (data) and match to get the match of the RegEx
    * @param {Object} [click.data] the data passed to #generateBubbles
-   * @param {Array} [click.match] the result of `pattern.exec(content)`
+   * @param {Array} [click.match] the result of `content.match(pattern)`
    * @returns {Array} of the elements
    */
   generateBubbles: function(contents, limit, className, pattern, data, click) {
@@ -325,15 +325,17 @@ var mindmapper = {
     $.each(contents, function (index, text) {
       var $element = $('<div></div>').addClass(className).html(text);
       if( pattern ) {
-        var result = pattern.exec(text);
+        var result = text.match(pattern);
         if( result ) {
           if(click){        //onclick handler was supplied
             $element.on('click', {data: data, match: result}, function(e) {
+              console.log('click1');
               click(e.data.data, e.data.match);
             });
           }else{            //inject the default click handler
             $element.on('click', {match: result}, function(e) {
-              var code = e.data.match[1];
+              var code = decodeURI(e.data.match[0]);
+              code = code.replace('<', ''); //bad fix for a bad regex
               mindmapper.sendRequest(code);
               $('#mindmap').megamind('setRoot', this, true);
             });
