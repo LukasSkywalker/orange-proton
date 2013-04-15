@@ -1,6 +1,6 @@
 fr:
   syn: "Synonymes"
-  cat: "Branche"
+  field: "Branche"
   doc: "Médcin"
   super: "Classe supérieure"
   sub: "Classe inférieure"

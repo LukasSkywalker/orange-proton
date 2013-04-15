@@ -3,7 +3,7 @@
 
 en:
   syn: "Synonyms"
-  cat: "Speciality"
+  field: "Speciality"
   doc: "Doctor"
   super: "Superclass"
   sub: "Subclass"

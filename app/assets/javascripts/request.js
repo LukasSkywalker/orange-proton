@@ -5,6 +5,11 @@ $(document).ready(function () {
   var $lang = $('#lang');
 
   /**
+  * Adjusts the width of the mindmap div
+  */
+  $("#mindmap").width($("body").width()-$("#panels").outerWidth());
+
+  /**
    * load the admin interface
    */
   orangeproton.admin.loadPanel();
