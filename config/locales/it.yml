@@ -9,6 +9,8 @@ it:
   inclusiva: "Inclusiva"
   search: "Cercare"
   legend: "Leggenda"
+  location: "Luogo"
+  error: "Errore"
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"

@@ -116,7 +116,7 @@ orangeproton.location = {
    * Geocodes and sets the user's location based on his address
    * @param {String} userInput the user's address
    */
-  getUserLocation: function( userInput ) {
+  geoCodeUserLocation: function( userInput ) {
     function cb(lat, lng, address) {
       $('#location').html(address);
       mindmapper.userLocation = {lat: lat, lng: lng};

@@ -55,7 +55,7 @@ div.node, div.legend {
     @include node-border(black);
   }
 
-  &.cat {
+  &.field {
     @include node-border(blue);
     @include clickable;
   }
@@ -66,12 +66,10 @@ div.node, div.legend {
 
   &.exclusiva {
     @include node-border(green);
-    @include clickable;
   }
 
   &.inclusiva {
     @include node-border(orange);
-    @include clickable;
   }
 
   &.super {
@@ -80,7 +78,6 @@ div.node, div.legend {
 
   &.sub {
     @include node-border(cyan);
-    @include clickable;
   }
 
   &.root {

@@ -9,6 +9,8 @@ fr:
   inclusiva: "Inclusiva"
   search: "Chercher"
   legend: "Légende"
+  location: "Lieu"
+  error: "Erreur"
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"
