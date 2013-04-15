@@ -43,18 +43,29 @@ orangeproton.doctor = {
     var $overlay = $('<div class="docOverlay"></div>');
     var $docList = $('<div id="docList"><ul></ul></div>');
     var $map = $('<div id="map"></div>');
-    var $mapFrame = $('<iframe id="map-frame"></div>');
+    var $mapFrame = $('<div id="map-frame"></div>');
     $map.append($mapFrame);
-    $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');
+    $overlay.append($docList).append($map).append('<div style="clear:both;"></div>').appendTo('body');
+
+    var map = new GMaps({
+      div: '#map-frame',
+      lat: orangeproton.location.getLocation().lat,
+      lng: orangeproton.location.getLocation().lng
+    });
+    map.addMarker({
+      lat: orangeproton.location.getLocation().lat,
+      lng: orangeproton.location.getLocation().lng
+    });
+    $('#map-frame').data('map', map);
+
     var docs = response.result;
     for (var i = 0; i < docs.length; i++) {
       var doc = docs[i];
       var title = doc.title;
       var name = doc.name;
+      var lat = doc.lat;
+      var lng = doc.long;
       var address = doc.address.replace(/,\s*/gi, "<br />");
-      var url = 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
-          '&q={1}&t=h&z=17&output=embed'
-              .format(lang, encodeURIComponent(doc.name + ', ' + doc.address + ', Schweiz'));
       var element =
           '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
               + '<label class="docLabel" for="docItem-{0}" >'
@@ -62,19 +73,22 @@ orangeproton.doctor = {
               + '  <p class="doc address">{2}<br />{3}</p>'
               + '</label>'
               + '</input>';
+      map.addMarker({
+        lat: lat,
+        lng: lng,
+        infoWindow: {
+          content: '<div style="max-width: 200px;">' + title + '<br />' + name + '<br />' + address + '</div>'
+        }
+      });
       var $menuItem = $(element.format(i, title, name, address));
 
-      $menuItem.on('change', {url: url, details: doc}, function doctorClick(e) {
-        $('#map-frame').first().attr('src', e.data.url);
+      $menuItem.on('change', {details: doc}, function doctorClick(e) {
+         $('#map-frame').data('map').setCenter(e.data.details.lat, e.data.details.long);
       });
       $docList.append($menuItem);
     }
 
-    $.fancybox($overlay[0], orangeproton.options.libraries.fancybox);
-
-    //Show First your current Location
-    $('#map-frame').first().attr('src', 'http://maps.google.com/maps?f=q&iwloc=A&source=s_q&hl={0}' +
-        '&q={1}&t=h&z=17&output=embed'
-            .format(lang, encodeURIComponent(orangeproton.location.getLocation().lat + "," + orangeproton.location.getLocation().lng)));
+    var opts = orangeproton.options.libraries.fancybox;
+    $.fancybox($overlay[0], $.extend({}, opts, {beforeClose: function() { $('.docOverlay').remove(); }}));
   }
 };

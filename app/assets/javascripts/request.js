@@ -71,7 +71,7 @@ $(document).ready(function () {
         var position = e.latLng;
         mindmapper.userLocation = {lat: position.lat(), lng: position.lng()};
         orangeproton.location.reverseGeoCode(position.lat(), position.lng(), function onGeocodeComplete(lat, lng, address) {
-          $('#location').html(address.ellipses(30));
+          $('#location').html(address.ellipses(50));
         });
       }
     });
@@ -111,7 +111,7 @@ $(document).ready(function () {
   function geoLocationFallback() {
     function geoIpSuccess(lat, lng, country, city) {
       var location = city + ", " + country;
-      $('#location').html(location.ellipses(30));
+      $('#location').html(location.ellipses(50));
       mindmapper.geoLocation.lat = lat;
       mindmapper.geoLocation.lng = lng;
     }
@@ -133,7 +133,7 @@ $(document).ready(function () {
       geoLocationFallback();
     });
     orangeproton.location.reverseGeoCode(lat, lng, function onGeocodeComplete(lat, lng, address) {
-      $('#location').html(address.ellipses(30));
+      $('#location').html(address.ellipses(50));
     });
   } else {
     geoLocationFallback();
