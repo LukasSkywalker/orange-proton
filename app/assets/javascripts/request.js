@@ -22,6 +22,7 @@ $(document).ready(function () {
     if (code == 13) e.preventDefault();
     if (code == 32 || code == 13 || code == 188 || code == 186) {  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
       mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
+      History.Adapter.trigger(window,'statechange');
     }
   });
 
@@ -46,6 +47,7 @@ $(document).ready(function () {
     var code = $('#code-name').val().toUpperCase();
     var lang = $('#lang').val();
     mindmapper.sendRequest(code, lang);
+    History.Adapter.trigger(window,'statechange');
   });
 
   /**
@@ -210,6 +212,7 @@ var mindmapper = {
     var $lang = $('#lang');
     if( !code ) code = $code.val();
     if( !lang ) lang = $lang.val();
+    code = code.toUpperCase();
     $code.val(code);
     $lang.val(lang);
     History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
