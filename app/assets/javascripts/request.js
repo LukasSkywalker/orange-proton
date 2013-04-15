@@ -73,7 +73,7 @@ $(document).ready(function () {
         });
       }
     });
-    $.fancybox($map);
+    $.fancybox($map, {beforeClose: function() { $('#user-location').remove(); }});
   });
 
   /**
