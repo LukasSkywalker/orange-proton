@@ -188,6 +188,7 @@ div.node, div.legend {
     margin-top: 16px;
     float: left;
     font-size: 0.8em;
+    @include clickable;
   }
   #location-config {
     margin-top: 16px;

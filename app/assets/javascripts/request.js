@@ -43,6 +43,37 @@ $(document).ready(function () {
     mindmapper.sendRequest(code, lang);
   });
 
+  /**
+   * add click handler for location display
+   */
+  $('#location').on('click', null, function() {
+    var location = orangeproton.location.getLocation();
+    var $map = $('<div id="user-location"></div>');
+    $map.width(800).height(600);
+    $map.appendTo('body');
+    var map = new GMaps({
+      div: '#user-location',
+      lat: location.lat,
+      lng: location.lng
+    });
+    map.addMarker({
+      lat: location.lat,
+      lng: location.lng,
+      draggable: true,
+      dragend: function (e) {
+        var position = e.latLng;
+        mindmapper.userLocation = {lat: position.lat(), lng: position.lng()};
+        orangeproton.location.reverseGeoCode(position.lat(), position.lng(), function onGeocodeComplete(lat, lng, address) {
+          $('#location').html(address.ellipses(30));
+        });
+      }
+    });
+    $.fancybox($map);
+  });
+
+  /**
+   * add click handler for location configuration
+   */
   $("#location-config").on('click', null, function () {
     function geoCodeLocation() {
       jQuery.fancybox.close();
@@ -94,14 +125,8 @@ $(document).ready(function () {
       alert(error.message);
       geoLocationFallback();
     });
-    GMaps.geocode({
-      lat: lat,
-      lng: lng,
-      callback: function (results, status) {
-        if (status == 'OK') {
-          $('#location').html(results[0].formatted_address.ellipses(30));
-        }
-      }
+    orangeproton.location.reverseGeoCode(lat, lng, function onGeocodeComplete(lat, lng, address) {
+      $('#location').html(address.ellipses(30));
     });
   } else {
     geoLocationFallback();
