@@ -329,6 +329,18 @@ input[type=button] {
   }
 }
 
+.relatedness-container{
+  width: 100px;
+  height:  10px;
+  border: darkblue 1px solid;
+  margin: 3px auto 3px auto;
+}
+
+.relatedness-display{
+  background: darkblue;
+  height: 100%;
+}
+
 .messagebox {
   margin: 1px;
   width: 240px;
