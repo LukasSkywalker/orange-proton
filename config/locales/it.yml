@@ -1,6 +1,6 @@
 it:
   syn: "Sinonimo"
-  cat: "Branca"
+  field: "Branca"
   doc: "Dottore"
   super: "Ceto alto"
   sub: "Ceto basso"

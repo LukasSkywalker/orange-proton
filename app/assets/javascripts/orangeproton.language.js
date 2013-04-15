@@ -19,7 +19,7 @@ orangeproton.language = {
   updateUiLanguage: function() {
     $('#legend-text').empty();
 
-    var identifiers = ['syn', 'cat', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
+    var identifiers = ['syn', 'field', 'super', 'sub', 'drg', 'exclusiva', 'inclusiva'];
 
     $.each(identifiers, function (index, name) {
       $('<div class="' + name + ' legend">' + I18n.t(name) + '</div>').appendTo('#legend-text');

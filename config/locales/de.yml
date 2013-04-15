@@ -1,6 +1,6 @@
 de:
   syn: "Synonyme"
-  cat: "Fachrichtung"
+  field: "Fachrichtung"
   doc: "Doktor"
   super: "Oberklasse"
   sub: "Unterklasse"
