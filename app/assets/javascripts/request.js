@@ -365,7 +365,7 @@ var mindmapper = {
           }else{            //inject the default click handler
             $element.on('click', {match: result}, function(e) {
               var code = decodeURI(e.data.match[0]);
-              code = code.replace('<', ''); //bad fix for a bad regex
+              code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
               mindmapper.sendRequest(code);
               $('#mindmap').megamind('setRoot', this, true);
             });
