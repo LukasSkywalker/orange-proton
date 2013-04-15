@@ -73,5 +73,6 @@ orangeproton.admin = {
    */
   debugMindmap: function() {
       $("#mindmap").megamind('debug');
+      $("body").toggleClass("nyan");
   }
 };

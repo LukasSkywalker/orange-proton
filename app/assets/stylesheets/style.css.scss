@@ -8,6 +8,10 @@ html, body {
   height: 100%;
 }
 
+.nyan{
+  background: url(/assets/bg.gif);
+}
+
 #mindmap {
   position: absolute;
   top: 51px;
@@ -15,7 +19,6 @@ html, body {
 }
 
 body {
-  background: #fff;
   padding: 0;
   font-family: Verdana ,sans-serif;
   font-size: 12px;
