@@ -7,7 +7,7 @@ $(document).ready(function () {
   /**
   * Adjusts the width of the mindmap div
   */
-  $("#mindmap").width($(document).width()-$("#panels").outerWidth());
+  $("#mindmap").width($(window).width()-$("#panels").outerWidth());
 
   /**
    * load the admin interface

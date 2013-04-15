@@ -68,7 +68,7 @@ orangeproton.doctor = {
       var address = doc.address.replace(/,\s*/gi, "<br />");
       var element =
           '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
-              + '<label class="docLabel" for="docItem-{0}" >'
+              + '<label class="docLabel clickable" for="docItem-{0}" >'
               + '  <p class="doc doc-title">{1}</p>'
               + '  <p class="doc address">{2}<br />{3}</p>'
               + '</label>'
