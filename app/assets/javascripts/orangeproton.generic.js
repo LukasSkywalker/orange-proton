@@ -63,3 +63,13 @@ orangeproton.generic = {  // Read a page's GET URL variables and return them as 
     $buttonContainer.children()[focusIndex].focus();
   }
 };
+
+$.fn.enterHandler = function( callback ) {
+  this.keyup(function (e) {
+    var code = e.which; // normalized across browsers, use this :-)
+    if (code == 13) {
+      e.preventDefault();
+      callback(e);
+    }
+  });
+};

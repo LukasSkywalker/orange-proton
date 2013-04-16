@@ -112,15 +112,41 @@ orangeproton.location = {
     return mindmapper.userLocation ? mindmapper.userLocation : mindmapper.geoLocation;
   },
 
-  /**
-   * Geocodes and sets the user's location based on his address
-   * @param {String} userInput the user's address
-   */
-  geoCodeUserLocation: function( userInput ) {
-    function cb(lat, lng, address) {
-      $('#location').html(address);
-      mindmapper.userLocation = {lat: lat, lng: lng};
-    }
-    orangeproton.location.geoCode(userInput, cb)
+  setUserLocation: function( lat, lng ) {
+    mindmapper.userLocation = {lat: lat, lng: lng};
+    $(document).trigger('locationChange', [lat, lng]);
+  },
+
+  setLocation: function( lat, lng ) {
+    mindmapper.location = {lat: lat, lng: lng};
+    $(document).trigger('locationChange', [lat, lng]);
+  },
+
+  displaySelectionPanel: function() {
+    var $popup = $('<div id="location-popup"><input type="text" id="location-input"/>' +
+        '<input type="button" value="Suche"/></div>');
+  },
+
+  markerOptions: function(lat, lng) {
+    return {
+      lat: lat,
+      lng: lng,
+      draggable: true,
+      dragend: function (e) {
+        var position = e.latLng;
+        orangeproton.location.setUserLocation(position.lat(), position.lng());
+      }
+    };
+  },
+
+  geoCodeAndMark: function( address ) {
+    orangeproton.location.geoCode(address, function onGeocodeComplete(lat, lng, address) {
+      orangeproton.location.setUserLocation(lat, lng);
+      var map = $('#location-map').data('map');
+      map.removeMarkers();
+      map.setCenter(lat, lng);
+      map.addMarker(orangeproton.location.markerOptions(lat, lng));
+    });
   }
+
 };

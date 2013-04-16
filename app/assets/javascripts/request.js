@@ -17,13 +17,18 @@ $(document).ready(function () {
   /**
    * add event handler for code searches
    */
-  $code.keyup(function (e) {
-    var code = e.which; // normalized across browsers, use this :-)
-    if (code == 13) e.preventDefault();
-    if (code == 32 || code == 13 || code == 188 || code == 186) {  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
-      mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
-      History.Adapter.trigger(window,'statechange');
-    }
+  $code.enterHandler(function () {
+    mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
+    History.Adapter.trigger(window,'statechange');
+  });
+
+  /**
+   * add event handler for location change
+   */
+  $(document).on('locationChange', function(e, lat, lng) {
+    orangeproton.location.reverseGeoCode(lat, lng, function(lat, lng, address) {
+      $('.location').html(address.ellipses(100));
+    });
   });
 
   /**
@@ -53,42 +58,30 @@ $(document).ready(function () {
   /**
    * add click handler for location display
    */
-  $('#location').on('click', null, function() {
-    var location = orangeproton.location.getLocation();
-    var $map = $('<div id="user-location"></div>');
+  $('.location').on('click', null, function() {
+    var $popup = $('<div id="location-popup"></div>');
+    var $search = $('<input type="text" id="location-input"/>');
+    var $searchButton = $('<input type="button" value="Suche"/>');
+    var $currentLocation = $('<p></p>').addClass('location');
+    $search.enterHandler(function() {
+      orangeproton.location.geoCodeAndMark($('#location-input').val());
+    });
+    $searchButton.on('click', null, function onSearchButtonClick() {
+      orangeproton.location.geoCodeAndMark($('#location-input').val());
+    });
+    var $map = $('<div id="location-map"></div>');
     $map.width(800).height(600);
-    $map.appendTo('body');
+    $popup.append($search).append($searchButton)
+        .append($currentLocation).append($map).appendTo('body');
+    var location = orangeproton.location.getLocation();
     var map = new GMaps({
-      div: '#user-location',
+      div: '#location-map',
       lat: location.lat,
       lng: location.lng
     });
-    map.addMarker({
-      lat: location.lat,
-      lng: location.lng,
-      draggable: true,
-      dragend: function (e) {
-        var position = e.latLng;
-        mindmapper.userLocation = {lat: position.lat(), lng: position.lng()};
-        orangeproton.location.reverseGeoCode(position.lat(), position.lng(), function onGeocodeComplete(lat, lng, address) {
-          $('#location').html(address.ellipses(50));
-        });
-      }
-    });
-    $.fancybox($map, {beforeClose: function() { $('#user-location').remove(); }});
-  });
-
-  /**
-   * add click handler for location configuration
-   */
-  $("#location-config").on('click', null, function () {
-    function geoCodeLocation() {
-      jQuery.fancybox.close();
-      orangeproton.location.geoCodeUserLocation($('#userLocation').val());
-    }
-
-    var content = I18n.t('location') + ': <input type="text" id="userLocation">';
-    orangeproton.generic.messageBox(I18n.t('location'), content, ['Ok'], [geoCodeLocation]);
+    map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
+    $('#location-map').data('map', map);
+    $.fancybox($popup, {beforeClose: function() { $('#location-popup').remove(); }});
   });
 
   /**
@@ -110,10 +103,7 @@ $(document).ready(function () {
    */
   function geoLocationFallback() {
     function geoIpSuccess(lat, lng, country, city) {
-      var location = city + ", " + country;
-      $('#location').html(location.ellipses(50));
-      mindmapper.geoLocation.lat = lat;
-      mindmapper.geoLocation.lng = lng;
+      orangeproton.location.setLocation(lat, lng);
     }
 
     function geoIpError() {/* just fail silently */
@@ -126,15 +116,13 @@ $(document).ready(function () {
     var lat = orangeproton.options.defaultLocation.lat;
     var lng = orangeproton.options.defaultLocation.lng;
     navigator.geolocation.getCurrentPosition(function success(position) {
-      lat = mindmapper.geoLocation.lat = position.coords.latitude;
-      lng = mindmapper.geoLocation.lng = position.coords.longitude;
+      lat = position.coords.latitude;
+      lng = position.coords.longitude;
     }, function error(error) {
       alert(error.message);
       geoLocationFallback();
     });
-    orangeproton.location.reverseGeoCode(lat, lng, function onGeocodeComplete(lat, lng, address) {
-      $('#location').html(address.ellipses(50));
-    });
+    orangeproton.location.setLocation(lat, lng);
   } else {
     geoLocationFallback();
   }
