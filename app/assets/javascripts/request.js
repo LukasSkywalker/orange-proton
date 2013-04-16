@@ -328,7 +328,7 @@ var mindmapper = {
       var message = jQuery.parseJSON(xhr.responseText).error;
       alert(message);
     } catch (e) {
-      alert(error);
+      if(error && error != '') alert(error);
     }
   },
 
