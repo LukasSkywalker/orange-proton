@@ -364,7 +364,9 @@ var mindmapper = {
     if(!contents) return bubbles;
     contents = contents.slice(0, limit); // set collection size limit
     $.each(contents, function (index, text) {
-      var $element = $('<div></div>').addClass(className).html(text);
+      var $element = $('<div></div>')
+          .addClass(className)
+          .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become asdf<br />b
       if( pattern ) {
         var result = text.match(pattern);
         if( result ) {
