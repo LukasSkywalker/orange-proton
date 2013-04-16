@@ -1,5 +1,6 @@
 require_relative '../doctor_locator'
 
+# Abstract base class for all information providers utilizing the db (which are basically all of them)
 class DatabaseInfoProvider <  BaseInformationProvider
 
   attr_accessor :db, :locator
@@ -18,6 +19,11 @@ class DatabaseInfoProvider <  BaseInformationProvider
     case type
       when :icd
         data = self.db.get_icd_entry(code, language)
+
+        # Drop codes not in german ICD table, fixes #176
+        if self.db.get_icd_entry(code, 'de').nil?   # TODO Test
+          data = nil
+        end
       when :chop
         data = self.db.get_chop_entry(code, language)
       else
