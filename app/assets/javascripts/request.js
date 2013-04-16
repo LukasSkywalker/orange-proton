@@ -48,7 +48,9 @@ $(document).ready(function () {
     code = code || $code.val();
     lang = lang || $lang.val();
 
-    $code.val(code.toUpperCase());
+    code = code.toUpperCase();
+
+    $code.val(code);
     $lang.val(lang);
 
     orangeproton.language.setLocale(lang);
