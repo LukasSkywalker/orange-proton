@@ -4,6 +4,12 @@
  */
 var orangeproton = orangeproton || {};
 orangeproton.location = {
+  userLocation: null,
+  geoLocation: {
+    lat: 46.951288,
+    lng: 7.438774
+  },
+
   /**
    * Geolocates the user based on the IP via http://freegeoip.net
    * @param {Function} successHandler A callback function for a successful request
@@ -109,22 +115,29 @@ orangeproton.location = {
    * @returns {Object} the current location as {lat, lng}
    */
   getLocation: function() {
-    return mindmapper.userLocation ? mindmapper.userLocation : mindmapper.geoLocation;
+    return orangeproton.location.userLocation ? orangeproton.location.userLocation : orangeproton.location.geoLocation;
   },
 
+  /**
+   * Sets a new user-defined location. This will be favoured over
+   * the #setLocation value.
+   * @param {Number} lat the new latitude
+   * @param {Number} lng the new longitude
+   */
   setUserLocation: function( lat, lng ) {
-    mindmapper.userLocation = {lat: lat, lng: lng};
+    orangeproton.location.userLocation = {lat: lat, lng: lng};
     $(document).trigger('locationChange', [lat, lng]);
   },
 
+  /**
+   * Sets a new auto-calculated location. This will be overwritten by values set
+   * with #setUserLocation.
+   * @param {Number} lat the new latitude
+   * @param {Number} lng the new longitude
+   */
   setLocation: function( lat, lng ) {
-    mindmapper.location = {lat: lat, lng: lng};
+    orangeproton.location.location = {lat: lat, lng: lng};
     $(document).trigger('locationChange', [lat, lng]);
-  },
-
-  displaySelectionPanel: function() {
-    var $popup = $('<div id="location-popup"><input type="text" id="location-input"/>' +
-        '<input type="button" value="Suche"/></div>');
   },
 
   markerOptions: function(lat, lng) {
@@ -147,6 +160,71 @@ orangeproton.location = {
       map.setCenter(lat, lng);
       map.addMarker(orangeproton.location.markerOptions(lat, lng));
     });
+  },
+
+  /**
+   * Show the location-display and location-selection dialog.
+   */
+  showMap: function() {
+    var $popup = $('<div id="location-popup"></div>');
+    var $search = $('<input type="text" id="location-input"/>');
+    var $searchButton = $('<input type="button" value="Suche"/>');
+    var $currentLocation = $('<p></p>').addClass('location');
+
+    $search.enterHandler(function() {
+      orangeproton.location.geoCodeAndMark($('#location-input').val());
+    });
+
+    $searchButton.on('click', null, function onSearchButtonClick() {
+      orangeproton.location.geoCodeAndMark($('#location-input').val());
+    });
+
+    var $map = $('<div id="location-map"></div>').width(800).height(500);
+
+    $popup.append($search).append($searchButton)
+        .append($currentLocation).append($map).appendTo('body');
+
+    //$map.css({width: '100%', height: '100%', position: 'relative'});
+
+    var location = orangeproton.location.getLocation();
+    var map = new GMaps({
+      div: '#location-map',
+      lat: location.lat,
+      lng: location.lng
+    });
+    map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
+
+    $('#location-map').data('map', map);
+
+    $.fancybox($popup, {beforeClose: function() { $('#location-popup').remove(); }});
+  },
+
+  /**
+   * Start position detection with native implementation (navigator.geolocation)
+   * #getGeoIp is used as fallback when an error occurs or native geolocation is
+   * unsupported
+   */
+  startGeoLocation: function() {
+    function fallbackGeoIp() {
+      orangeproton.location.getGeoIp(function (lat, lng){
+        orangeproton.location.setLocation(lat, lng);
+      });
+    }
+
+    if ('geolocation' in navigator) {
+      var lat = orangeproton.location.getLocation().lat;
+      var lng = orangeproton.location.getLocation().lng;
+      navigator.geolocation.getCurrentPosition(function success(position) {
+        lat = position.coords.latitude;
+        lng = position.coords.longitude;
+      }, function error(error) {
+        alert(error.message);
+        fallbackGeoIp();
+      });
+      orangeproton.location.setLocation(lat, lng);
+    } else {
+      fallbackGeoIp();
+    }
   }
 
 };

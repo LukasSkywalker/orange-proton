@@ -35,10 +35,5 @@ orangeproton.options = {
     max_exclusiva: 3,
     max_docs: 5,
     as_list: true
-  },
-
-  defaultLocation: {
-    lat: 46.951288,
-    lng: 7.438774
   }
-}
+};

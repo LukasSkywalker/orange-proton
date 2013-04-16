@@ -61,17 +61,10 @@ $(document).ready(function () {
   });
 
   /**
-   * add event handler for legend toggling
+   * add event handler for panel toggling
    */
-  $("#legend-title").click(function () {
-    $("#legend-text").toggle("blind");
-  });
-
-  /**
-   * add event handler for admin panel toggling
-   */
-  $("#admin-title").click(function () {
-    $("#admin-text").toggle("blind");
+  $('.title').click(function () {
+    $(this).next().toggle('blind');
   });
 
   /**
@@ -85,29 +78,7 @@ $(document).ready(function () {
    * add click handler for location display
    */
   $('.location').on('click', null, function() {
-    var $popup = $('<div id="location-popup"></div>');
-    var $search = $('<input type="text" id="location-input"/>');
-    var $searchButton = $('<input type="button" value="Suche"/>');
-    var $currentLocation = $('<p></p>').addClass('location');
-    $search.enterHandler(function() {
-      orangeproton.location.geoCodeAndMark($('#location-input').val());
-    });
-    $searchButton.on('click', null, function onSearchButtonClick() {
-      orangeproton.location.geoCodeAndMark($('#location-input').val());
-    });
-    var $map = $('<div id="location-map"></div>');
-    $map.width(800).height(600);
-    $popup.append($search).append($searchButton)
-        .append($currentLocation).append($map).appendTo('body');
-    var location = orangeproton.location.getLocation();
-    var map = new GMaps({
-      div: '#location-map',
-      lat: location.lat,
-      lng: location.lng
-    });
-    map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
-    $('#location-map').data('map', map);
-    $.fancybox($popup, {beforeClose: function() { $('#location-popup').remove(); }});
+    orangeproton.location.showMap();
   });
 
   /**
@@ -117,36 +88,7 @@ $(document).ready(function () {
     $(document).trigger('paramChange');
   });
 
-  /**
-   * start position detection
-   * geoLocationFallback is used when an error occurs or native geolocation
-   * is unsupported
-   */
-  function geoLocationFallback() {
-    function geoIpSuccess(lat, lng, country, city) {
-      orangeproton.location.setLocation(lat, lng);
-    }
-
-    function geoIpError() {/* just fail silently */
-    }
-
-    orangeproton.location.getGeoIp(geoIpSuccess, geoIpError);
-  }
-
-  if ("geolocation" in navigator) {
-    var lat = orangeproton.options.defaultLocation.lat;
-    var lng = orangeproton.options.defaultLocation.lng;
-    navigator.geolocation.getCurrentPosition(function success(position) {
-      lat = position.coords.latitude;
-      lng = position.coords.longitude;
-    }, function error(error) {
-      alert(error.message);
-      geoLocationFallback();
-    });
-    orangeproton.location.setLocation(lat, lng);
-  } else {
-    geoLocationFallback();
-  }
+  orangeproton.location.startGeoLocation();
 
   /**
    * Overwrite window.alert() with a fancier, styled and customizable message box
@@ -201,11 +143,6 @@ $(document).ready(function () {
  * @class MindMapper
  */
 var mindmapper = {
-  userLocation: null,
-  geoLocation: {
-    lat: orangeproton.options.defaultLocation.lat,
-    lng: orangeproton.options.defaultLocation.lng
-  },
 
   /**
    * Performs the API request and displays the data in the mindmap
