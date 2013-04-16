@@ -283,6 +283,10 @@ var megamind = {
       element.appendTo(this.container);
     }
 
+    elements.sort(function (a, b) {
+      return b.height() - a.height();
+    });
+
     for (var i = 0; i < elements.length; i++) {
       var element = $(elements[i]);
       var n = new Node(element, null);
@@ -290,34 +294,26 @@ var megamind = {
         console.log("### unable to add node, is " + n.width() + "x" + n.height() +
             " px large, max is " + this.width + "x" + this.height);
         element.remove();
-      } else if (n.width() > this.width / 2) {
-        this.addRow(n);
+        break;
       }
-    }
-
-    elements.sort(function (a, b) {
-      return b.height() - a.height();
-    });
-
-    for (var i = 0; i < elements.length; i++) {
-      var n = new Node(elements[i], null);
-      if (n.width() <= this.width / 2) {
-        if (this.currentRow() == undefined) { //no row yet
-          if (n.height() <= this.height) {
-            this.addRow(n);
-          } else {
-            alert('no space left');   // no more space left for new row
-          }
-        } else if (n.width() + this.currentRow().spaceUsed() <= this.width * this.options.horizontalFillAmount) { //fits in this row
-          this.currentRow().addNode(n);
-        } else if (this.spaceUsed() + n.height() <= this.height) {    // no more space left, new row
+      var added = false;
+      for(var j = 0; j < this.rows.length; j++) {
+        var row = this.rows[j];
+        if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount ) {   //we can fill it in
+          row.addNode(n);
+          added = true;
+          break;
+        }
+      }
+      if( !added ) {  //we've been unable to insert the node
+        if( this.spaceUsed() + n.height() <= this.height ) {  // new row will fit
           this.addRow(n);
-        } else {
-          alert('no space left');   // no more space left for new row
-          elements[i].remove();
+        } else {  // no luck. out of space.
+          console.log('no more vertical space left');
         }
       }
     }
+
     this.shuffle();
     for (var i = 0; i < this.rows.length; i++) {
       this.rows[i].shuffle();
@@ -334,6 +330,18 @@ var megamind = {
       r.push(this.rows[i]);
     }
     return r;
+  };
+
+  Canvas.prototype.fillLevel = function() {
+    return this.spaceUsed() / this.height;
+  };
+
+  Canvas.prototype.fillRatio = function() {
+    var horFillLevel = 0;
+    for(var i = 0; i < this.rows.length; i++) {
+      horFillLevel = Math.max(horFillLevel, this.rows[i].fillLevel());
+    }
+    return horFillLevel / this.fillLevel();
   };
 
   function Row(node, canvas) {
@@ -415,6 +423,10 @@ var megamind = {
       n.push(this.nodes[i]);
     }
     return n;
+  };
+
+  Row.prototype.fillLevel = function() {
+    return this.spaceUsed() / this.width();
   };
 
   function Node(el, parent) {
