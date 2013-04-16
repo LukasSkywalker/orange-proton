@@ -18,8 +18,7 @@ $(document).ready(function () {
    * add event handler for code searches
    */
   $code.enterHandler(function () {
-    mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
-    History.Adapter.trigger(window,'statechange');
+    $(document).trigger('paramChange', [null, null, true]);
   });
 
   /**
@@ -29,6 +28,26 @@ $(document).ready(function () {
     orangeproton.location.reverseGeoCode(lat, lng, function(lat, lng, address) {
       $('.location').html(address.ellipses(100));
     });
+  });
+
+  /**
+   * add event handler for starting a search
+   */
+  $(document).on('paramChange', function(e, code, lang, force) {
+    var $code = $('#code-name');
+    var $lang = $('#lang');
+
+    code = code || $code.val();
+    lang = lang || $lang.val();
+
+    $code.val(code.toUpperCase());
+    $lang.val(lang);
+
+    orangeproton.language.setLocale(lang);
+    if(code != '') {
+      History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
+      if(force) History.Adapter.trigger(window,'statechange');
+    }
   });
 
   /**
@@ -49,10 +68,7 @@ $(document).ready(function () {
    * add click handler for search button
    */
   $("#search-button").on('click', null, function () {
-    var code = $('#code-name').val().toUpperCase();
-    var lang = $('#lang').val();
-    mindmapper.sendRequest(code, lang);
-    History.Adapter.trigger(window,'statechange');
+    $(document).trigger('paramChange', [null, null, true]);
   });
 
   /**
@@ -88,12 +104,7 @@ $(document).ready(function () {
    * add event handler for language change on UI element
    */
   $lang.change(function () {
-    var code = $("#code-name").val().toUpperCase();
-    var lang = $(this).val();
-    if (code !== "") {
-      mindmapper.sendRequest(code, lang);
-    }
-    orangeproton.language.setLocale(lang);
+    $(document).trigger('paramChange');
   });
 
   /**
@@ -148,8 +159,6 @@ $(document).ready(function () {
     var State = History.getState(); // Note: We are using History.getState() instead of event.state
     var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
     var lang = State.data.lang;
-    $("#code-name").val(code);
-    $("#lang").val(lang);
 
     if (code !== undefined && code !== '') {
       var $mm = $('#mindmap');
@@ -164,7 +173,7 @@ $(document).ready(function () {
   if (codeParam !== undefined && codeParam !== '') {
     var code = codeParam.toUpperCase();
     var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
-    mindmapper.sendRequest(code, lang);
+    $(document).trigger('paramChange', [code, lang]);
   }
 
   // set the locale and load translations
@@ -189,29 +198,11 @@ var mindmapper = {
   },
 
   /**
-   *  Push a new history state on the stack. Call this to start a new search. Pass null value
-   *  to leave as-is.
-   *  @method sendRequest
-   *  @param {String} [code] the ICD/CHOP code
-   *  @param {String} [lang] the language
-   */
-  sendRequest: function (code, lang) {
-    var $code = $('#code-name');
-    var $lang = $('#lang');
-    if( !code ) code = $code.val();
-    if( !lang ) lang = $lang.val();
-    code = code.toUpperCase();
-    $code.val(code);
-    $lang.val(lang);
-    History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
-  },
-
-  /**
    * Performs the API request and displays the data in the mindmap
    * DO NOT USE THIS METHOD EXCEPT IN THE HISTORY WATCHER!
-   * call #sendRequest if you need to add a new state (new code/lang) or
-   * `History.Adapter.trigger(window,'statechange')` if the parameters
-   * haven't changed but you need to trigger a new search!
+   * call `$(document).trigger('paramChange', [code, lang, force]` if you need to
+   * start a new search. Set lat, lng to null to use UI values. Set force to true
+   * to search even when code and lang did not change.
    * @method getICD
    * @param {String} input the search term
    * @param {String} lang the search language
@@ -367,7 +358,7 @@ var mindmapper = {
             $element.on('click', {match: result}, function(e) {
               var code = decodeURI(e.data.match[0]);
               code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
-              mindmapper.sendRequest(code);
+              $(document).trigger('paramChange', [code, null]);
               $('#mindmap').megamind('setRoot', this, true);
             });
           }
