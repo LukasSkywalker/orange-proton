@@ -66,7 +66,7 @@ describe DatabaseAdapter do
   end
 
   it 'should match the mdc collections' do
-    @mdc_fs.count().should be(68)
+    @mdc_fs.count().should be(59)
     @mdc_name.count().should be(28)
   end
 
@@ -75,7 +75,7 @@ describe DatabaseAdapter do
   end
 
   it 'should match the doctors collections' do
-    @doc_fs.count().should be(142)
+    @doc_fs.count().should be(152)
     @docs.count().should be(25528)
   end
 
