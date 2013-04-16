@@ -255,6 +255,8 @@ var mindmapper = {
         else {
           synonyms = mindmapper.generateBubbles(data.synonyms, options.max_syn, 'syn');
         }
+        var c = $mm.megamind('addCanvas', [megamind.presets().bottomRight]);
+        c.addNodes(synonyms);
 
         var superclasses = [];
         if(data.superclass) {
@@ -262,20 +264,23 @@ var mindmapper = {
           var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
           superclasses = mindmapper.generateBubbles([content], 1, 'super', patternNoDash);
         }
+        var c = $mm.megamind('addCanvas', [megamind.presets().topRight]);
+        c.addNodes(superclasses);
 
         var subclasses = mindmapper.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-
-        var c = $mm.megamind('addCanvas', root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left, container.height());
-        c.addNodes(synonyms.concat(subclasses).concat(superclasses));
+        var c = $mm.megamind('addCanvas', [megamind.presets().right]);
+        c.addNodes(subclasses);
 
         var drgs = mindmapper.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-        var c = $mm.megamind('addCanvas', root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
+        var c = $mm.megamind('addCanvas', [megamind.presets().top]);
         c.addNodes(drgs);
 
         var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
         var exclusiva = mindmapper.generateBubbles(data.exclusiva, options.max_exclusiva, 'exclusiva', icdPattern);
 
         var inclusiva = mindmapper.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
+        var c = $mm.megamind('addCanvas', [megamind.presets().bottom]);
+        c.addNodes(exclusiva.concat(inclusiva));
 
         var s = [];
         var fields = response.result.fields;
@@ -300,8 +305,8 @@ var mindmapper = {
           s.push(newdiv);
         }
 
-        var c = $mm.megamind('addCanvas', 0, 0, root.position().left - 100, container.height());
-        c.addNodes(s.concat(exclusiva).concat(inclusiva));
+        var c = $mm.megamind('addCanvas', [megamind.presets().topLeft, megamind.presets().left, megamind.presets().bottomLeft]);
+        c.addNodes(s);
       },
 
       error: mindmapper.handleApiError,

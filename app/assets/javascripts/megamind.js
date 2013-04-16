@@ -32,6 +32,41 @@ var megamind = {
     verticalWobbling: 0.6,
     horizontalWobbling: 0.6,
     animationDuration: 400
+  },
+
+  presets: function() {
+    var pre = {
+      z1_t: 0,
+      z2_t: $(this.rootNode).position().top,
+      z3_t: $(this.rootNode).position().top + $(this.rootNode).outerHeight(),
+      z1_h: $(this.rootNode).position().top,
+      z2_h: $(this.rootNode).outerHeight(),
+      z3_h: $(this.rootNode).position().top,   //really?
+      s1_l: 0,
+      s2_l: $(this.rootNode).position().left,
+      s3_l: $(this.rootNode).position().left + $(this.rootNode).outerWidth(),
+      s1_w: $(this.rootNode).position().left,
+      s2_w: $(this.rootNode).outerWidth(),
+      s3_w: $(this.rootNode).position().left // really?*/
+    };
+    function Container(col, row) {
+      return {
+        top : pre['z'+(row+1)+'_t'],
+        left: pre['s'+(col+1)+'_l'],
+        width: pre['s'+(col+1)+'_w'],
+        height: pre['z'+(row+1)+'_h']
+      };
+    }
+    return {
+      topLeft: new Container(0,0),
+      top: new Container(1,0),
+      topRight: new Container(2,0),
+      right: new Container(2,1),
+      bottomRight: new Container(2,2),
+      bottom: new Container(1,2),
+      bottomLeft: new Container(0,2),
+      left: new Container(0,1)
+    };
   }
 };
 
@@ -61,8 +96,17 @@ var megamind = {
      * @param options {Object}
      * @returns {Canvas} the new canvas
      */
-    addCanvas: function (left, top, width, height, options) {
+    addCanvas: function (areas, options) {
       var $mm = $(this.first());
+      var height = 0, width = 0, left = Infinity, top = Infinity;
+      $.each(areas, function(i, e) {
+        top = Math.min(top, e.top);
+        left = Math.min(left, e.left);
+        width = Math.max(width, e.width + e.left);
+        height = Math.max(height, e.height + e.top);
+      });
+      width -= left;
+      height -= top;
       var data = $mm.data();
       if (left + width > $mm.width() || top + height > $mm.height()) {
         console.log('### Canvas with size ' + left + ',' + top + ',' + width + ',' + height +
