@@ -14,7 +14,6 @@ describe MDCInfoProvider do
     field3 = FieldEntry.new('medicina interna generale', 1, 162)
 
     var = @provider.get_fields(@icd, 3, 'it')
-    var.should include(field1, field2, field3)
+    var.should include(field1)
   end
-
 end

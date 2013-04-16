@@ -34,6 +34,8 @@ describe DatabaseAdapter do
 
     @doc_fs = client['doctors']['docfieldToFSCode']
     @docs = client['doctors']['doctors']
+
+    @keywords = client['fachgebieteKeywords']['fachgebieteKeywords']
   end
 
   it 'should match the fachgebieteUndSpezialisierungen collections' do
@@ -66,7 +68,7 @@ describe DatabaseAdapter do
   end
 
   it 'should match the mdc collections' do
-    @mdc_fs.count().should be(68)
+    @mdc_fs.count().should be(59)
     @mdc_name.count().should be(28)
   end
 
@@ -75,8 +77,12 @@ describe DatabaseAdapter do
   end
 
   it 'should match the doctors collections' do
-    @doc_fs.count().should be(142)
+    @doc_fs.count().should be(152)
     @docs.count().should be(25528)
+  end
+
+  it 'should match the keywords collection' do
+    @keywords.count().should be(149)
   end
 
   it 'should not raise error when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
