@@ -31,6 +31,14 @@ $(document).ready(function () {
   });
 
   /**
+   * re-do layout when window size changes
+   */
+  $(window).resize(function() {
+    $("#mindmap").width($(window).width()-$("#panels").outerWidth());
+    $(document).trigger('paramChange', [null, null, true]);
+  });
+
+  /**
    * add event handler for starting a search
    */
   $(document).on('paramChange', function(e, code, lang, force) {
