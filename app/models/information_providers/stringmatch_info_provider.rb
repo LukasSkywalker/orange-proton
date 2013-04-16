@@ -10,7 +10,11 @@ class StringmatchInfoProvider < DatabaseInfoProvider
   end
 
   def get_fields(icd_code, max_count, language)
-    entry = self.db.get_icd_entry(icd_code, 'de') # all the keywords are in German so...
+    if self.db.get_icd_entry(icd_code, 'de').nil?    # all the keywords are in German
+      raise ProviderLookupError.new('no_icd_chop_data', language)
+    else
+      entry = self.db.get_icd_entry(icd_code, 'de')
+    end
     Rails.logger.info entry
     keywords = self.db.get_fachgebiete_keywords() 
 
