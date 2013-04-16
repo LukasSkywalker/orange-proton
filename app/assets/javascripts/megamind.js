@@ -146,7 +146,7 @@ var megamind = {
       var debugElements = $('.debug');
       if (debugElements.length == 0) {
         $.each(data.canvases, function (i, c) {
-          var canvas = $("<div class='debug' style='position: absolute; border: 1px solid black'>C" + i + "</div>");
+          var canvas = $("<div class='debug' style='position: absolute; border: 1px solid black'>C" + i + " " + c.fillRatio() + "</div>");
           canvas.appendTo($mm);
           canvas.css({left: c.left(), top: c.top(), width: c.width, height: c.height});
           $.each(c.rows, function (j, r) {
@@ -283,42 +283,61 @@ var megamind = {
       element.appendTo(this.container);
     }
 
+    // sort nodes by height
     elements.sort(function (a, b) {
       return b.height() - a.height();
     });
 
-    for (var i = 0; i < elements.length; i++) {
-      var element = $(elements[i]);
-      var n = new Node(element, null);
-      if (n.width() > this.width || n.height() > this.height) {
-        console.log("### unable to add node, is " + n.width() + "x" + n.height() +
-            " px large, max is " + this.width + "x" + this.height);
-        element.remove();
-        break;
-      }
-      var added = false;
-      for(var j = 0; j < this.rows.length; j++) {
-        var row = this.rows[j];
-        if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount ) {   //we can fill it in
-          row.addNode(n);
-          added = true;
+    // main layout loop
+    var bestRatio = Infinity;
+    var bestDistribution = [];
+    var width = 1;
+    while( ( bestRatio < 0.8 || bestRatio > 1.2 ) && width > 0 ) {
+      this.rows = [];
+      for (var i = 0; i < elements.length; i++) {
+        var element = $(elements[i]);
+        var n = new Node(element, null);
+        if (n.height() > this.height) {
+          console.log("### unable to add node, is {0} px high, max is {1}".format(n.height(), this.height));
+          element.remove();
           break;
         }
-      }
-      if( !added ) {  //we've been unable to insert the node
-        if( this.spaceUsed() + n.height() <= this.height ) {  // new row will fit
-          this.addRow(n);
-        } else {  // no luck. out of space.
-          console.log('no more vertical space left');
+        var added = false;
+        for(var j = 0; j < this.rows.length; j++) {
+          var row = this.rows[j];
+          if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount * width ) {   //we can fill it in
+            row.addNode(n);
+            added = true;
+            break;
+          }
+        }
+        if( !added ) {  //we've been unable to insert the node
+          if( this.spaceUsed() + n.height() <= this.height ) {  // new row will fit
+            this.addRow(n);
+          } else {  // no luck. out of space.
+            console.log('no more vertical space left');
+          }
         }
       }
+      var ratio = this.fillRatio();
+      if( !ratio ) break;
+      if( Math.abs(ratio - 1) <= Math.abs(bestRatio - 1) ) { //this ratio is better
+        bestRatio = ratio;
+        bestDistribution = this.rows;
+      } else {  // this ratio is worse
+        break;
+      }
+      width -= 0.05;
     }
+    this.rows = bestDistribution;
 
+    // randomize positions
     this.shuffle();
     for (var i = 0; i < this.rows.length; i++) {
       this.rows[i].shuffle();
     }
 
+    // display nodes
     this.doLayout();
 
     return this;
