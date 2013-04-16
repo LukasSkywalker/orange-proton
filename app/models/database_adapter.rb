@@ -94,6 +94,17 @@ class DatabaseAdapter
     fs
   end
 
+  # @return All FS codes manually mapped to this chop code.
+  def get_manually_mapped_fs_codes_for_chop(chop_code)
+    documents = @client['manualMappings']['manualMappings'].find({chop_code: chop_code})
+    fs = []
+    documents.each do |document|
+      fs << document['fs_code']
+    end
+
+    fs
+  end
+
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
     a = @client['thesauren'].collection_names
@@ -166,6 +177,11 @@ class DatabaseAdapter
       find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
 
     docs.to_a
+  end
+
+  # @return The compounds [array of fs codes] => result (fs code) table
+  def get_compound_results_components
+    @client['compounds']['compounds'].find().to_a
   end
 
   # @return At most max_count fields related to the icd_code specified, sorted

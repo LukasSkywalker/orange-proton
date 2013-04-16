@@ -1,8 +1,8 @@
 #encoding: utf-8
 
 # This finds Fachgebiete related to an illness by comparing the (german) name of the 
-# illness or any of it's synonyms and the name of the fachgebiet.
-# We have precomputed this data and stored it in the db.
+# illness or any of it's synonyms and inclusiva to a list of keywords related to a fachgebiet.
+# This is based on a manually created list of keywords and exclusiva.
 class StringmatchInfoProvider < DatabaseInfoProvider
 
   def initialize
@@ -18,7 +18,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     Rails.logger.info entry
     keywords = self.db.get_fachgebiete_keywords() 
 
-    code_text = entry['text'].downcase
+    code_text = entry['text'].downcase # TODO Take synonyms and inclusiva into account (?)
 
     fs = []
 

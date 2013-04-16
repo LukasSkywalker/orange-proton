@@ -4,8 +4,8 @@ require 'parallel_each'
 # Combines other information providers and weights the relatedness of
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
-  #d default weights for prodiers
-  @@dw = [1.0, 0.75, 0.75, 0.5, 0.6, 0.75]
+  # default weights for prodiers
+  @@default_weights = [1.0, 0.75, 0.75, 0.5, 0.6, 0.75] # TODO this seems to have an arbitrary yet important order...
 
   # provider pool
   @@providers = {
@@ -21,17 +21,17 @@ class CompoundInfoProvider < DatabaseInfoProvider
     super
     # weights for each provider
     @weights = {
-        ManualInfoProvider => @@dw[0],
-        MDCInfoProvider => @@dw[1],
-        IcdRangeInfoProvider => @@dw[2],
-        ThesaurInfoProvider => @@dw[3],
-        StringmatchInfoProvider => @@dw[4],
-        ChopRangeInfoProvider => @@dw[5]
+        ManualInfoProvider => @@default_weights[0],
+        MDCInfoProvider => @@default_weights[1],
+        IcdRangeInfoProvider => @@default_weights[2],
+        ThesaurInfoProvider => @@default_weights[3],
+        StringmatchInfoProvider => @@default_weights[4],
+        ChopRangeInfoProvider => @@default_weights[5]
     }
 
     @components = {
         :icd => [ManualInfoProvider, MDCInfoProvider, IcdRangeInfoProvider,ThesaurInfoProvider, StringmatchInfoProvider],
-        :chop => [ChopRangeInfoProvider, MDCInfoProvider]
+        :chop => [ManualInfoProvider, ChopRangeInfoProvider, MDCInfoProvider]
     }
 
   end
@@ -42,11 +42,54 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     fields = remove_duplicate_fields fields
 
+    fields = generate_compound_fields fields # implements #171
+
     fields.sort! do |x, y|
       y.relatedness <=> x.relatedness
     end
 
     fields[0..max_count-1]
+  end
+
+  # Helper 
+  # TODO move
+  # http://stackoverflow.com/questions/3897525/ruby-array-contained-in-array-any-order
+  def is_subset?(a, of_b)
+    a.to_set.subset?(of_b.to_set)
+  end
+
+  def extract_fields_with_code_in(fields, codes) 
+    fields = fields.dup # copy
+    fields.delete_if {|f| !codes.include?(f.code)}
+    return fields
+  end
+
+  # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
+  # @return The same list of fields plus all compounds that can be generated from it.
+  # Implements #
+  def generate_compound_fields(fields)
+    # TODO Remove logging
+    # TODO Test (what code gets more specific results thanks to this?) -- once we have "Kinder" in the dictionary this should be easy to find
+
+    Rails.logger.info "generate compounds for fields #{fields}"
+    codes = fields.map {|f| f.code}
+    Rails.logger.info "codes are: #{codes}"
+
+    rcs = db.get_compound_results_components
+    Rails.logger.info "compound table is #{rcs}"
+
+    rcs.each {|rc|
+      if is_subset?(rc['components'], codes)
+        Rails.logger.info "rc #{rc} is entirely contained"
+        fs = extract_fields_with_code_in(fields, rc['components'])
+        rmean = 0
+        fs.each {|f| rmean += f.relatedness}
+        rmean /= fs.size
+        Rails.logger.info "components: #{fs}, mean #{rmean}"
+        fields << new_fs_field_entry(rc['result'], rmean, fs.lang)
+      end
+    }
+    return fields
   end
 
   # Handle
@@ -65,7 +108,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
 
   def reset_weights
-    self.set_relatedness_weight(@@dw)
+    self.set_relatedness_weight(@@default_weights)
   end
 
   def get_provider_results(components, code, max_count, language)
