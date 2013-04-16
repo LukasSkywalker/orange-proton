@@ -39,7 +39,7 @@ class DatabaseAdapter
 
     @r_icd_fs = @client['relationFSZuICD']['relationFSZuICD']
     @r_mdc_fs = @client['mdc']['mdcCodeToFSCode']
-    @thesaurusToFSCode = 'thesaurusToFSCode';
+    @thesaurusToFSCode = 'thesaurusToFSCode'
   end
 
   # @return The drgs (most common diagnoses) for a given ICD.
@@ -65,7 +65,7 @@ class DatabaseAdapter
   end
 
   # @return The fachgebieteKeywords table as a cursor
-  def get_fachgebiete_keywords()
+  def get_fachgebiete_keywords
     # TODO Cache result?
     documents = @client['fachgebieteKeywords']['fachgebieteKeywords'].find()
 

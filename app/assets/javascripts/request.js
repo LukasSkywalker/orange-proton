@@ -17,127 +17,78 @@ $(document).ready(function () {
   /**
    * add event handler for code searches
    */
-  $code.keyup(function (e) {
-    var code = e.which; // normalized across browsers, use this :-)
-    if (code == 13) e.preventDefault();
-    if (code == 32 || code == 13 || code == 188 || code == 186) {  // 32 = space, 13 = enter, 188 = comma, 186 = semi-colon
-      mindmapper.sendRequest($(this).val().toUpperCase(), $("#lang").val());
-      History.Adapter.trigger(window,'statechange');
+  $code.enterHandler(function () {
+    $(document).trigger('paramChange', [null, null, true]);
+  });
+
+  /**
+   * add event handler for location change
+   */
+  $(document).on('locationChange', function(e, lat, lng) {
+    orangeproton.location.reverseGeoCode(lat, lng, function(lat, lng, address) {
+      $('.location').html(address.ellipses(100));
+    });
+  });
+
+  /**
+   * re-do layout when window size changes
+   */
+  $(window).resize(function() {
+    $("#mindmap").width($(window).width()-$("#panels").outerWidth());
+    $(document).trigger('paramChange', [null, null, true]);
+  });
+
+  /**
+   * add event handler for starting a search
+   */
+  $(document).on('paramChange', function(e, code, lang, force) {
+    var $code = $('#code-name');
+    var $lang = $('#lang');
+
+    code = code || $code.val();
+    lang = lang || $lang.val();
+
+    code = code.toUpperCase();
+
+    $code.val(code);
+    $lang.val(lang);
+
+    orangeproton.language.setLocale(lang);
+    if(code != '') {
+      History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
+      if(force) History.Adapter.trigger(window,'statechange');
     }
   });
 
   /**
-   * add event handler for legend toggling
+   * add event handler for panel toggling
    */
-  $("#legend-title").click(function () {
-    $("#legend-text").toggle("blind");
-  });
-
-  /**
-   * add event handler for admin panel toggling
-   */
-  $("#admin-title").click(function () {
-    $("#admin-text").toggle("blind");
+  $('.title').click(function () {
+    $(this).next().toggle('blind');
   });
 
   /**
    * add click handler for search button
    */
   $("#search-button").on('click', null, function () {
-    var code = $('#code-name').val().toUpperCase();
-    var lang = $('#lang').val();
-    mindmapper.sendRequest(code, lang);
-    History.Adapter.trigger(window,'statechange');
+    $(document).trigger('paramChange', [null, null, true]);
   });
 
   /**
    * add click handler for location display
    */
-  $('#location').on('click', null, function() {
-    var location = orangeproton.location.getLocation();
-    var $map = $('<div id="user-location"></div>');
-    $map.width(800).height(600);
-    $map.appendTo('body');
-    var map = new GMaps({
-      div: '#user-location',
-      lat: location.lat,
-      lng: location.lng
-    });
-    map.addMarker({
-      lat: location.lat,
-      lng: location.lng,
-      draggable: true,
-      dragend: function (e) {
-        var position = e.latLng;
-        mindmapper.userLocation = {lat: position.lat(), lng: position.lng()};
-        orangeproton.location.reverseGeoCode(position.lat(), position.lng(), function onGeocodeComplete(lat, lng, address) {
-          $('#location').html(address.ellipses(50));
-        });
-      }
-    });
-    $.fancybox($map, {beforeClose: function() { $('#user-location').remove(); }});
-  });
-
-  /**
-   * add click handler for location configuration
-   */
-  $("#location-config").on('click', null, function () {
-    function geoCodeLocation() {
-      jQuery.fancybox.close();
-      orangeproton.location.geoCodeUserLocation($('#userLocation').val());
-    }
-
-    var content = I18n.t('location') + ': <input type="text" id="userLocation">';
-    orangeproton.generic.messageBox(I18n.t('location'), content, ['Ok'], [geoCodeLocation]);
+  $('.location').on('click', null, function() {
+    orangeproton.location.showMap();
   });
 
   /**
    * add event handler for language change on UI element
    */
   $lang.change(function () {
-    var code = $("#code-name").val().toUpperCase();
-    var lang = $(this).val();
-    if (code !== "") {
-      mindmapper.sendRequest(code, lang);
-    }
-    orangeproton.language.setLocale(lang);
+    $(document).trigger('paramChange');
   });
 
-  /**
-   * start position detection
-   * geoLocationFallback is used when an error occurs or native geolocation
-   * is unsupported
-   */
-  function geoLocationFallback() {
-    function geoIpSuccess(lat, lng, country, city) {
-      var location = city + ", " + country;
-      $('#location').html(location.ellipses(50));
-      mindmapper.geoLocation.lat = lat;
-      mindmapper.geoLocation.lng = lng;
-    }
-
-    function geoIpError() {/* just fail silently */
-    }
-
-    orangeproton.location.getGeoIp(geoIpSuccess, geoIpError);
-  }
-
-  if ("geolocation" in navigator) {
-    var lat = orangeproton.options.defaultLocation.lat;
-    var lng = orangeproton.options.defaultLocation.lng;
-    navigator.geolocation.getCurrentPosition(function success(position) {
-      lat = mindmapper.geoLocation.lat = position.coords.latitude;
-      lng = mindmapper.geoLocation.lng = position.coords.longitude;
-    }, function error(error) {
-      alert(error.message);
-      geoLocationFallback();
-    });
-    orangeproton.location.reverseGeoCode(lat, lng, function onGeocodeComplete(lat, lng, address) {
-      $('#location').html(address.ellipses(50));
-    });
-  } else {
-    geoLocationFallback();
-  }
+  orangeproton.location.startGeoLocation();
 
   /**
    * Overwrite window.alert() with a fancier, styled and customizable message box
@@ -160,8 +111,6 @@ $(document).ready(function () {
     var State = History.getState(); // Note: We are using History.getState() instead of event.state
     var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
     var lang = State.data.lang;
-    $("#code-name").val(code);
-    $("#lang").val(lang);
 
     if (code !== undefined && code !== '') {
       var $mm = $('#mindmap');
@@ -176,7 +125,7 @@ $(document).ready(function () {
   if (codeParam !== undefined && codeParam !== '') {
     var code = codeParam.toUpperCase();
     var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
-    mindmapper.sendRequest(code, lang);
+    $(document).trigger('paramChange', [code, lang]);
   }
 
   // set the locale and load translations
@@ -194,36 +143,13 @@ $(document).ready(function () {
  * @class MindMapper
  */
 var mindmapper = {
-  userLocation: null,
-  geoLocation: {
-    lat: orangeproton.options.defaultLocation.lat,
-    lng: orangeproton.options.defaultLocation.lng
-  },
-
-  /**
-   *  Push a new history state on the stack. Call this to start a new search. Pass null value
-   *  to leave as-is.
-   *  @method sendRequest
-   *  @param {String} [code] the ICD/CHOP code
-   *  @param {String} [lang] the language
-   */
-  sendRequest: function (code, lang) {
-    var $code = $('#code-name');
-    var $lang = $('#lang');
-    if( !code ) code = $code.val();
-    if( !lang ) lang = $lang.val();
-    code = code.toUpperCase();
-    $code.val(code);
-    $lang.val(lang);
-    History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
-  },
 
   /**
    * Performs the API request and displays the data in the mindmap
    * DO NOT USE THIS METHOD EXCEPT IN THE HISTORY WATCHER!
-   * call #sendRequest if you need to add a new state (new code/lang) or
-   * `History.Adapter.trigger(window,'statechange')` if the parameters
-   * haven't changed but you need to trigger a new search!
+   * call `$(document).trigger('paramChange', [code, lang, force]` if you need to
+   * start a new search. Set lat, lng to null to use UI values. Set force to true
+   * to search even when code and lang did not change.
    * @method getICD
    * @param {String} input the search term
    * @param {String} lang the search language
@@ -268,6 +194,8 @@ var mindmapper = {
         else {
           synonyms = mindmapper.generateBubbles(data.synonyms, options.max_syn, 'syn');
         }
+        var c = $mm.megamind('addCanvas', [megamind.presets().bottomRight]);
+        c.addNodes(synonyms);
 
         var superclasses = [];
         if(data.superclass) {
@@ -275,20 +203,23 @@ var mindmapper = {
           var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
           superclasses = mindmapper.generateBubbles([content], 1, 'super', patternNoDash);
         }
+        var c = $mm.megamind('addCanvas', [megamind.presets().topRight]);
+        c.addNodes(superclasses);
 
         var subclasses = mindmapper.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-
-        var c = $mm.megamind('addCanvas', root.position().left + root.outerWidth(), 0, container.width() - root.outerWidth() - root.position().left, container.height());
-        c.addNodes(synonyms.concat(subclasses).concat(superclasses));
+        var c = $mm.megamind('addCanvas', [megamind.presets().right]);
+        c.addNodes(subclasses);
 
         var drgs = mindmapper.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-        var c = $mm.megamind('addCanvas', root.position().left - 100, 0, root.outerWidth() + 100, root.position().top);
+        var c = $mm.megamind('addCanvas', [megamind.presets().top]);
         c.addNodes(drgs);
 
         var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
         var exclusiva = mindmapper.generateBubbles(data.exclusiva, options.max_exclusiva, 'exclusiva', icdPattern);
 
         var inclusiva = mindmapper.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
+        var c = $mm.megamind('addCanvas', [megamind.presets().bottom]);
+        c.addNodes(exclusiva.concat(inclusiva));
 
         var s = [];
         var fields = response.result.fields;
@@ -313,8 +244,8 @@ var mindmapper = {
           s.push(newdiv);
         }
 
-        var c = $mm.megamind('addCanvas', 0, 0, root.position().left - 100, container.height());
-        c.addNodes(s.concat(exclusiva).concat(inclusiva));
+        var c = $mm.megamind('addCanvas', [megamind.presets().topLeft, megamind.presets().left, megamind.presets().bottomLeft]);
+        c.addNodes(s);
       },
 
       error: mindmapper.handleApiError,
@@ -334,7 +265,7 @@ var mindmapper = {
       var message = jQuery.parseJSON(xhr.responseText).error;
       alert(message);
     } catch (e) {
-      alert(error);
+      if(error && error != '') alert(error);
     }
   },
 
@@ -364,7 +295,9 @@ var mindmapper = {
     if(!contents) return bubbles;
     contents = contents.slice(0, limit); // set collection size limit
     $.each(contents, function (index, text) {
-      var $element = $('<div></div>').addClass(className).html(text);
+      var $element = $('<div></div>')
+          .addClass(className)
+          .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become asdf<br />b
       if( pattern ) {
         var result = text.match(pattern);
         if( result ) {
@@ -377,7 +310,7 @@ var mindmapper = {
             $element.on('click', {match: result}, function(e) {
               var code = decodeURI(e.data.match[0]);
               code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
-              mindmapper.sendRequest(code);
+              $(document).trigger('paramChange', [code, null]);
               $('#mindmap').megamind('setRoot', this, true);
             });
           }

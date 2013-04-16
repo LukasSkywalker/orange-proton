@@ -1,7 +1,7 @@
 #encoding: utf-8
 require 'spec_helper'
 
-describe MDCInfoProvider do
+describe StringmatchInfoProvider do
 
   before do
     @sampleentry = {

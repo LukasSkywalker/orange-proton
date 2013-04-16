@@ -54,7 +54,7 @@ orangeproton.admin = {
       });
       panel.append('<input type="button" onclick="orangeproton.admin.sendWeights();" value="Apply">');
       panel.append('<input type="button" style="float:right" onclick="orangeproton.admin.resetWeights();" value="Reset">');
-      History.Adapter.trigger(window, 'statechange')
+      $(document).trigger('paramChange', [null, null, true]);
   },
 
   /**

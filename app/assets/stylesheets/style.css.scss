@@ -93,6 +93,8 @@ div.node, div.legend {
     font-weight: 500;
     z-index: 10;
     max-width: 300px;
+    min-width: 200px;
+    min-height: 100px;
   }
 }
 
@@ -198,17 +200,11 @@ div.node, div.legend {
     @include clickable;
   }
 
-  #location {
+  .location {
     margin-top: 16px;
     float: left;
     font-size: 0.8em;
     @include clickable;
-  }
-  #location-config {
-    margin-top: 16px;
-    margin-left: 20px;
-    float: left;
-    font-size: 0.8em;
   }
 
   #location-container{
