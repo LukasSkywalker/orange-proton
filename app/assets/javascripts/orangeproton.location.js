@@ -127,6 +127,7 @@ orangeproton.location = {
   setUserLocation: function( lat, lng ) {
     orangeproton.location.userLocation = {lat: lat, lng: lng};
     $(document).trigger('locationChange', [lat, lng]);
+    $.cookie('userLocation', lat + ',' + lng);
   },
 
   /**
@@ -136,8 +137,9 @@ orangeproton.location = {
    * @param {Number} lng the new longitude
    */
   setLocation: function( lat, lng ) {
-    orangeproton.location.location = {lat: lat, lng: lng};
+    orangeproton.location.geoLocation = {lat: lat, lng: lng};
     $(document).trigger('locationChange', [lat, lng]);
+    $.cookie('geoLocation', lat + ',' + lng);
   },
 
   markerOptions: function(lat, lng) {
@@ -205,6 +207,8 @@ orangeproton.location = {
    * unsupported
    */
   startGeoLocation: function() {
+    if( orangeproton.location.loadCookies() ) return;
+    // we had cookies, no need to bother the user with location permission requests
     function fallbackGeoIp() {
       orangeproton.location.getGeoIp(function (lat, lng){
         orangeproton.location.setLocation(lat, lng);
@@ -225,6 +229,24 @@ orangeproton.location = {
     } else {
       fallbackGeoIp();
     }
+  },
+
+  /**
+   * Load the location cookies and store their value
+   * @returns {Boolean} whether the cookies existed
+   */
+  loadCookies: function() {
+    var userLocation = $.cookie('userLocation');
+    var geoLocation = $.cookie('geoLocation');
+    if(userLocation) {
+      var userCoord = userLocation.split(',');
+      orangeproton.location.setUserLocation(userCoord[0], userCoord[1]);
+    }
+    if(geoLocation) {
+      var geoCoord = geoLocation.split(',');
+      orangeproton.location.setLocation(geoCoord[0], geoCoord[1]);
+    }
+    return (geoLocation || userLocation);
   }
 
 };

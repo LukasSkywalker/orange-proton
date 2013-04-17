@@ -24,8 +24,9 @@ $(document).ready(function () {
   /**
    * add event handler for location change
    */
-  $(document).on('locationChange', function(e, lat, lng) {
-    orangeproton.location.reverseGeoCode(lat, lng, function(lat, lng, address) {
+  $(document).on('locationChange', function() {
+    var pos = orangeproton.location.getLocation();
+    orangeproton.location.reverseGeoCode(pos.lat, pos.lng, function(lat, lng, address) {
       $('.location').html(address.ellipses(100));
     });
   });
