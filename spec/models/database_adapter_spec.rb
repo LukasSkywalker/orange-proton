@@ -5,7 +5,7 @@ describe DatabaseAdapter do
 
   before do
     @adapter = DatabaseAdapter.new
-    @client = MongoMapper.connection
+    @client = @adapter.instance_variable_get(:@client)
   end
 
   it 'should return drgs or empty field for icd code' do
@@ -29,20 +29,23 @@ describe DatabaseAdapter do
     entry.should eq(@client['icd_2012_ch']['en'].find_one({code: 'B20.9'}))
 
     no_entry = @adapter.get_icd_entry('B20.9', 'de')
-    no_entry.should be(nil)                   # no error raising?
-  end
+    no_entry.should be_nil
+    end
 
   it 'should get a chop entry' do
     entry = @adapter.get_chop_entry('44.22', 'it')
     entry.should eq(@client['chop_2013_ch']['it'].find_one({code: '44.22'}))
 
     no_entry = @adapter.get_chop_entry('88.00', 'it')
-    no_entry.should be(nil)
+    no_entry.should be_nil
   end
 
   it 'should return all fachgebiete keywords' do
     keywords = @adapter.get_fachgebiete_keywords.count()
     keywords.should be(149)
+
+    @adapter.instance_variable_get(:@keywords).stub(:find).and_return(['säugling', 'schilddrüse'])
+    @adapter.get_fachgebiete_keywords.should eq(['säugling', 'schilddrüse'])
   end
 
   it 'should find the fs code by mdc' do
@@ -53,6 +56,11 @@ describe DatabaseAdapter do
   it 'should find manually mapped fs code for icd' do
     fs = @adapter.get_manually_mapped_fs_codes_for_icd('L65')
     fs.should==[7]
+  end
+
+  it 'should find manually mapped fs code for chop' do
+    fs = @adapter.get_manually_mapped_fs_codes_for_chop('88.23')
+    fs.should==[129]
   end
 
   it 'should return all thesaur collections' do
@@ -121,12 +129,39 @@ describe DatabaseAdapter do
   it 'should return doctors by fs code' do
     doctors = @adapter.get_doctors_by_fs(41).size
     doctors.should be(62)
+
+    @adapter.instance_variable_get(:@doctors).stub(:find).with(anything, anything).and_return(['any doctors'])
+    @adapter.get_doctors_by_fs(41).should eq(['any doctors'])
+  end
+
+  it 'should return all compound results' do
+    compounds = @adapter.get_compound_results_components.size
+    compounds.should be(21)
+
+    @adapter.instance_variable_get(:@compounds).stub(:find).and_return(['any compound'])
+    @adapter.get_compound_results_components.should eq(['any compound'])
   end
 
   it 'should find fields with character matching' do
     fields = @adapter.get_fields_by_char_match('F65', 11).size
     fields.should be(11)
+
+    #stubbed_cursor = @adapter.instance_variable_get(:@r_icd_fs).stub(:find).with(anything, anything).and_return('any match')
+    #stubbed_cursor.stub(:limit).with(1).and_return('any match')
+    #@adapter.get_fields_by_char_match('F65', 11).should eq('any match')
   end
 
-  # test the icd and chop ranges
+  it 'should find the icd ranges' do
+    range = @adapter.get_icd_ranges('G55')
+    range[0]['beginning'].should eq('G50')
+    range[0]['ending'].should eq('G59')
+    range[1]['beginning'].should eq('G00')
+    range[1]['ending'].should eq('G99')
+  end
+
+  it 'should find the chop ranges' do
+    range = @adapter.get_chop_ranges('52.7')
+    range[0]['beginning'].should eq('42')
+    range[0]['ending'].should eq('54')
+  end
 end

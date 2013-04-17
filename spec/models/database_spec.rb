@@ -31,6 +31,7 @@ describe DatabaseAdapter do
     @mdc_name = client['mdc']['mdcNames']
 
     @range_icd = client['ICDRangeFSH']['mappings']
+    @range_chop = client['CHOPRangeFSH']['mappings']
 
     @doc_fs = client['doctors']['docfieldToFSCode']
     @docs = client['doctors']['doctors']
@@ -74,6 +75,10 @@ describe DatabaseAdapter do
 
   it 'should match the icd range collection' do
     @range_icd.count().should be(270)
+  end
+
+  it 'should match the chop range collection' do
+    @range_chop.count().should be(15)
   end
 
   it 'should match the doctors collections' do
