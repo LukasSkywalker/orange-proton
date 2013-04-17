@@ -179,7 +179,7 @@ var mindmapper = {
 
         var name = data.text;
         var container = $mm.megamind();      //initialize
-        var rootNode = "<div class='root'>{0}</br>{1}</div>".format(input, name);
+        var rootNode = "<div class='root'><p>{0}</br>{1}</p></div>".format(input, name);
         var root = $mm.megamind('setRoot', rootNode);
 
         var synonyms = [];
