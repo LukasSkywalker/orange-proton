@@ -14,6 +14,8 @@ en:
   legend: "Legend"
   location: "Location"
   error: "Error"
+  show: "Show information"
+  hide: "Hide information"
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

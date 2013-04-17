@@ -11,6 +11,8 @@ it:
   legend: "Leggenda"
   location: "Luogo"
   error: "Errore"
+  show: "Mostrare bipedibapedi"
+  hide: "Nascondino informazione"
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"

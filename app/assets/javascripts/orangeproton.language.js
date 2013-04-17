@@ -11,6 +11,7 @@ orangeproton.language = {
   setLocale: function(locale) {
     I18n.locale = locale || "de";
     this.updateUiLanguage();
+    $("#hide-panels").html(hidePanelText());
   },
 
   /**

@@ -11,6 +11,8 @@ fr:
   legend: "Légende"
   location: "Lieu"
   error: "Erreur"
+  show: "Désigner informations"
+  hide: "Cacher informations"
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"
