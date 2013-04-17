@@ -22,10 +22,8 @@ class MDCInfoProvider < DatabaseInfoProvider
     end
 
     fields = []
-    fmhnames = []
     fmhs.each do |fmh|
       name = db.get_fs_name(fmh,language)
-      fmhnames << name unless fmhnames.include?(name)
       fields << FieldEntry.new(name, 1, fmh) unless fields.size >= max_count
     end
    
