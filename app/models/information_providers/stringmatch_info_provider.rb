@@ -21,7 +21,6 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     code_text = entry['text'].downcase # TODO Take synonyms and inclusiva into account (?)
 
     fs = []
-
     keywords.each do |document|
       if code_text.include? document['keyword'].downcase
         valid = true
@@ -39,8 +38,5 @@ class StringmatchInfoProvider < DatabaseInfoProvider
       end
     end
     fs
-
   end
-
-
 end

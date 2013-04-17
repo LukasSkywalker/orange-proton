@@ -36,9 +36,14 @@ class DatabaseAdapter
     }
 
     @fs = @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
-
     @r_icd_fs = @client['relationFSZuICD']['relationFSZuICD']
     @r_mdc_fs = @client['mdc']['mdcCodeToFSCode']
+    @keywords = @client['fachgebieteKeywords']['fachgebieteKeywords']
+    @doctors = @client['doctors']['doctors']
+    @compounds = @client['compounds']['compounds']
+    @icd_ranges = @client['ICDRangeFSH']['mappings']
+    @chop_ranges = @client['CHOPRangeFSH']['mappings']
+
     @thesaurusToFSCode = 'thesaurusToFSCode'
   end
 
@@ -67,9 +72,8 @@ class DatabaseAdapter
   # @return The fachgebieteKeywords table as a cursor
   def get_fachgebiete_keywords
     # TODO Cache result?
-    documents = @client['fachgebieteKeywords']['fachgebieteKeywords'].find()
-
-    return documents
+    documents = @keywords.find()
+    documents.to_a
   end
   # @return An array of all fs codes related to a given MDC (Major diagnostic category). 
   # Used for icd > drg > mdc > fs mapping.
@@ -172,16 +176,13 @@ class DatabaseAdapter
   # @return All doctors (the raw db entry) with speciality in a given field (given as fs_code).
   def get_doctors_by_fs(fs_code)
     specs = get_specialities_from_fs fs_code
-
-    docs = @client['doctors']['doctors'].
-      find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
-
+    docs = @doctors.find({'docfield' => {'$in' => specs} },{:fields => {'_id' => 0}})
     docs.to_a
   end
 
   # @return The compounds [array of fs codes] => result (fs code) table
   def get_compound_results_components
-    @client['compounds']['compounds'].find().to_a
+    @compounds.find().to_a
   end
 
   # @return At most max_count fields related to the icd_code specified, sorted
@@ -198,10 +199,8 @@ class DatabaseAdapter
   # This is based on a manually set up table.
   def get_icd_ranges (icd)
     icd = icd[0]+icd[1]+icd[2]
-    db = @client['ICDRangeFSH']
-    col = db['mappings']
     ranges = []
-    col.find().each do |doc|
+    @icd_ranges.find().each do |doc|
       if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
         doc.delete('name')
         ranges<<doc
@@ -215,10 +214,8 @@ class DatabaseAdapter
   # This is based on a manually set up table.
   def get_chop_ranges (chop)
     chop = chop[0]+chop[1]
-    db = @client['CHOPRangeFSH']
-    col = db['CHOPRangeFSH']
     ranges = []
-    col.find().each do |doc|
+    @chop_ranges.find().each do |doc|
       if ((doc['beginning']<=> chop) <=0) and ((doc['ending']<=> chop) >=0)
         ranges<<doc
       end

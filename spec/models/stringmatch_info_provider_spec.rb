@@ -20,7 +20,6 @@ describe StringmatchInfoProvider do
     @db = @provider.db
     @db.stub(:get_fs_name).with(1, anything).and_return('codologie')
 
-
   end
 
   it 'should recognize keyword' do
@@ -58,6 +57,10 @@ describe StringmatchInfoProvider do
     fields = @provider.get_fields('B00',4,'de')
 
     fields.should ==[]
+  end
+
+  it 'should raise error when keyword is not available in german' do
+    expect{@provider.get_fields('B20.9', 1, 'en')}.to raise_error(ProviderLookupError, "no_icd_chop_data")
   end
 
 end
