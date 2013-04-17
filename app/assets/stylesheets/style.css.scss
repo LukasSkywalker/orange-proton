@@ -202,17 +202,34 @@ div.node, div.legend {
     @include clickable;
   }
 
-  .location {
-    margin-top: 16px;
-    float: left;
-    font-size: 0.8em;
-    @include clickable;
-  }
 
   #location-container{
-    margin-left: auto;
-    margin-right: auto;
-    width: 500px;
+    margin: 16px auto 0 auto;
+    max-width: 550px;
+    overflow: hidden;
+    height: 35px;
+    right: 100px;
+
+    p {
+      position: relative;
+      display: inline;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: middle;
+      margin: 0;
+    }
+
+    .globe{
+      font-size: 1.5em;
+      margin-right: 3px;
+    }
+
+    .location {
+      max-width: 430px;
+      float: left;
+      font-size: 0.8em;
+      @include clickable;
+    }
   }
 
   #lang {
@@ -228,11 +245,9 @@ div.node, div.legend {
 }
 
 .hide-arrow {
-  margin-top: 10px;
   border: 1px solid #cccccc;
   display: inline;
   position: absolute;
-  right: 10px;
   width: 100px;
   padding-top: 3px;
   overflow: hidden;
@@ -240,6 +255,8 @@ div.node, div.legend {
   float: right;
   background: url(arrow.png) no-repeat right white;
   height: 32px;
+  right: 15px;
+  top: 10px;
 
   &.svg {
     background: url(arrow.svg) no-repeat right white !important;
@@ -347,4 +364,8 @@ input[type=button] {
     text-align: right;
     margin-top: 10px;
   }
+}
+
+#location-input{
+  height: 25px;
 }

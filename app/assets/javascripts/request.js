@@ -27,7 +27,7 @@ $(document).ready(function () {
   $(document).on('locationChange', function() {
     var pos = orangeproton.location.getLocation();
     orangeproton.location.reverseGeoCode(pos.lat, pos.lng, function(lat, lng, address) {
-      $('.location').html(address.ellipses(100));
+      $('.location').html('<p class="icon-globe globe"></p>' + address.ellipses(100));
     });
   });
 
@@ -228,12 +228,9 @@ var mindmapper = {
           var f = fields[i].field;
           var n = fields[i].name;
           var r = fields[i].relatedness;
-          /*var c = Math.floor((r * 156) + 100).toString(16); //The more related the brighter
-          var color = '#' + c + c + c; //Color is three times c, so it's always grey
-          var newdiv = $('<div class="field" style="background-color:{0}">{1}: {2}</i></div>'.format(color, f, n)); */
             var newdiv = $('<div class="field">'+ f + ':' + n +'</i>' +
                 '<div class="relatedness-container">' +
-                '<div class="relatedness-display" style="width:'+ r*100 +'%;" title=" Relevanz '+ r*100 +'%"></div>' +
+                '<div class="relatedness-display" style="width:'+ r*100 +'%;" title=" Relevanz '+ Math.round(r*100) +'%"></div>' +
                 '</div>' +
                 '</div>');
           newdiv.on('click', { field: f }, function (e) {
