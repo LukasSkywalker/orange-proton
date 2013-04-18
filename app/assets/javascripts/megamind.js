@@ -326,6 +326,7 @@ var megamind = {
             this.addRow(n);
           } else {  // no luck. out of space.
             console.log('no more vertical space left');
+            break;
           }
         }
       }
