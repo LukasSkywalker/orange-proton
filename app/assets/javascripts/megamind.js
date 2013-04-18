@@ -39,15 +39,15 @@ var megamind = {
       z1_t: 0,
       z2_t: $(this.rootNode).position().top,
       z3_t: $(this.rootNode).position().top + $(this.rootNode).outerHeight(),
-      z1_h: $(this.rootNode).position().top,
-      z2_h: $(this.rootNode).outerHeight(),
-      z3_h: $(this.rootNode).position().top,   //really?
+      z1_h: $(this.rootNode).position().top - 1,
+      z2_h: $(this.rootNode).outerHeight() - 1,
+      z3_h: $(this.rootNode).position().top - 1,   //really?
       s1_l: 0,
       s2_l: $(this.rootNode).position().left,
       s3_l: $(this.rootNode).position().left + $(this.rootNode).outerWidth(),
-      s1_w: $(this.rootNode).position().left,
-      s2_w: $(this.rootNode).outerWidth(),
-      s3_w: $(this.rootNode).position().left // really?*/
+      s1_w: $(this.rootNode).position().left - 1,
+      s2_w: $(this.rootNode).outerWidth() - 1,
+      s3_w: $(this.rootNode).position().left - 1// really?*/
     };
     function Container(col, row) {
       return {
