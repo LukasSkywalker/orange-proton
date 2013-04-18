@@ -41,4 +41,7 @@ describe CompoundInfoProvider do
     var.should_not include(@field2)
   end
 
+  it 'should not raise error for ICD C64 Issue #217' do
+    expect{@provider.get_fields('C64', 4, 'de')}.to_not raise_error(NoMethodError)
+  end
 end
