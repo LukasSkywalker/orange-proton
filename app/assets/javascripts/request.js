@@ -120,6 +120,8 @@ $(document).ready(function () {
         var lang = State.data.lang;
 
         if (code !== undefined && code !== '') {
+            $('#code-name').val(code);
+            $('#lang').val(lang);
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
