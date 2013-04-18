@@ -41,9 +41,6 @@ describe DatabaseAdapter do
   end
 
   it 'should return all fachgebiete keywords' do
-    keywords = @adapter.get_fachgebiete_keywords.count()
-    keywords.should be(149)
-
     @adapter.instance_variable_get(:@keywords).stub(:find).and_return(['säugling', 'schilddrüse'])
     @adapter.get_fachgebiete_keywords.should eq(['säugling', 'schilddrüse'])
   end
