@@ -33,12 +33,13 @@ $(document).ready(function () {
     });
 
     /**
-     * re-do layout when window size changes
+     * re-do layout when window size changes. Wait 150ms before firing.
      */
-    $(window).resize(function () {
+    function resize() {
         resizeMindmap();
         $(document).trigger('paramChange', [null, null, true]);
-    });
+    }
+    $(window).resize( $.debounce( 250, resize ) );
 
     /**
      * add event handler for starting a search
