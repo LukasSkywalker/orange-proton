@@ -1,13 +1,5 @@
 /* Use SASS (http://sass-lang.com/) here */
 
-html, body {
-  height: 100%;
-}
-
-* html #mindmap {
-  height: 100%;
-}
-
 .nyan{
   background: url(/assets/bg.gif);
 }
@@ -15,7 +7,6 @@ html, body {
 #mindmap {
   position: absolute;
   top: 51px;
-  min-height: 100%;
 }
 
 body {

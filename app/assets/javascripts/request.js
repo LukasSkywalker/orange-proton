@@ -358,5 +358,7 @@ function hidePanelText() {
 
 function resizeMindmap() {
     var otherWidth = hidden ? 20 : $("#panels").outerWidth();
-    $("#mindmap").width($(window).width() - otherWidth);
+    var mindmap = $("#mindmap");
+    mindmap.width($(window).width() - otherWidth);
+    mindmap.outerHeight($(window).height()-($("#search-bar").outerHeight()+50));
 }
