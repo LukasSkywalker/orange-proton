@@ -221,7 +221,17 @@ var megamind = {
           top: n.top(),
           opacity: 1
         }, {duration: this.options.animationDuration, easing: 'linear'});
-        this.container.data().canvas.path('M' + n.parent.getCenter().x + ' ' + n.parent.getCenter().y + 'L' + n.getCenter().x + ' ' + n.getCenter().y).attr({stroke: n.el.css('border-left-color')});
+        var x1 = n.parent.getCenter().x, y1 = n.parent.getCenter().y,
+            x2 = n.getCenter().x, y2 = n.getCenter().y;
+        var path = 'M{0} {1}L{2} {3}'.format(x1, y1, x2, y2);
+
+        var color = n.el.css('border-right-color');
+        var line = this.container.data().canvas
+            .path('M{0} {1}L{0} {1}'.format(x1, y1))
+            .attr({stroke: color});
+
+        var newPath = {path: path};
+        line.animate(newPath, this.options.animationDuration);
       }
     }
   };
