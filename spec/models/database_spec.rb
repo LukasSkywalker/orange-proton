@@ -69,7 +69,7 @@ describe DatabaseAdapter do
   end
 
   it 'should match the mdc collections' do
-    @mdc_fs.count().should be(59)
+    @mdc_fs.count().should be(51)
     @mdc_name.count().should be(28)
   end
 
