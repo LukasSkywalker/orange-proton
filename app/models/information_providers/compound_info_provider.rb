@@ -42,7 +42,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     fields = remove_duplicate_fields fields
 
-    fields = generate_compound_fields fields # implements #171
+    fields = generate_compound_fields(fields, language) # implements #171
 
     fields.sort! do |x, y|
       y.relatedness <=> x.relatedness
@@ -61,13 +61,13 @@ class CompoundInfoProvider < DatabaseInfoProvider
   def extract_fields_with_code_in(fields, codes) 
     fields = fields.dup # copy
     fields.delete_if {|f| !codes.include?(f.code)}
-    return fields
+    fields
   end
 
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
   # @return The same list of fields plus all compounds that can be generated from it.
   # Implements #
-  def generate_compound_fields(fields)
+  def generate_compound_fields(fields, language)
     # TODO Remove logging
     # TODO Test (what code gets more specific results thanks to this?) -- once we have "Kinder" in the dictionary this should be easy to find
 
@@ -86,10 +86,10 @@ class CompoundInfoProvider < DatabaseInfoProvider
         fs.each {|f| rmean += f.relatedness}
         rmean /= fs.size
         Rails.logger.info "components: #{fs}, mean #{rmean}"
-        fields << new_fs_field_entry(rc['result'], rmean, fs.lang)
+        fields << new_fs_field_entry(rc['result'], rmean, language)
       end
     }
-    return fields
+    fields
   end
 
   # Handle
