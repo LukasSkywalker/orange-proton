@@ -172,6 +172,7 @@ orangeproton.location = {
     var $popup = $('<div id="location-popup"></div>');
     var $search = $('<input type="text" id="location-input"/>');
     var $searchButton = $('<input type="button" value="Suche"/>');
+    var $resetButton = $('<input type="button" value="Reset"/>');
     var $currentLocation = $('<p></p>').addClass('location');
 
     $search.enterHandler(function() {
@@ -182,9 +183,20 @@ orangeproton.location = {
       orangeproton.location.geoCodeAndMark($('#location-input').val());
     });
 
+    $resetButton.on('click', null, function onResetButtonClick() {
+      orangeproton.location.userLocation = null;
+      $.removeCookie('userLocation');
+      $(document).trigger('locationChange');
+      var map = $('#location-map').data('map');
+      var location = orangeproton.location.getLocation();
+      map.removeMarkers();
+      map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
+      map.setCenter(location.lat, location.lng)
+    });
+
     var $map = $('<div id="location-map"></div>').width(800).height(500);
 
-    $popup.append($search).append($searchButton)
+    $popup.append($search).append($searchButton).append($resetButton)
         .append($currentLocation).append($map).appendTo('body');
 
     //$map.css({width: '100%', height: '100%', position: 'relative'});
