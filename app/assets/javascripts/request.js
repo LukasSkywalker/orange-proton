@@ -160,7 +160,7 @@ var mindmapper = {
 
                 var name = data.text;
                 var container = $mm.megamind();      //initialize
-                var rootNode = "<div class='root'><p>{0}</br>{1}</p></div>".format(input, name);
+                var rootNode = '<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name);
                 var root = $mm.megamind('setRoot', rootNode);
 
                 var synonyms = [];
@@ -171,7 +171,7 @@ var mindmapper = {
                     }).join('');
 
                     if (newdiv != '')
-                        synonyms.push($('<div class="syn"><ul>{0}</ul></div>'.format(newdiv)));
+                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)));
                 }
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
@@ -210,7 +210,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field" title="' + I18n.t("field") + '">' + f + ':' + n + '</i>' +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
                         '</div>' +
