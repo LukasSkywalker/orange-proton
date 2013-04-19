@@ -1,30 +1,35 @@
 var orangeproton = orangeproton || {};
 
 $(document).ready(function () {
-    var $code = $('#code-name');
+    var $codeInput = $('#code-name');
     var $lang = $('#lang');
+    var $searchButton = $('#search-button');
+    var $panelToggler = $('#hide-panels');
 
-    /**
-     * Adjusts the width of the mindmap div
-     */
-    resizeMindmap();
 
-    /**
-     * load the admin interface
-     */
-    orangeproton.admin.loadPanel();
-    $("#hide-panels").html(I18n.t("show")).rotate(-90);
-
-    /**
-     * add event handler for code searches
-     */
-    $code.enterHandler(function () {
+    /* TOP-BAR */
+    // start search on enter key press
+    $codeInput.enterHandler(function () {
         $(document).trigger('paramChange', [null, null, true]);
     });
+    // start search on button click
+    $searchButton.on('click', null, function () {
+        $(document).trigger('paramChange', [null, null, true]);
+    });
+    // focus search field
+    $codeInput.focus();
 
-    /**
-     * add event handler for location change
-     */
+    // add click handler for location display
+    $('.location').on('click', null, function () {
+      orangeproton.location.showMap();
+    });
+
+    // add event handler for language change on UI element
+    $lang.change(function () {
+      $(document).trigger('paramChange');
+    });
+
+    // add event handler for location change
     $(document).on('locationChange', function () {
         var pos = orangeproton.location.getLocation();
         orangeproton.location.reverseGeoCode(pos.lat, pos.lng, function (lat, lng, address) {
@@ -32,18 +37,14 @@ $(document).ready(function () {
         });
     });
 
-    /**
-     * re-do layout when window size changes. Wait 150ms before firing.
-     */
+    //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
-        resizeMindmap();
+        orangeproton.mindmap.resizeMindmap();
         $(document).trigger('paramChange', [null, null, true]);
     }
     $(window).resize( $.debounce( 250, resize ) );
 
-    /**
-     * add event handler for starting a search
-     */
+    // add event handler for param changes (starts a search)
     $(document).on('paramChange', function (e, code, lang, force) {
         var $code = $('#code-name');
         var $lang = $('#lang');
@@ -63,58 +64,31 @@ $(document).ready(function () {
         }
     });
 
-    /**
-     * add event handler for panel toggling
-     */
+
+    // Adjust the size of the mindmap div
+    orangeproton.mindmap.resizeMindmap();
+
+    /* ADMIN-PANELS */
+    // load the panel
+    orangeproton.admin.loadPanel();
+    $panelToggler.rotate(-90);
+
+    // event handler for hiding the individual panels
     $('.title').click(function () {
         $(this).next().toggle('blind');
     });
 
-    $("#hide-panels").click(function () {
+    // click handler for hiding the whole right panel
+    $panelToggler.click(function () {
         togglePanels();
     });
 
-    /**
-     * add click handler for search button
-     */
-    $("#search-button").on('click', null, function () {
-        $(document).trigger('paramChange', [null, null, true]);
-    });
-
-    /**
-     * add click handler for location display
-     */
-    $('.location').on('click', null, function () {
-        orangeproton.location.showMap();
-    });
-
-    /**
-     * add event handler for language change on UI element
-     */
-    $lang.change(function () {
-        $(document).trigger('paramChange');
-    });
-
+    // start geolocation
     orangeproton.location.startGeoLocation();
 
-    /**
-     * Overwrite window.alert() with a fancier, styled and customizable message box
-     */
-    function betterAlert(msg) {
-        function closeBox() {
-            jQuery.fancybox.close();
-        }
+    orangeproton.generic.overwriteAlert();
 
-        orangeproton.generic.messageBox('Info', msg, ['Ok'], [closeBox], 0);
-    }
-
-    window.alert = betterAlert;
-
-    $code.focus();
-
-    /**
-     * Watch for changes in the history and start new search
-     */
+    // Watch for changes in the history and start new search
     History.Adapter.bind(window, 'statechange', function () { // Note: We are using statechange instead of popstate
         var State = History.getState(); // Note: We are using History.getState() instead of event.state
         var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
@@ -141,9 +115,7 @@ $(document).ready(function () {
     // set the locale and load translations
     orangeproton.language.setLocale($lang.val());
 
-    /**
-     * add svg class to elements with SVG components
-     */
+    //add svg class to elements where we have an SVG-image
     if (orangeproton.generic.supportsSVG()) {
         $('.hide-arrow').addClass('svg');
     }
@@ -166,9 +138,9 @@ var mindmapper = {
      */
     getICD: function (input, lang) {
         var params = '?code={0}&lang={1}'.format(input, lang);
-
+        var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
-            url: '/api/v1/fields/get' + params + '&count=4',
+            url: '/api/v1/fields/get' + params + '&count=' + count,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
@@ -202,7 +174,7 @@ var mindmapper = {
                         synonyms.push($('<div class="syn"><ul>{0}</ul></div>'.format(newdiv)));
                 }
                 else {
-                    synonyms = mindmapper.generateBubbles(data.synonyms, options.max_syn, 'syn');
+                    synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
                 }
                 var c = $mm.megamind('addCanvas', [megamind.presets().bottomRight]);
                 c.addNodes(synonyms);
@@ -211,23 +183,24 @@ var mindmapper = {
                 if (data.superclass) {
                     var patternNoDash = /^(.[0-9]{2}(\.[0-9]{1,2})?)</gi;  //matches a single ICD before a HTML-tag start
                     var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
-                    superclasses = mindmapper.generateBubbles([content], 1, 'super', patternNoDash);
+                    superclasses = orangeproton.mindmap.generateBubbles([content], 1, 'super', patternNoDash);
                 }
                 var c = $mm.megamind('addCanvas', [megamind.presets().topRight]);
                 c.addNodes(superclasses);
 
-                var subclasses = mindmapper.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
+                var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
                 var c = $mm.megamind('addCanvas', [megamind.presets().right]);
                 c.addNodes(subclasses);
 
-                var drgs = mindmapper.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
+                var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
                 var c = $mm.megamind('addCanvas', [megamind.presets().top]);
                 c.addNodes(drgs);
 
+                var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
                 var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
-                var exclusiva = mindmapper.generateBubbles(data.exclusiva, options.max_exclusiva, 'exclusiva', icdPattern);
+                var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
-                var inclusiva = mindmapper.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
+                var inclusiva = orangeproton.mindmap.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
                 var c = $mm.megamind('addCanvas', [megamind.presets().bottom]);
                 c.addNodes(exclusiva.concat(inclusiva));
 
@@ -284,79 +257,33 @@ var mindmapper = {
     },
 
     /**
-     * Generate HTML elements for bubbles. Pass pattern to make bubble clickable. If you don't supply
-     * a click handler, the default click handler will be used, which starts a new search for the
-     * first match of the RegExp.
-     * @param {String[]} contents Text content for the bubbles
-     * @param {Number} limit Max number of bubbles
-     * @param {String} className class to add
-     * @param {Object} [pattern] Regex pattern. If it matches, an onClick handler is added
-     * @param {Object} [data] Additional data to pass to the click handler
-     * @param {Function} [click] Click handler method. use data to access (data) and match to get the match of the RegEx
-     * @param {Object} [click.data] the data passed to #generateBubbles
-     * @param {Array} [click.match] the result of `content.match(pattern)`
-     * @returns {Array} of the elements
+     * check if the right panels are hidden
+     * @returns {Boolean} whether they are hidden
      */
-    generateBubbles: function (contents, limit, className, pattern, data, click) {
-        var bubbles = [];
-        if (!contents) return bubbles;
-        contents = contents.slice(0, limit); // set collection size limit
-        $.each(contents, function (index, text) {
-            var $element = $('<div></div>')
-                .addClass(className)
-                .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become asdf<br />b
-            if (pattern) {
-                var result = text.match(pattern);
-                if (result) {
-                    if (click) {        //onclick handler was supplied
-                        $element.on('click', {data: data, match: result}, function (e) {
-                            console.log('click1');
-                            click(e.data.data, e.data.match);
-                        });
-                    } else {            //inject the default click handler
-                        $element.on('click', {match: result}, function (e) {
-                            var code = decodeURI(e.data.match[0]);
-                            code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
-                            $(document).trigger('paramChange', [code, null]);
-                            $('#mindmap').megamind('setRoot', this, true);
-                        });
-                    }
-                    $element.addClass('clickable');
-                } else {
-                    //regex does not match
-                }
-            }
-            bubbles.push($element);
-        });
-        return bubbles;
+    panelHidden: function () {
+        var hidden = $('#panels').data('hidden');
+        if( hidden !== undefined ) return hidden;
+        else return true;
     }
 };
 
-//Show/Hides the panels
-var hidden = true;
+//Show/Hide the panels
 function togglePanels() {
+    var $panels = $('#panels');
+    var panelHidden = mindmapper.panelHidden();
 
-    var amount = !hidden ? "-69" : "171";
-    var width = !hidden ? "0" : "250";
+    var amount = !panelHidden ? "-69" : "171";
+    var width = !panelHidden ? "0" : "250";
     var panel = $("#hide-panels");
 
-    $("#panels").animate({"width": width + "px"}, "fast");
+    $panels.animate({"width": width + "px"}, "fast");
     panel.animate({"right": amount + "px"}, "fast", function () {
-        resizeMindmap();
+        orangeproton.mindmap.resizeMindmap();
         $(document).trigger('paramChange', [null, null, true]);
     });
 
 
-    panel.html(hidePanelText());
-    panel.rotate(-90);
-    hidden = !hidden;
-}
-
-function hidePanelText() {
-    return hidden ? I18n.t("show") : I18n.t("hide");
-}
-
-function resizeMindmap() {
-    var otherWidth = hidden ? 20 : $("#panels").outerWidth();
-    $("#mindmap").width($(window).width() - otherWidth);
+    panel.html(orangeproton.language.getPanelTogglerText());
+    //panel.rotate(-90);
+    $panels.data('hidden', !panelHidden);
 }

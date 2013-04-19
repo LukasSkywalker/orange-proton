@@ -100,6 +100,7 @@ orangeproton.location = {
     GMaps.geocode({
       lat: lat,
       lng: lng,
+      region: 'ch',
       callback: function(results, status) {
         if (status == 'OK') {
           var address = results[0].formatted_address;

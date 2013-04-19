@@ -40,6 +40,19 @@ orangeproton.generic = {  // Read a page's GET URL variables and return them as 
   },
 
   /**
+   * Overwrite window.alert() with a fancier, styled and customizable message box
+   */
+  overwriteAlert: function () {
+    function betterAlert(msg) {
+      function closeBox() {
+        jQuery.fancybox.close();
+      }
+      orangeproton.generic.messageBox('Info', msg, ['Ok'], [closeBox], 0);
+    }
+    window.alert = betterAlert;
+  },
+
+  /**
    * Show a styled messagebox.
    * @param {String} title message title
    * @param {String} content message content

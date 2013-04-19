@@ -11,7 +11,7 @@ orangeproton.language = {
   setLocale: function(locale) {
     I18n.locale = locale || "de";
     this.updateUiLanguage();
-    $("#hide-panels").html(hidePanelText());
+    $("#hide-panels").html(orangeproton.language.getPanelTogglerText());
   },
 
   /**
@@ -27,5 +27,16 @@ orangeproton.language = {
     });
 
     $('#legend-title').html('<p>' + I18n.t('legend') + '</p>');
+
+    $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
+  },
+
+  /**
+   * get the text to display on the toggler based on the current state
+   * @returns {String} the label
+   */
+  getPanelTogglerText: function() {
+    var panelHidden = mindmapper.panelHidden();
+    return panelHidden ? I18n.t("show") : I18n.t("hide");
   }
 };
