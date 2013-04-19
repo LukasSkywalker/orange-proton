@@ -136,6 +136,15 @@ var megamind = {
       return ele;
     },
 
+    redraw: function () {
+      var $mm = $(this.first());
+      var data = $mm.data();
+      data.canvas.clear();
+      $.each(data.canvases, function (i, c) {
+        c.redraw();
+      });
+    },
+
     /**
      * Toggle debug info for the mindmap on this element
      * @returns {boolean} true when showing, false when hiding
@@ -211,7 +220,8 @@ var megamind = {
     return this.yOffset;// + this.container.position().top;
   };
 
-  Canvas.prototype.doLayout = function () {
+  Canvas.prototype.render = function () {
+    this.container.trigger('beforeDraw');
     this.space();
     for (var i = 0; i < this.rows.length; i++) {
       for (var j = 0; j < this.rows[i].nodes.length; j++) {
@@ -234,6 +244,7 @@ var megamind = {
         line.animate(newPath, this.options.animationDuration);
       }
     }
+    this.container.trigger('afterDraw');
   };
 
   Canvas.prototype.currentRow = function () {
@@ -280,8 +291,36 @@ var megamind = {
     return h;
   };
 
+  Canvas.prototype.nodeElements = function () {
+    var nodes = [];
+    for(var i = 0; i < this.rows.length; i++) {
+      for(var j = 0; j < this.rows[i].nodes.length; j++) {
+        nodes.push(this.rows[i].nodes[j].el);
+      }
+    }
+    return nodes;
+  };
 
-  Canvas.prototype.addNodes = function (elements) {
+  Canvas.prototype.redraw = function () {
+    this.distribute();
+    this.render();
+  };
+
+  Canvas.prototype.addNodes = function(elements) {
+    for(var i = 0; i < elements.length; i++) {
+      var n = new Node(elements[i], null);
+      if(this.rows.length == 0)
+        this.addRow(n);
+      else
+        this.rows[0].addNode(n);
+    }
+    this.distribute();
+    this.render();
+  }
+
+  Canvas.prototype.distribute = function () {
+    this.container.trigger('beforePosition');
+    var elements = this.nodeElements();
     elements.shuffle();
 
     // some preprocessing: add required classes
@@ -298,7 +337,6 @@ var megamind = {
       return b.height() - a.height();
     });
 
-    this.container.trigger('beforePosition');
     // main layout loop
     var bestRatio = Infinity;
     var bestDistribution = [];
@@ -349,11 +387,6 @@ var megamind = {
       this.rows[i].shuffle();
     }
     this.container.trigger('afterPosition');
-
-    // display nodes
-    this.container.trigger('beforeDraw');
-    this.doLayout();
-    this.container.trigger('afterDraw');
     return this;
   };
 
