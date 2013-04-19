@@ -39,7 +39,7 @@ orangeproton.admin = {
    * @param {String} status The HTTP-status code of the request
    */
   displaySliders: function(response, status) {
-      var providers = ["Manual", "MDC", "Range", "Thesaur", "StringMatcher", "Chop"];
+      var providers = ["MDC", "Range", "Thesaur", "StringMatcher", "Chop"];
       var panel = $("#admin-text");
 
       panel.empty();
