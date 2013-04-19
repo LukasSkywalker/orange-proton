@@ -298,6 +298,7 @@ var megamind = {
       return b.height() - a.height();
     });
 
+    this.container.trigger('beforePosition');
     // main layout loop
     var bestRatio = Infinity;
     var bestDistribution = [];
@@ -347,10 +348,12 @@ var megamind = {
     for (var i = 0; i < this.rows.length; i++) {
       this.rows[i].shuffle();
     }
+    this.container.trigger('afterPosition');
 
     // display nodes
+    this.container.trigger('beforeDraw');
     this.doLayout();
-
+    this.container.trigger('afterDraw');
     return this;
   };
 
