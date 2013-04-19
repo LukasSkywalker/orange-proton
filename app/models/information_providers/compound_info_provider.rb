@@ -5,11 +5,10 @@ require 'parallel_each'
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
   # default weights for prodiers
-  @@default_weights = [1.0, 0.75, 0.75, 0.5, 0.6, 0.75] # TODO this seems to have an arbitrary yet important order...
+  @@default_weights = [0.4, 0.6, 1, 0.8, 0.75] # TODO this seems to have an arbitrary yet important order...
 
   # provider pool
   @@providers = {
-      ManualInfoProvider => ManualInfoProvider.new,
       MDCInfoProvider => MDCInfoProvider.new,
       IcdRangeInfoProvider => IcdRangeInfoProvider.new,
       ThesaurInfoProvider => ThesaurInfoProvider.new,
@@ -21,16 +20,15 @@ class CompoundInfoProvider < DatabaseInfoProvider
     super
     # weights for each provider
     @weights = {
-        ManualInfoProvider => @@default_weights[0],
-        MDCInfoProvider => @@default_weights[1],
-        IcdRangeInfoProvider => @@default_weights[2],
-        ThesaurInfoProvider => @@default_weights[3],
-        StringmatchInfoProvider => @@default_weights[4],
-        ChopRangeInfoProvider => @@default_weights[5]
+        MDCInfoProvider => @@default_weights[0],
+        IcdRangeInfoProvider => @@default_weights[1],
+        ThesaurInfoProvider => @@default_weights[2],
+        StringmatchInfoProvider => @@default_weights[3],
+        ChopRangeInfoProvider => @@default_weights[4]
     }
 
     @components = {
-        :icd => [ManualInfoProvider, MDCInfoProvider, IcdRangeInfoProvider,ThesaurInfoProvider, StringmatchInfoProvider],
+        :icd => [MDCInfoProvider, IcdRangeInfoProvider,ThesaurInfoProvider, StringmatchInfoProvider],
         :chop => [ManualInfoProvider, ChopRangeInfoProvider, MDCInfoProvider]
     }
 
