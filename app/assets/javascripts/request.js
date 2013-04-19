@@ -224,8 +224,9 @@ var mindmapper = {
                 var c = $mm.megamind('addCanvas', [megamind.presets().top]);
                 c.addNodes(drgs);
 
+                var exc = mindmapper.preprocessNodes(data.exclusiva);
                 var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
-                var exclusiva = mindmapper.generateBubbles(data.exclusiva, options.max_exclusiva, 'exclusiva', icdPattern);
+                var exclusiva = mindmapper.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
                 var inclusiva = mindmapper.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
                 var c = $mm.megamind('addCanvas', [megamind.presets().bottom]);
@@ -259,6 +260,48 @@ var mindmapper = {
 
             complete: mindmapper.hideSpinner
         });
+    },
+
+  /**
+   * Parse ICD-codes included in the text like {B20.-}, {B30-B32} and {B40}, {B42}
+   * and return the new nodes (would be B20, B30, B31, B32, B42, B42)
+   * @param {String[]} collection content to parse
+   * @returns {String[]} the new contents
+   */
+    preprocessNodes: function(collection) {
+      var icdPattern = /(.[0-9]{2}(\.[0-9]{1,2})?)/;
+      var contentPattern = /^(.*?)\s\{/;    // match 'Bla' of 'Bla {B20}'
+      var rangePattern = new RegExp('\{'+icdPattern.source+'-'+icdPattern.source+'\}', 'gi'); // match 'B20' and 'B21' of '{B20-B21}'
+      var subRangePattern = new RegExp('\{'+icdPattern.source+'\.-\}', 'ig'); // match 'B20' of '{B20.-}'
+      var multiNodePattern = new RegExp('\{'+icdPattern.source+'\}', 'ig');
+      var additionalNodes = [];
+      $.each(collection, function(i, e) {
+          var content = contentPattern.exec(e);
+          var text;
+          if(content) text = content[1];
+          else text = e;
+          var rangeMatch;
+          while( rangeMatch = rangePattern.exec(e)) {
+              var num1 = rangeMatch[1].substr(1);
+              var num2 = rangeMatch[3].substr(1);
+              var letter = rangeMatch[1].substr(0,1);
+              for(var i = num1; i <= num2; i++) {
+                  var node = text + ' {' + letter + i + '}';
+                  additionalNodes.push(node);
+              }
+          }
+          var subRangeMatch;
+          while( subRangeMatch = subRangePattern.exec(e)) {
+            var node = text + ' {' + subRangeMatch[1] + '}';
+            additionalNodes.push(node);
+          }
+          var multiNodeMatch;
+          while( multiNodeMatch = multiNodePattern.exec(e)) {
+            var node = text + ' {' + multiNodeMatch[1] + '}';
+            additionalNodes.push(node);
+          }
+      });
+      return additionalNodes;
     },
 
     /**
@@ -304,7 +347,7 @@ var mindmapper = {
         $.each(contents, function (index, text) {
             var $element = $('<div></div>')
                 .addClass(className)
-                .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become asdf<br />b
+                .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become b<br />asdf
             if (pattern) {
                 var result = text.match(pattern);
                 if (result) {
@@ -357,8 +400,9 @@ function hidePanelText() {
 }
 
 function resizeMindmap() {
-    var otherWidth = hidden ? 20 : $("#panels").outerWidth();
-    var mindmap = $("#mindmap");
-    mindmap.width($(window).width() - otherWidth);
-    mindmap.outerHeight($(window).height()-($("#search-bar").outerHeight()+50));
+    var otherWidth = hidden ? 20 : $("#panels").outerWidth() + 20;
+    $("#mindmap").css({
+        width: $(window).width() - otherWidth,
+        height: $(window).height() - $("#search-bar").outerHeight()
+    });
 }

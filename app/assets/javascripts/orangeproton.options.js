@@ -31,8 +31,8 @@ orangeproton.options = {
     max_fields: 7, // max number of fields
     max_drgs: 10,
     max_sub: Infinity,
-    max_inclusiva: 3,
-    max_exclusiva: 3,
+    max_inclusiva: 6,
+    max_exclusiva: 6,
     max_docs: 5,
     as_list: true
   }
