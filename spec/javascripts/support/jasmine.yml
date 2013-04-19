@@ -10,9 +10,9 @@
 #   - lib/source2.js
 #   - dist/**/*.js
 #
-src_files:
-  - assets/application.js
-
+#src_files:
+#  - assets/application.js
+#
 # stylesheets
 #
 # Return an array of stylesheet filepaths relative to src_dir to include before jasmine specs.

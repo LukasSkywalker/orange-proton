@@ -1,3 +1,6 @@
+//= require jquery
+//= require jquery_ujs
+//= require megamind
 describe("Megamind Canvas", function() {
   it("should work", function() {
     expect(true).toEqual(true);
