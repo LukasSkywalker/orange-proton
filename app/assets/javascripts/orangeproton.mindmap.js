@@ -25,7 +25,8 @@ orangeproton.mindmap = {
     $.each(contents, function (index, text) {
       var $element = $('<div></div>')
           .addClass(className)
-          .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'));  // make asdf {b} become b<br />asdf
+          .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'))// make asdf {b} become b<br />asdf
+          .attr('title', I18n.t(className));
       if (pattern) {
         var result = text.match(pattern);
         if (result) {
