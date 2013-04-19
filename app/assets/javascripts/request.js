@@ -138,9 +138,9 @@ var mindmapper = {
      */
     getICD: function (input, lang) {
         var params = '?code={0}&lang={1}'.format(input, lang);
-
+        var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
-            url: '/api/v1/fields/get' + params + '&count=4',
+            url: '/api/v1/fields/get' + params + '&count=' + count,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
