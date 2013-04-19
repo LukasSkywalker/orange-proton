@@ -22,21 +22,46 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
     fs = []
     keywords.each do |document|
-      if code_text.include? document['keyword'].downcase
-        valid = true
-        document['exklusiva'].each do |exkl|
-          if code_text.include? exkl.downcase
-            valid = false
-          end
+      fs_entry = get_fs(code_text, document, 1, language)
+      unless fs_entry.nil?
+        fs << fs_entry unless fs.include? fs_entry
+      end
+    end
+
+
+    code_text=''
+    synonyms = entry['synonyms']
+    unless synonyms.nil?
+      entry['synonyms'].each do |syn|
+        code_text << syn.downcase
+      end
+    end
+
+    keywords.each do |document|
+      fs_entry = get_fs(code_text, document, 0.3, language)
+      unless fs_entry.nil?
+        fs << fs_entry if fs.select{|entry| entry.name == fs_entry.name}.empty?
+      end
+    end
+
+    fs
+  end
+
+  def get_fs(code_text, document, relevance, language)
+    fs_entry = nil
+    if code_text.include? document['keyword'].downcase
+      valid = true
+      document['exklusiva'].each do |exkl|
+        if code_text.include? exkl.downcase
+          valid = false
         end
-        if valid
-          document['fmhcodes'].each do |fs_code|
-            fs_entry = new_fs_field_entry(fs_code.to_i, 1, language)
-            fs << fs_entry unless fs.include? fs_entry
-          end
+      end
+      if valid
+        document['fmhcodes'].each do |fs_code|
+          fs_entry = new_fs_field_entry(fs_code.to_i, relevance, language)
         end
       end
     end
-    fs
+    fs_entry
   end
 end
