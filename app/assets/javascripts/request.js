@@ -277,13 +277,17 @@ function togglePanels() {
     var $panels = $('#panels');
     var panelHidden = mindmapper.panelHidden();
 
+    function resizeMindmap() {
+        orangeproton.mindmap.resizeMindmap();
+        $('#mindmap').megamind('redraw');
+    }
+
     if(panelHidden) {
         $('#hide-panels').animate({'right': '+=200'}, 400);
-        $('#panels-container').show(400);
+        $('#panels-container').show(400, resizeMindmap);
     } else {
         $('#hide-panels').animate({'right': '-=200'}, 400);
-        $('#panels-container').hide(400);
+        $('#panels-container').hide(400, resizeMindmap);
     }
     $panels.data('hidden', !panelHidden);
-    orangeproton.mindmap.resizeMindmap();
 }
