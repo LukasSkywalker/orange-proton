@@ -94,10 +94,10 @@ var megamind = {
      * @param options {Object}
      * @returns {Canvas} the new canvas
      */
-    addCanvas: function (areas, options) {
+    addCanvas: function (areas, className, options) {
       var $mm = $(this.first());
       var data = $mm.data();
-      var cv = new Canvas($mm, areas, options);
+      var cv = new Canvas($mm, areas, className, options);
       data.canvases.push(cv);
       return cv;
     },
@@ -189,8 +189,9 @@ var megamind = {
     }
   };
 
-  function Canvas(mm, areas, options) {
+  function Canvas(mm, areas, className, options) {
     this.rows = [];
+    this.el = $('<div></div>').addClass('container').addClass(className);
     this.areas = areas;
     this.resize();
     this.container = mm;
@@ -221,10 +222,14 @@ var megamind = {
     this.width = width;
     this.xOffset = left;
     this.yOffset = top;
+    this.el.css({left: this.xOffset, top: this.yOffset, width: this.width, height: this.height});
   };
 
   Canvas.prototype.render = function () {
     this.container.trigger('beforeDraw');
+    if( !this.el.isInDom() ) {
+      this.el.appendTo(this.container);
+    }
     for (var i = 0; i < this.rows.length; i++) {
       for (var j = 0; j < this.rows[i].nodes.length; j++) {
         var n = this.rows[i].nodes[j];
@@ -570,4 +575,8 @@ var megamind = {
     var y = this.position().top + this.outerHeight() / 2;
     return new Point(x, y);
   };
+
+  jQuery.fn.isInDom = function () {
+    return jQuery.contains(document.documentElement, this)
+  }
 })(jQuery);

@@ -31,6 +31,12 @@ body {
   }
 }
 
+/* containers */
+div.container {
+  position: absolute;
+  display: none;
+}
+
 /* nodes and legend items */
 div.node, div.legend {
   background: #eee;

@@ -176,7 +176,7 @@ var mindmapper = {
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
                 }
-                var c = $mm.megamind('addCanvas', ['bottomRight']);
+                var c = $mm.megamind('addCanvas', ['bottomRight'], 'syn');
                 c.addNodes(synonyms);
 
                 var superclasses = [];
@@ -185,15 +185,15 @@ var mindmapper = {
                     var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
                     superclasses = orangeproton.mindmap.generateBubbles([content], 1, 'super', patternNoDash);
                 }
-                var c = $mm.megamind('addCanvas', ['topRight']);
+                var c = $mm.megamind('addCanvas', ['topRight'], 'super');
                 c.addNodes(superclasses);
 
                 var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-                var c = $mm.megamind('addCanvas', ['right']);
+                var c = $mm.megamind('addCanvas', ['right'], 'sub');
                 c.addNodes(subclasses);
 
                 var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                var c = $mm.megamind('addCanvas', ['top']);
+                var c = $mm.megamind('addCanvas', ['top'], 'drg');
                 c.addNodes(drgs);
 
                 var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
@@ -201,7 +201,7 @@ var mindmapper = {
                 var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
                 var inclusiva = orangeproton.mindmap.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
-                var c = $mm.megamind('addCanvas', ['bottom']);
+                var c = $mm.megamind('addCanvas', ['bottom'], 'inclusiva-exclusiva');
                 c.addNodes(exclusiva.concat(inclusiva));
 
                 var s = [];
@@ -224,7 +224,7 @@ var mindmapper = {
                     s.push(newdiv);
                 }
 
-                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft']);
+                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field');
                 c.addNodes(s);
             },
 
