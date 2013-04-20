@@ -379,7 +379,7 @@ var megamind = {
       } else {  // this ratio is worse
         break;
       }
-      width -= 0.05;
+      width -= 0.1;
     }
     this.rows = bestDistribution;
 

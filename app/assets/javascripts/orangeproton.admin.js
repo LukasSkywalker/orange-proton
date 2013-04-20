@@ -73,15 +73,5 @@ orangeproton.admin = {
    */
   debugMindmap: function() {
       $("#mindmap").megamind('debug');
-      $("body").toggleClass("nyan");
-      var $audio = $('audio');
-      if( $audio.length > 0 ) {
-        $('.nyan-player').remove();
-      } else {
-        var $audioControl = $('<div><audio controls autoplay="autoplay"></audio></div>').addClass('nyan-player');
-        var $audioSource = $('<source src="http://www.nyan.cat/music/dub.mp3" type="audio/mpeg">');
-        $audioControl.children().first().append($audioSource);
-        $('body').append($audioControl);
-      }
   }
 };
