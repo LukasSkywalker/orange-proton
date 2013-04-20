@@ -101,8 +101,9 @@ orangeproton.mindmap = {
   resizeMindmap: function() {
     var panelHidden = mindmapper.panelHidden();
     var otherWidth = panelHidden ? 20 : $("#panels").outerWidth() + 20;
+    var windowWidth = window.innerWidth || document.body.offsetWidth || document.documentElement.offsetWidth;
     $("#mindmap").css({
-      width: $(window).width() - otherWidth,
+      width: windowWidth - otherWidth,
       height: $(window).height() - $("#search-bar").outerHeight()
     });
   }

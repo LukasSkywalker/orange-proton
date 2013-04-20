@@ -25,6 +25,8 @@ $(document).ready(function () {
       orangeproton.location.showMap();
     });
 
+    I18n.defaultLocale = 'de';
+    I18n.fallbacks = true;
     // add event handler for language change on UI element
     $lang.change(function () {
       $(document).trigger('paramChange');
@@ -72,12 +74,14 @@ $(document).ready(function () {
     /* ADMIN-PANELS */
     // load the panel
     orangeproton.admin.loadPanel();
-    $panelToggler.rotate(-90);
+    $panelToggler.rotate({angle: -90});
+    $('#panels-container').hide(400);
 
     // event handler for hiding the individual panels
-    $('.title').click(function () {
+    // LD uncommented that because we can hide the entire panel
+    /*$('.title').click(function () {
         $(this).next().toggle('blind');
-    });
+    });*/
 
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
@@ -273,16 +277,13 @@ function togglePanels() {
     var $panels = $('#panels');
     var panelHidden = mindmapper.panelHidden();
 
-    var amount = !panelHidden ? "-69" : "171";
-    var width = !panelHidden ? "0" : "250";
-    var panel = $("#hide-panels");
-
-    $panels.animate({"width": width + "px"}, "fast");
-    panel.animate({"right": amount + "px"}, "fast", function () {
-        orangeproton.mindmap.resizeMindmap();
-        $('#mindmap').megamind('redraw');
-        panel.html(orangeproton.language.getPanelTogglerText());
-    });
-    //panel.rotate(-90);
+    if(panelHidden) {
+        $('#hide-panels').animate({'right': '+=200'}, 400);
+        $('#panels-container').show(400);
+    } else {
+        $('#hide-panels').animate({'right': '-=200'}, 400);
+        $('#panels-container').hide(400);
+    }
     $panels.data('hidden', !panelHidden);
+    orangeproton.mindmap.resizeMindmap();
 }

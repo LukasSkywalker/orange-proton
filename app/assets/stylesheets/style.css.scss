@@ -11,6 +11,11 @@ body {
   font-size: 12px;
 }
 
+body, html{
+  height: 98%;
+  padding: 0;
+}
+
 /* sets the radius for all vendor-prefixes (and unprefixed) */
 @mixin border-radius($rad) {
   -webkit-border-radius: $rad;
@@ -98,67 +103,65 @@ div.node, div.legend {
   @include clickable;
 }
 
-/* the bow with the legend and the admin panel*/
-#panels {
-  width: 0;
-  display: block;
-  float: right;
-  overflow: hidden;
-}
-
-/* the admin panel */
-#admin {
-  margin: 10px;
-  border: 1px dashed #c5c5c5;
-  @include border-radius(7px);
-  font-size: 0.8em;
-  padding: 0 10px 0 10px;
-  position: relative;
-
- p{
-   margin-bottom: 3px;
- }
-
- .provider{
-   font-size: 1.25em;
- }
-
- .admin-slider{
-   margin-top: 3px;
- }
-
-
-
-  input[type=button]{
-    margin: 5px;
-  }
-}
-
-/* the legend */
-#legend {
-  margin: 10px;
-  border: 1px dashed #c5c5c5;
-  @include border-radius(7px);
-  padding: 0 10px 0 10px;
-  position: relative;
-
-  /* the items of the legend */
-  .legend {
-    margin: 10px;
-    padding-left: 10px;
-    text-align: center;
-    position:  relative;
-  }
-
-
-}
-
 #panels-container{
   max-width:  250px;
   position: absolute;
   top: 50px;
   right: 0;
+  width: 200px;
   z-index: 10;
+
+  /* the bow with the legend and the admin panel*/
+  #panels {
+    width: 100%;
+    display: block;
+    float: right;
+    overflow: hidden;
+
+    /* the admin panel */
+    #admin {
+      margin: 10px;
+      border: 1px dashed #c5c5c5;
+      @include border-radius(7px);
+      font-size: 0.8em;
+      padding: 0 10px 0 10px;
+      position: relative;
+
+      p{
+        margin-bottom: 3px;
+      }
+
+      .provider{
+        font-size: 1.25em;
+      }
+
+      .admin-slider{
+        margin-top: 3px;
+      }
+
+
+      input[type=button]{
+        margin: 5px;
+      }
+    }
+
+    /* the legend */
+    #legend {
+      margin: 10px;
+      border: 1px dashed #c5c5c5;
+      @include border-radius(7px);
+      padding: 0 10px 0 10px;
+      position: relative;
+
+      /* the items of the legend */
+      .legend {
+        margin: 10px;
+        padding-left: 10px;
+        text-align: center;
+        position:  relative;
+      }
+    }
+  }
 }
 
 #hide-panels{
@@ -307,7 +310,7 @@ input[type=button] {
   }
 }
 
-.docOverlay {
+.docOverlay, #location-popup {
   height: 100%;
   width: 100%;
 
@@ -321,6 +324,13 @@ input[type=button] {
       height: 100%;
       width: 100%;
     }
+  }
+
+  #location-map{
+    float: left;
+    display: inline;
+    width: 700px;
+    height: 500px;
   }
 
   #docList {

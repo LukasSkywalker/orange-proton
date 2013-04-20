@@ -211,7 +211,10 @@ orangeproton.location = {
 
     $('#location-map').data('map', map);
 
-    $.fancybox($popup, {beforeClose: function() { $('#location-popup').remove(); }});
+    $.fancybox($popup, {
+      afterShow: function () { $.fancybox.update() },
+      beforeClose: function() { $('#location-popup').remove(); }
+    });
   },
 
   /**
