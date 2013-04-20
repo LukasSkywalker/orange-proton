@@ -11,7 +11,7 @@ fr:
   legend: "Légende"
   location: "Lieu"
   error: "Erreur"
-  show: "Désigner informations"
+  show: "Montrer informations"
   hide: "Cacher informations"
 
 #errors

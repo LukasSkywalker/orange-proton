@@ -124,13 +124,17 @@ var megamind = {
     redraw: function () {
       var $mm = $(this.first());
       var data = $mm.data();
-      data.canvas.clear();
-      data.canvas.setSize($mm.width(), $mm.height());
-      data.rootNode.center($mm, false);
-      $.each(data.canvases, function (i, c) {
-        c.resize();
-        c.redraw();
-      });
+      if( data.canvas ) {
+        data.canvas.clear();
+        data.canvas.setSize($mm.width(), $mm.height());
+      }
+      if( data.rootNode )
+        data.rootNode.center($mm, false);
+      if( data.canvases )
+        $.each(data.canvases, function (i, c) {
+          c.resize();
+          c.redraw();
+        });
     },
 
     /**

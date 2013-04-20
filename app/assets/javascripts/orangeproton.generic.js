@@ -28,14 +28,12 @@ orangeproton.generic = {  // Read a page's GET URL variables and return them as 
   },
 
   /**
-   * Log a message to the console if available. IE<7 and IE where devtools are not
-   * open do not support this.
-   * @param {String} text the message to log
+   * Inject console.log if not available. IE<7 and IE where devtools are not
+   * opened need this fallback.
    */
-  log: function (text) {
-    // IE does not know the console object
-    if (window.console) {
-      console.log(text);
+  injectConsoleLog: function () {
+    if ( !window.console ) {
+      window.console = { log: function() {} };
     }
   },
 

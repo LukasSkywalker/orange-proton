@@ -6,6 +6,7 @@ $(document).ready(function () {
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
 
+    orangeproton.generic.injectConsoleLog();
 
     /* TOP-BAR */
     // start search on enter key press
@@ -280,10 +281,8 @@ function togglePanels() {
     panel.animate({"right": amount + "px"}, "fast", function () {
         orangeproton.mindmap.resizeMindmap();
         $('#mindmap').megamind('redraw');
+        panel.html(orangeproton.language.getPanelTogglerText());
     });
-
-
-    panel.html(orangeproton.language.getPanelTogglerText());
     //panel.rotate(-90);
     $panels.data('hidden', !panelHidden);
 }
