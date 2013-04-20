@@ -35,19 +35,20 @@ var megamind = {
   },
 
   presets: function() {
+    var root = $(megamind.rootNode);
     var pre = {
       z1_t: 0,
-      z2_t: $(this.rootNode).position().top,
-      z3_t: $(this.rootNode).position().top + $(this.rootNode).outerHeight(),
-      z1_h: $(this.rootNode).position().top - 1,
-      z2_h: $(this.rootNode).outerHeight() - 1,
-      z3_h: $(this.rootNode).position().top - 1,   //really?
+      z2_t: root.position().top,
+      z3_t: root.position().top + root.outerHeight(),
+      z1_h: root.position().top - 1,
+      z2_h: root.outerHeight() - 1,
+      z3_h: root.position().top - 1,   //really?
       s1_l: 0,
-      s2_l: $(this.rootNode).position().left,
-      s3_l: $(this.rootNode).position().left + $(this.rootNode).outerWidth(),
-      s1_w: $(this.rootNode).position().left - 1,
-      s2_w: $(this.rootNode).outerWidth() - 1,
-      s3_w: $(this.rootNode).position().left - 1// really?*/
+      s2_l: root.position().left,
+      s3_l: root.position().left + root.outerWidth(),
+      s1_w: root.position().left - 1,
+      s2_w: root.outerWidth() - 1,
+      s3_w: root.position().left - 1// really?*/
     };
     function Container(col, row) {
       return {
@@ -89,30 +90,14 @@ var megamind = {
 
     /**
      * Create a new container in an existing mindmap
-     * @param left {Number} left offset
-     * @param top {Number} top offset
-     * @param width {Number} container width
-     * @param height {Number} container height
+     * @param {String[]} areas the preset areas to cover ('topLeft', 'top', 'bottomRight')
      * @param options {Object}
      * @returns {Canvas} the new canvas
      */
     addCanvas: function (areas, options) {
       var $mm = $(this.first());
-      var height = 0, width = 0, left = Infinity, top = Infinity;
-      $.each(areas, function(i, e) {
-        top = Math.min(top, e.top);
-        left = Math.min(left, e.left);
-        width = Math.max(width, e.width + e.left);
-        height = Math.max(height, e.height + e.top);
-      });
-      width -= left;
-      height -= top;
       var data = $mm.data();
-      if (left + width > $mm.width() || top + height > $mm.height()) {
-        console.log('### Canvas with size ' + left + ',' + top + ',' + width + ',' + height +
-            ' does not fit in container [' + $mm.width() + ',' + $mm.height() + ']!');
-      }
-      var cv = new Canvas($mm, left, top, width, height, options);
+      var cv = new Canvas($mm, areas, options);
       data.canvases.push(cv);
       return cv;
     },
@@ -140,7 +125,10 @@ var megamind = {
       var $mm = $(this.first());
       var data = $mm.data();
       data.canvas.clear();
+      data.canvas.setSize($mm.width(), $mm.height());
+      data.rootNode.center($mm, false);
       $.each(data.canvases, function (i, c) {
+        c.resize();
         c.redraw();
       });
     },
@@ -201,12 +189,10 @@ var megamind = {
     }
   };
 
-  function Canvas(mm, left, top, width, height, options) {
+  function Canvas(mm, areas, options) {
     this.rows = [];
-    this.xOffset = left;
-    this.yOffset = top;
-    this.width = width;
-    this.height = height;
+    this.areas = areas;
+    this.resize();
     this.container = mm;
     this.options = $.extend({}, megamind.options, options);
     return this;
@@ -220,9 +206,25 @@ var megamind = {
     return this.yOffset;// + this.container.position().top;
   };
 
+  Canvas.prototype.resize = function () {
+    var height = 0, width = 0, left = Infinity, top = Infinity;
+    $.each(this.areas, function(i, area) {
+      var preset = megamind.presets()[area];
+      top = Math.min(top, preset.top);
+      left = Math.min(left, preset.left);
+      width = Math.max(width, preset.width + preset.left);
+      height = Math.max(height, preset.height + preset.top);
+    });
+    width -= left;
+    height -= top;
+    this.height = height;
+    this.width = width;
+    this.xOffset = left;
+    this.yOffset = top;
+  };
+
   Canvas.prototype.render = function () {
     this.container.trigger('beforeDraw');
-    this.space();
     for (var i = 0; i < this.rows.length; i++) {
       for (var j = 0; j < this.rows[i].nodes.length; j++) {
         var n = this.rows[i].nodes[j];
@@ -386,6 +388,7 @@ var megamind = {
     for (var i = 0; i < this.rows.length; i++) {
       this.rows[i].shuffle();
     }
+    this.space();
     this.container.trigger('afterPosition');
     return this;
   };

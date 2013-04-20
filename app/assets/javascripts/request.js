@@ -40,7 +40,7 @@ $(document).ready(function () {
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
         orangeproton.mindmap.resizeMindmap();
-        $(document).trigger('paramChange', [null, null, true]);
+        $('#mindmap').megamind('redraw');
     }
     $(window).resize( $.debounce( 250, resize ) );
 
@@ -176,7 +176,7 @@ var mindmapper = {
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
                 }
-                var c = $mm.megamind('addCanvas', [megamind.presets().bottomRight]);
+                var c = $mm.megamind('addCanvas', ['bottomRight']);
                 c.addNodes(synonyms);
 
                 var superclasses = [];
@@ -185,15 +185,15 @@ var mindmapper = {
                     var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
                     superclasses = orangeproton.mindmap.generateBubbles([content], 1, 'super', patternNoDash);
                 }
-                var c = $mm.megamind('addCanvas', [megamind.presets().topRight]);
+                var c = $mm.megamind('addCanvas', ['topRight']);
                 c.addNodes(superclasses);
 
                 var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-                var c = $mm.megamind('addCanvas', [megamind.presets().right]);
+                var c = $mm.megamind('addCanvas', ['right']);
                 c.addNodes(subclasses);
 
                 var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                var c = $mm.megamind('addCanvas', [megamind.presets().top]);
+                var c = $mm.megamind('addCanvas', ['top']);
                 c.addNodes(drgs);
 
                 var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
@@ -201,7 +201,7 @@ var mindmapper = {
                 var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
                 var inclusiva = orangeproton.mindmap.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
-                var c = $mm.megamind('addCanvas', [megamind.presets().bottom]);
+                var c = $mm.megamind('addCanvas', ['bottom']);
                 c.addNodes(exclusiva.concat(inclusiva));
 
                 var s = [];
@@ -224,7 +224,7 @@ var mindmapper = {
                     s.push(newdiv);
                 }
 
-                var c = $mm.megamind('addCanvas', [megamind.presets().topLeft, megamind.presets().left, megamind.presets().bottomLeft]);
+                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft']);
                 c.addNodes(s);
             },
 
@@ -279,7 +279,7 @@ function togglePanels() {
     $panels.animate({"width": width + "px"}, "fast");
     panel.animate({"right": amount + "px"}, "fast", function () {
         orangeproton.mindmap.resizeMindmap();
-        $(document).trigger('paramChange', [null, null, true]);
+        $('#mindmap').megamind('redraw');
     });
 
 
