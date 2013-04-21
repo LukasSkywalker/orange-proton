@@ -4,11 +4,7 @@
 # illness or any of it's synonyms and inclusiva to a list of keywords related to a fachgebiet.
 # This is based on a manually created list of keywords and exclusiva.
 class StringmatchInfoProvider < DatabaseInfoProvider
-
-  def initialize
-    super
-  end
-
+  
   def get_fields(icd_code, max_count, language)
     if self.db.get_icd_entry(icd_code, 'de').nil?    # all the keywords are in German
       raise ProviderLookupError.new('no_icd_chop_data', language)
@@ -58,7 +54,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
       end
       if valid
         document['fmhcodes'].each do |fs_code|
-          fs_entry = new_fs_field_entry(fs_code.to_i, relevance, language)
+          fs_entry = fs_code_to_field_entry(fs_code.to_i, relevance, language)
         end
       end
     end
