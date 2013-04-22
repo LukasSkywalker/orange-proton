@@ -84,7 +84,10 @@ $(document).ready(function () {
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
         togglePanels();
+        $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
     });
+    
+    $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
 
     // start geolocation
     orangeproton.location.startGeoLocation();
@@ -273,6 +276,7 @@ var mindmapper = {
 //Show/Hide the panels
 function togglePanels() {
     var $panels = $('#panels');
+    var $panelHider = $('#hide-panels');
     var panelHidden = mindmapper.panelHidden();
 
     function resizeMindmap() {
@@ -281,10 +285,10 @@ function togglePanels() {
     }
 
     if(panelHidden) {
-        $('#hide-panels').animate({'right': '+=200'}, 400);
+        $panelHider.animate({'right': '+=200'}, 400);
         $('#panels-container').show(400, resizeMindmap);
     } else {
-        $('#hide-panels').animate({'right': '-=200'}, 400);
+        $panelHider.animate({'right': '-=200'}, 400);
         $('#panels-container').hide(400, resizeMindmap);
     }
     $panels.data('hidden', !panelHidden);
