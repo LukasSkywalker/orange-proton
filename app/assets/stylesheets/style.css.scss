@@ -36,6 +36,14 @@ body, html{
   }
 }
 
+@mixin rotated {
+  -moz-transform: rotate(-90deg);
+  -webkit-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  filter: progid:DXImageTransform.Microsoft.BasicImage(rotation='3');
+}
+
 /* containers */
 div.container {
   position: absolute;
@@ -178,6 +186,7 @@ div.node, div.legend {
   border: 1px #ccc dashed;
   vertical-align: middle;
   border-bottom: none;
+  @include rotated;
 }
 
 .title{
@@ -382,6 +391,7 @@ input[type=button] {
 .relatedness-display{
   background: #49d;
   height: 100%;
+  left: 0;
 }
 
 .messagebox {

@@ -74,7 +74,6 @@ $(document).ready(function () {
     /* ADMIN-PANELS */
     // load the panel
     orangeproton.admin.loadPanel();
-    $panelToggler.rotate({angle: -90});
     $('#panels-container').hide(400);
 
     // event handler for hiding the individual panels
