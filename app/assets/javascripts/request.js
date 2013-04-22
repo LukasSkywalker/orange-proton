@@ -74,7 +74,6 @@ $(document).ready(function () {
     /* ADMIN-PANELS */
     // load the panel
     orangeproton.admin.loadPanel();
-    $('#panels-container').hide(400);
 
     // event handler for hiding the individual panels
     $('.title').click(function () {
@@ -86,7 +85,7 @@ $(document).ready(function () {
         togglePanels();
         $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
     });
-    
+
     $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
 
     // start geolocation
