@@ -49,11 +49,7 @@ def normalize_relatedness(api_fields_array)
     tot = v > tot ? v : tot # max() is actually not defined by default!
   end
   return api_fields_array if tot == 0
-  tot *= 1.0
-  api_fields_array.each {|e| 
-    e.relatedness = (1.0*e.relatedness)/tot
-  }
-  api_fields_array
+  return fields_multiply_relatedness(api_fields_array, 1.0/tot)
 end
 
 # Multipliy the relatedness of the fields in fcs by fac (0-1). In place.
@@ -72,7 +68,7 @@ end
 def fold_duplicate_fields(fields)
   assert_fields_array(fields)
 
-  out_fields = {} #use a hash fs_code => field - entry to find duplicates
+  out_fields = {} # use a hash fs_code => field - entry to find duplicates
 
   fields.each do |field|
     fs_code = field.code.to_i
@@ -82,7 +78,7 @@ def fold_duplicate_fields(fields)
       out_fields[fs_code] = field
       next
     end
-    
+    # is duplicate
     out_fields[fs_code].relatedness += field.relatedness
     out_fields[fs_code].relatedness = 1.0 if out_fields[fs_code].relatedness > 1.0
   end

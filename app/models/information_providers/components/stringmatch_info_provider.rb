@@ -44,8 +44,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     
     # TODO Take inclusiva into account (?)
     fs = fold_duplicate_fields fs
-
-    fs
+    fs[0..max_count-1]
   end
 
   private
@@ -61,11 +60,8 @@ class StringmatchInfoProvider < DatabaseInfoProvider
       end
     end
 
-    fs_entries = []
-    keyword_entry['fmhcodes'].each do |fs_code|
-      fs_entries << fs_code_to_field_entry(fs_code.to_i, relatedness, language)
-    end
-    assert_fields_array(fs_entries)
-    fs_entries
+    return keyword_entry['fmhcodes'].map { |fs_code|
+      fs_code_to_field_entry(fs_code.to_i, relatedness, language)
+    }
   end
 end
