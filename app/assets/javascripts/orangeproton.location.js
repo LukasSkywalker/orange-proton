@@ -18,10 +18,9 @@ orangeproton.location = {
    * @param {Function} successHandler.lng The requesters longitude
    * @param {Function} successHandler.country The requesters country name
    * @param {Function} successHandler.city The requesters city name
-   * @param {Function} errorHandler A callback function for an unsuccessful
    * request, see http://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings
    */
-  getGeoIp: function( successHandler, errorHandler ) {
+  getGeoIp: function( successHandler) {
     var url = 'http://freegeoip.net/json/';
     jQuery.ajax({
       url: url,
@@ -32,9 +31,6 @@ orangeproton.location = {
         var country = response.country_name;
         var city = response.city;
         successHandler(lat, lng, country, city);
-      },
-      error: function( xhr, httpStatus, error ) {
-        errorHandler(xhr, httpStatus, error);
       }
     });
   },
