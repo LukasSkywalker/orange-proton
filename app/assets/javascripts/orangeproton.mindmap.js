@@ -60,6 +60,7 @@ orangeproton.mindmap = {
    * @returns {String[]} the new contents
    */
   preprocessNodes: function(collection) {
+    if( collection === undefined ) return [];
     var icdPattern = /(.[0-9]{2}(\.[0-9]{1,2})?)/;
     var contentPattern = /^(.*?)\s\{/;    // match 'Bla' of 'Bla {B20}'
     var rangePattern = new RegExp('\{'+icdPattern.source+'-'+icdPattern.source+'\}', 'gi'); // match 'B20' and 'B21' of '{B20-B21}'
