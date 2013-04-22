@@ -2,6 +2,7 @@
  * All location and geolocation-related methods and things
  * @class orangeproton.location
  */
+"use strict";
 var orangeproton = orangeproton || {};
 orangeproton.location = {
   userLocation: null,
@@ -25,39 +26,11 @@ orangeproton.location = {
     jQuery.ajax({
       url: url,
       type: 'GET',
-      success: function( response, status ) {
+      success: function( response ) {
         var lat = response.latitude;
         var lng = response.longitude;
         var country = response.country_name;
         var city = response.city;
-        successHandler(lat, lng, country, city);
-      },
-      error: function( xhr, httpStatus, error ) {
-        errorHandler(xhr, httpStatus, error);
-      }
-    });
-  },
-
-  /**
-   * Geolocates the user based on the IP via http://ipinfodb.com
-   * @param {Function} successHandler A callback function for a successful request
-   * @param {Function} successHandler.lat The requesters latitude
-   * @param {Function} successHandler.lng The requesters longitude
-   * @param {Function} successHandler.country The requesters country name
-   * @param {Function} successHandler.city The requesters city name
-   * @param {Function} errorHandler A callback function for an unsuccessful
-   * request, see http://api.jquery.com/jQuery.ajax/#jQuery-ajax-settings
-   */
-  getIpInfo: function( successHandler, errorHandler ) {
-    var url = "http://api.ipinfodb.com/v3/ip-city/?key="+ key +"&format=json";
-    jQuery.ajax({
-      url: url,
-      type: 'GET',
-      success: function( response, status ) {
-        var lat = response.latitude;
-        var lng = response.longitude;
-        var country = response.countryName;
-        var city = response.cityName;
         successHandler(lat, lng, country, city);
       },
       error: function( xhr, httpStatus, error ) {
@@ -78,7 +51,7 @@ orangeproton.location = {
     GMaps.geocode({
       address: address,
       callback: function(results, status) {
-        if (status == 'OK') {
+        if (status === 'OK') {
           var address = results[0].formatted_address;
           var latlng = results[0].geometry.location;
           callback(latlng.lat(), latlng.lng(), address);
@@ -102,7 +75,7 @@ orangeproton.location = {
       lng: lng,
       region: 'ch',
       callback: function(results, status) {
-        if (status == 'OK') {
+        if (status === 'OK') {
           var address = results[0].formatted_address;
           var latlng = results[0].geometry.location;
           callback(latlng.lat(), latlng.lng(), address);
@@ -156,7 +129,7 @@ orangeproton.location = {
   },
 
   geoCodeAndMark: function( address ) {
-    orangeproton.location.geoCode(address, function onGeocodeComplete(lat, lng, address) {
+    orangeproton.location.geoCode(address, function onGeocodeComplete(lat, lng) {
       orangeproton.location.setUserLocation(lat, lng);
       var map = $('#location-map').data('map');
       map.removeMarkers();
@@ -191,7 +164,7 @@ orangeproton.location = {
       var location = orangeproton.location.getLocation();
       map.removeMarkers();
       map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
-      map.setCenter(location.lat, location.lng)
+      map.setCenter(location.lat, location.lng);
     });
 
     var $map = $('<div id="location-map"></div>').width(800).height(500);
@@ -212,7 +185,7 @@ orangeproton.location = {
     $('#location-map').data('map', map);
 
     $.fancybox($popup, {
-      afterShow: function () { $.fancybox.update() },
+      afterShow: function () { $.fancybox.update(); },
       beforeClose: function() { $('#location-popup').remove(); }
     });
   },
@@ -223,7 +196,9 @@ orangeproton.location = {
    * unsupported
    */
   startGeoLocation: function() {
-    if( orangeproton.location.loadCookies() ) return;
+    if( orangeproton.location.loadCookies() ) {
+      return;
+    }
     // we had cookies, no need to bother the user with location permission requests
     function fallbackGeoIp() {
       orangeproton.location.getGeoIp(function (lat, lng){
@@ -237,8 +212,8 @@ orangeproton.location = {
       navigator.geolocation.getCurrentPosition(function success(position) {
         lat = position.coords.latitude;
         lng = position.coords.longitude;
-      }, function error(error) {
-        alert(error.message);
+      }, function error(error_msg) {
+        alert(error_msg.message);
         fallbackGeoIp();
       });
       orangeproton.location.setLocation(lat, lng);
