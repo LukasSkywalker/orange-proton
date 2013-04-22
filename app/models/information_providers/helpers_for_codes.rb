@@ -21,7 +21,7 @@ def get_code_type(input)
   end
 end
 
-# @return true if the given code is an icd subclass code
+# @return true if the given code is an icd subclass code (has a dot)
 def icd_subclass?(input)
   assert_kind_of(String, input)
   get_code_type(input) == :icd && input.match(/^(.*\..+)$/)

@@ -29,7 +29,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
       tf = @provider_instance.get_fields(code, max_count, language)
       Rails.logger.info "#{@provider_instance} found: "
       Rails.logger.info tf.empty? ? 'nothing' : tf
-      fields_multiply_relatedness(tf, @weight)
+      return fields_multiply_relatedness(tf, @weight)
     end
   end
 
@@ -119,10 +119,10 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
   
+  # TODO remove for final version:
   public
   # Handle
   # /api/v1/admin/set??? (values?)
-  # TODO remove for final version...
   # Assign new weights to each info provider. Values is a simple list (?).
   def set_relatedness_weight(vals)
     @providers.each_with_index do |provider, index|
@@ -130,7 +130,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
     end
   end
 
-  # TODO Document!
   def get_relatedness_weight
     @providers.map {|provider| provider.weight}
   end

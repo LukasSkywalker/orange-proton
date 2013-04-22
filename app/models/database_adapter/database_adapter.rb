@@ -158,23 +158,15 @@ class DatabaseAdapter
   # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
-
-    a = @client['thesauren'][@thesaurusToFSCode].find(
+    @client['thesauren'][@thesaurusToFSCode].find(
       { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
-    )
-    fs_codes= []
-    a.each {|fs|
-      fs_codes << fs['fs_code']
-    }
-    fs_codes
+    ).to_a.map {|fs| fs['fs_code'] }
   end
 
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z). 
   # nil if there is none or this is an invalid prefix.
   def get_mdc_code(drg_prefix)
-    db = @client['mdc']
-    col = db['mdcNames']
-    document=col.find_one({drgprefix: drg_prefix})
+    document=@client['mdc']['mdcNames'].find_one({drgprefix: drg_prefix})
     document.nil? ? nil : document['code']
   end
 
@@ -189,18 +181,16 @@ class DatabaseAdapter
   end
 
   # @return An array of all "docfields" that are mapped to the fs_code 
-  # (there are more fs_codes than docfields). Empty if this is not a valid
-  # fs_code or there are none.
+  # (there are more fs_codes than docfields). Throws an exception or is empty
+  # if this is not a valid fs_code!
+  # Might be mmpty if there are no matching specialities.
   # This is based on a manually set up table.
   # This is used by get_doctors_by_fs.
   def get_specialities_from_fs(fs_code)
     assert_field_code(fs_code)
-    specs = @client['doctors']['docfieldToFSCode'].find({fs_code: fs_code})
-    specialities = []
-    specs.each do |spec|
-      specialities << spec['docfield']
-    end
-    specialities
+    @client['doctors']['docfieldToFSCode'].find(
+      {fs_code: fs_code}
+    ).to_a.map { |spec| spec['docfield'] }
   end
 
   # @return An array of all doctors (the raw db entry) with speciality in a 
@@ -239,7 +229,7 @@ class DatabaseAdapter
   # This is based on a manually set up table.
   def get_icd_ranges (icd)
     assert_icd_code(icd)
-    icd = icd[0] + icd[1] + icd[2]
+    icd = icd[0] + icd[1] + icd[2] # only check the first three characters (B26)
     ranges = []
     @icd_ranges.find().each do |doc|
       if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
@@ -257,7 +247,7 @@ class DatabaseAdapter
   # This is based on a manually set up table.
   def get_chop_ranges (chop)
     assert_chop_code(chop)
-    chop = chop[0] + chop[1]
+    chop = chop[0] + chop[1] # only compare the first two digits
     ranges = []
     @chop_ranges.find().each do |doc|
       if ((doc['beginning']<=> chop) <=0) and ((doc['ending']<=> chop) >=0)

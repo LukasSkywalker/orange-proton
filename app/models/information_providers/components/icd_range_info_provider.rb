@@ -14,9 +14,9 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
     ranges = db.get_icd_ranges(icd_code)
 
     fields = []
-    ranges.each() do |range|
+    ranges.each do |range|
       codes = range['fmhcodes']
-      codes.each() do |code|
+      codes.each do |code|
         level = range['level'].to_i
         assert(level <= 4 && level >= 1)
         relatedness = @@level_ratings[level - 1]
@@ -37,6 +37,6 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
       end
     end
 
-    fields
+    fields[0..max_count-1]
   end
 end

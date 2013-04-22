@@ -21,6 +21,6 @@ class ThesaurInfoProvider < DatabaseInfoProvider
           }
         end
     }
-    fields
+    fields[0..max_count-1]
   end
 end

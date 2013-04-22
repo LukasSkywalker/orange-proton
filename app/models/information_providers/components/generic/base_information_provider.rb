@@ -1,5 +1,3 @@
-require 'parallel_each'
-
 # Defines the interface that information providers use. Also defines some helper methods for these to use.
 class BaseInformationProvider
   # To be implemented by subclasses:

@@ -7,11 +7,8 @@ class DoctorLocator
 
   def initialize
     @db = DatabaseAdapter.new
-
-    Geocoder.configure(
-        # set default units to kilometers:
-        :units => :km,
-    )
+    # set default units to kilometers:
+    Geocoder.configure( :units => :km)
   end
 
   # @return The raw db entries of at most doctors with a given field of specialization 
@@ -28,7 +25,7 @@ class DoctorLocator
       assert_kind_of(Numeric, d_long) unless d_lat.nil?
       assert_kind_of(Numeric, d_lat)  unless d_lat.nil?
 
-      # Calculate distances. Invalid Coordinates are infinitely far away.
+      # Calculate distances. Invalid Coordinates are considered to be *very* far away.
       Rails.logger.info "Doctor entry <#{doc}> has illegal coordinates" if (d_lat.nil? || d_long.nil?)
       doc['distance'] = (d_lat.nil? or d_long.nil?) ? 999999 : 
         Geocoder::Calculations.distance_between([d_lat, d_long], [lat, long])

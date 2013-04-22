@@ -38,11 +38,9 @@ class DatabaseInfoProvider <  BaseInformationProvider
     assert_relatedness(relatedness)
     assert_language(lang)
 
-    out = []
-    field_codes.each do |fc|
-      out << fs_code_to_field_entry(fc, relatedness, lang)
-    end
-    out
+    field_codes.map { |fc|
+      fs_code_to_field_entry(fc, relatedness, lang)
+    }
   end
 
   # same as above, but just for one code

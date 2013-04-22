@@ -11,26 +11,24 @@ class MDCInfoProvider < DatabaseInfoProvider
 
     drgs = (code_type == :icd) ? db.get_drgs_for_icd(code) : db.get_drgs_for_chop(code)
 
-    mdcs = []
-    drgs.each do |drg|
+    mdcs = drgs.map { |drg|
       prefix = drg[0]
-      mdcs<<db.get_mdc_code(prefix)
-    end
+      db.get_mdc_code(prefix)
+    }
 
-    fmhs = []
+    fs_codes = []
     mdcs.each do |mdc|
-      db.get_fs_code_by_mdc(mdc).each do |fmh|
-        fmhs<<fmh unless fmhs.include? fmh
+      db.get_fs_code_by_mdc(mdc).each do |fs_code|
+        # TODO give higher weight to fs_codes already included?
+        fs_codes<<fs_code unless fs_codes.include? fs_code || fs_codes.lenght >= max_count
       end
     end
 
-    fields = []
-    fmhs.each do |fmh|
-      name = db.get_fs_name(fmh,language)
-      fields << FieldEntry.new(name, 1, fmh) unless fields.size >= max_count
-    end
-   
-    fields
+    return fs_codes.map { |fs_code|
+      fs_code_to_field_entry(fs_code,
+                             1, # full relatedness, we don't know better
+                             language)
+    }
   end
 
 end

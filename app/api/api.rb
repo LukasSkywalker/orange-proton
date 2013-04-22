@@ -23,7 +23,7 @@ class API < Grape::API
     end
   end
 
-  # Always rescue ProviderLookupErrors and
+  # Always rescue ProviderLookupErrors
   rescue_from ProviderLookupError do |error|
     response = Error.error_response(error.message, error.language).to_json
     Rack::Response.new(response, 200, 
@@ -57,6 +57,7 @@ class API < Grape::API
       assert_kind_of(Hash, icd_data)
       fields   = API.provider.get_fields(code, max_count, lang)
       assert_fields_array(fields)
+      assert(fields.length <= max_count)
 
       Success.field_response(icd_data, fields, type)
     end
@@ -88,6 +89,7 @@ class API < Grape::API
 
       doctors = API.doctor_locator.find_doctors(field_code, latitude, 
                                                 longitude, max_count)
+      assert(doctors.length <= max_count)
 
       Success.response(doctors)
     end
