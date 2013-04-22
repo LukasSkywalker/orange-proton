@@ -1,25 +1,27 @@
 /**
- * @class MegaMind
+ * @class megamind
  * Megamind has a concept of different containers where the different nodes are put. This allows us to
  split up the page to organize the nodes as we wish. Inside the containers, the nodes are automatically
  laid out and distributed. Here are the instructions for generating a new container and adding nodes:
- - initialize a mindmap. call megamind() on a jQuery object [let that be 'mm' here] that represents a
- DOM node to do so
- - set a root node by calling setRoot() on mm, with the HTML string of the node as parameter
- - create an array which holds HTML-strings of the nodes. This is pretty straightforward, just see the examples below
- - Call the Canvas constructor on mm: mm.addCanvas(left,top,width,height). All are CSS-pixel values
- - Call .addNodes(r), specifying the array of nodes. You can add multiple node-types and -sizes in
- this array. You can also add click handlers or images or the <cat> element to the nodes.
+ - initialize a mindmap. call megamind() on a jQuery object
+ - set a root node by calling #setRoot on the element, like `mm.megamind('setRoot', params);
+ - create an array which holds HTML-strings of the nodes.
+ - Create a canvas with #addCanvas. Use the area-presets defined in #presets
+ - Call Canvas#addNodes on the canvas, specifying the array of nodes. You can add multiple node-types and -sizes in
+ this array. You can also add click handlers or images to the nodes.
+ - If you need to redraw the mindmap (because of a size-change or similar) call #redraw
+ - If you need debug information (a wireframe of canvases, rows and nodes), call #debug
 
  Notes:
  - elements that are too tall are discarded. We will have to find a better solution for this
+ - Megamind needs JQuery (wow!) and Raphael (http://raphaeljs.com/) if you want it to actually work.
 
  You get the picture.
  */
 
 var megamind = {
   /**
-   * @property {Object} options
+   * @property {Object} options UI-options for displaying the mindmap
    * @property {Number} [options.horizontalFillAmount=0.8] how much a row should be filled
    * @property {Number} [options.verticalFillAmount=0.8] how much a container should be filled
    * @property {Number} [options.verticalWobbling=0.6] how much the vertical position of nodes should vary
@@ -34,6 +36,18 @@ var megamind = {
     animationDuration: 400
   },
 
+  /**
+   * Presets you can use for setting the container positions
+   * @property {String[]} presets
+   * @property {String} presets.topLeft
+   * @property {String} presets.top
+   * @property {String} presets.topRight
+   * @property {String} presets.right
+   * @property {String} presets.bottomRight
+   * @property {String} presets.bottom
+   * @property {String} presets.bottomLeft
+   * @property {String} presets.left
+   */
   presets: function() {
     var root = $(megamind.rootNode);
     var pre = {
@@ -90,7 +104,7 @@ var megamind = {
 
     /**
      * Create a new container in an existing mindmap
-     * @param {String[]} areas the preset areas to cover ('topLeft', 'top', 'bottomRight')
+     * @param {String[]} areas the preset areas to cover ('topLeft', 'top', 'bottomRight'). See #presets
      * @param options {Object}
      * @returns {Canvas} the new canvas
      */
@@ -121,6 +135,9 @@ var megamind = {
       return ele;
     },
 
+    /**
+     * Redraw an existing mindmap
+     */
     redraw: function () {
       var $mm = $(this.first());
       var data = $mm.data();
@@ -193,6 +210,10 @@ var megamind = {
     }
   };
 
+  /**
+   * @class Canvas
+   * Represents a node-container
+   */
   function Canvas(mm, areas, className, options) {
     this.rows = [];
     this.el = $('<div></div>').addClass('container').addClass(className);
@@ -317,6 +338,10 @@ var megamind = {
     this.render();
   };
 
+  /**
+   * Add nodes to the canvas
+   * @param {String[]} elements the HTML code of the nodes to add
+   */
   Canvas.prototype.addNodes = function(elements) {
     for(var i = 0; i < elements.length; i++) {
       var n = new Node(elements[i], null);
