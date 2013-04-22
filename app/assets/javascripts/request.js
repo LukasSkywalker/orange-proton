@@ -77,10 +77,9 @@ $(document).ready(function () {
     $('#panels-container').hide(400);
 
     // event handler for hiding the individual panels
-    // LD uncommented that because we can hide the entire panel
-    /*$('.title').click(function () {
+    $('.title').click(function () {
         $(this).next().toggle('blind');
-    });*/
+    });
 
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
