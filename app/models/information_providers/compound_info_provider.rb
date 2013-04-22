@@ -29,7 +29,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     @components = {
         :icd => [MDCInfoProvider, IcdRangeInfoProvider,ThesaurInfoProvider, StringmatchInfoProvider],
-        :chop => [ManualInfoProvider, ChopRangeInfoProvider, MDCInfoProvider]
+        :chop => [ChopRangeInfoProvider, MDCInfoProvider]
     }
 
   end
