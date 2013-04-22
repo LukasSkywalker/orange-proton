@@ -170,7 +170,7 @@ orangeproton.location = {
 
     var $map = $('<div id="location-map"></div>').width(800).height(500);
 
-    $popup.append($search).append($searchButton).append($resetButton).append($setButton)
+    $popup.append('<h3>Positionsauswahl</h3>').append($search).append($searchButton).append($resetButton).append($setButton)
         .append($currentLocation).append($map).appendTo('body');
 
     //$map.css({width: '100%', height: '100%', position: 'relative'});
@@ -187,7 +187,10 @@ orangeproton.location = {
 
     $.fancybox($popup, {
       closeBtn: false,
-      afterShow: function () { $.fancybox.update(); },
+      afterShow: function () {
+        $.fancybox.update();
+        $(document).trigger('locationChange');
+      },
       beforeClose: function() { $('#location-popup').remove(); }
     });
   },
