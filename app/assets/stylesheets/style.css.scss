@@ -3,6 +3,13 @@
 #mindmap {
   position: absolute;
   top: 51px;
+
+  svg{
+    z-index: 3;
+  }
+  .rvml{
+    z-index: 3;
+  }
 }
 
 body {
@@ -47,7 +54,7 @@ body, html{
 /* containers */
 div.container {
   position: absolute;
-  display: none;
+  z-index: 2;
 }
 
 /* nodes and legend items */
@@ -59,6 +66,7 @@ div.node, div.legend {
   word-wrap: break-word;
   position:absolute;
   text-align: center;
+  z-index: 7;
 
   &.syn {
     @include node-border(black);
