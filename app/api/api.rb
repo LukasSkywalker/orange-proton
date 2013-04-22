@@ -10,8 +10,10 @@ class API < Grape::API
   format :json
 
   # The InfoProvider used to return all Query Results
+  cattr_accessor :doctor_locator
   cattr_accessor :provider
-  self.provider = ProviderFactory.get
+  self.provider       = ObjectFactory.get_information_provider
+  self.doctor_locator = ObjectFactory.get_doctor_locator
 
   # Some handy helpers for the API
   helpers do
@@ -24,7 +26,8 @@ class API < Grape::API
   # Always rescue ProviderLookupErrors and
   rescue_from ProviderLookupError do |error|
     response = Error.error_response(error.message, error.language).to_json
-    Rack::Response.new(response, 200, { 'Content-type' => 'application/json' }).finish
+    Rack::Response.new(response, 200, 
+                       { 'Content-type' => 'application/json' }).finish
   end
 
   # Handles the most important queries:
@@ -35,17 +38,25 @@ class API < Grape::API
       requires :code, type: String, 
         regexp: /(^[A-Z]\d{2}(?:\.\d{1,2})?[*+!]?$)|(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/,
         desc: 'ICD or CHOP Code'
-      requires :count, type: Integer, desc: 'Number of fields to be displayed'
-      requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/, desc: 'The language of the response'
+      requires :count, type: Integer,
+        desc: 'Number of fields to be displayed'
+      requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/,
+        desc: 'The language of the response'
     end
 
     get 'get' do
-      code = params[:code]
-      max_count = params[:count]
+      code      = params[:code]
 
-      type = API.provider.get_code_type(code)
+      max_count = params[:count]
+      assert_count(max_count) # don't allow excessive queries
+      # TODO This should be handled with an api error returned to the client
+      # instead.
+
+      type     = get_code_type(code)
       icd_data = API.provider.get_icd_or_chop_data(code, lang)
-      fields = API.provider.get_fields(code, max_count, lang)
+      assert_kind_of(Hash, icd_data)
+      fields   = API.provider.get_fields(code, max_count, lang)
+      assert_fields_array(fields)
 
       Success.field_response(icd_data, fields, type)
     end
@@ -56,42 +67,35 @@ class API < Grape::API
   desc 'Returns doctors'
   resource :docs do
     params do
-      requires :lat, type: Float, desc: 'Latitude of user position'
-      requires :long, type: Float, desc: 'Longitude of user position'
-      requires :field, type: Integer, desc: 'Code for field of speciality'
-      requires :count, type: Integer, desc: 'Maximum numbers of doctors returned'
+      requires :lat, type: Float, 
+        desc: 'Latitude of user position'
+      requires :long, type: Float,
+        desc: 'Longitude of user position'
+      requires :field, type: Integer, 
+        desc: 'Code for field of speciality'
+      requires :count, type: Integer, 
+        desc: 'Maximum numbers of doctors returned'
     end
 
     get 'get' do
       field_code = params[:field]
-      latitude = params[:lat]
-      longitude = params[:long]
-      max_count = params[:count]
+      latitude   = params[:lat]
+      longitude  = params[:long]
+      max_count  = params[:count]
+      assert_count(max_count) # don't allow excessive queries
+      # TODO This should be handled with an api error returned to the client
+      # instead.
 
-      doctors = API.provider.get_doctors(field_code, latitude, longitude, max_count)
+      doctors = API.doctor_locator.find_doctors(field_code, latitude, 
+                                                longitude, max_count)
+
       Success.response(doctors)
     end
   end
 
-  # Handles queries:
-  # /api/v1/codenames/get?code=string&lang=string
-  desc 'Returns name of field corresponding to a specific code'
-  resource :codenames do
-    params do
-      requires :code, type: Integer
-      requires :lang, type: String
-    end
-
-    get 'get' do
-      field_code = params[:code]
-
-      field_name = API.provider.get_field_name(field_code, lang)
-      Success.name_response field_name
-    end
-  end
-
   # Handles admin queries
-  # /api/v1/admin/setWeight=[val1,val2,...]
+  # /api/v2/admin/setWeight=[val1,val2,...]
+  # TODO This is not needed in the final version...
   desc 'Handles admin queries, such as setting the relatedness bias'
   resource :admin do
     namespace :weights do
@@ -128,7 +132,7 @@ class API < Grape::API
 
       params do
         requires :values, type: String, desc: 'The weight values the frontend sends',
-                 regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
+          regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
       end
 
       post 'set' do

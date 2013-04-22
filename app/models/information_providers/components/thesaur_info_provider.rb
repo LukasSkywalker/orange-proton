@@ -4,6 +4,9 @@
 class ThesaurInfoProvider < DatabaseInfoProvider
 
   def get_fields(icd_code, max_count, language)
+    assert_language(language)
+    assert_count(max_count)
+    return [] unless get_code_type(icd_code) == :icd
 
     fields = []
 

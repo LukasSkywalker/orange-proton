@@ -17,6 +17,7 @@ RSpec::Matchers.define :be_error_api_response do
 end
 
 describe API do
+  # Get fields queries tests
   describe 'GET /api/v1/fields/get' do
     it 'should respond with bad request if no parameters are sent' do
       get '/api/v1/fields/get'
@@ -192,37 +193,4 @@ describe API do
     end
   end
 
-  describe 'GET /api/v1/codenames/get' do
-    it 'should respond with bad request if no parameters are sent' do
-      get '/api/v1/codenames/get'
-      response.status.should == 400
-    end
-
-    it 'should respond with bad request if not all required parameters are sent' do
-      get '/api/v1/codenames/get?code=7'
-      response.status.should == 400
-    end
-
-    it 'should respond with doctor hash if required parameters are sent' do
-      get '/api/v1/codenames/get?code=7&lang=de'
-      response.status.should == 200
-      json_response = JSON.parse(response.body)
-
-      json_response.should be_standard_api_response
-
-      name = json_response['result']
-      name.should include('name' => 'Allgemeine Medizin')
-    end
-
-    it 'should return error response if field code does not exist' do
-      API.provider.stub(:get_field_name) {raise ProviderLookupError.new('unknown_fs_code', 'de')}
-      API.provider.should_receive(:get_field_name).with(7,'de')
-
-      get '/api/v1/codenames/get?code=7&lang=de'
-      response.status.should == 200
-      json_response = JSON.parse(response.body)
-
-      json_response.should be_error_api_response
-    end
-  end
 end

@@ -4,6 +4,9 @@
 class MockInfoProvider < BaseInformationProvider
 
   def get_fields(code, count, lang)
+    assert_code(code)
+    assert_count(count)
+    assert_language(lang)
     [
         FieldEntry.new('Allgemeine Medizin', 0.8, 200),
         FieldEntry.new('Allgemeine Medizin', 0.7, 200),
@@ -12,6 +15,9 @@ class MockInfoProvider < BaseInformationProvider
   end
 
   def get_icd_or_chop_data(code, language)
+    assert_icd_code(code) # we are replying with an icd code here, don't ask for something
+    # else!
+    assert_language(lang)
     {
         :superclass => 'B26',
         :text => 'Mumps',
@@ -22,22 +28,4 @@ class MockInfoProvider < BaseInformationProvider
     }
   end
 
-  def get_doctors(field_code, lat, long, count)
-    [
-        {
-            :name => 'Hans Wurst',
-            :title => 'Dr. med. dent. Zahnarzt FMH',
-            :address => 'Entenstr. 23, 3000 Entenhausen',
-            :email => 'doctor@frankenstein.ch',
-            :phone1 => '031 791 30 30',
-            :phone2 => '031 791 30 31',
-            :canton => 'BE',
-            :docfield => 'Internisten'
-        }
-    ]
-  end
-
-  def get_field_name(field_code, lang)
-    'Allgemeine Medizin'
-  end
 end

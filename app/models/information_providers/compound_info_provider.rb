@@ -1,44 +1,63 @@
-# Speed things up a little bit.
-require 'parallel_each'
+# rails doesn't want to load this before an instance is created so we need to include it explicitly here...
+require_relative '../assert.rb'
 
 # Combines other information providers and weights the relatedness of
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
-  # default weights for prodiers
-  @@default_weights = [0.4, 0.6, 1, 0.8, 0.75] # TODO this seems to have an arbitrary yet important order...
+  private # does this work for inner classes?
+  class ProviderInstance
+    # TODO This can still be manually changed to a non-relatedness...
+    attr_accessor :weight # not attr_accesor weight, this needs to be an identifier
 
-  # provider pool
-  @@providers = {
-      MDCInfoProvider => MDCInfoProvider.new,
-      IcdRangeInfoProvider => IcdRangeInfoProvider.new,
-      ThesaurInfoProvider => ThesaurInfoProvider.new,
-      StringmatchInfoProvider => StringmatchInfoProvider.new,
-      ChopRangeInfoProvider => ChopRangeInfoProvider.new
-  }
+    def initialize provider_instance, weight
+      assert_kind_of(BaseInformationProvider, provider_instance)
+      assert_relatedness(weight)
+      @provider_instance = provider_instance
+      @weight = @default_weight = weight
+    end
 
+    def reset_weight
+      @weight = @default_weight
+    end 
+
+    # @return The fields found by this provider for the given code
+    def get_results(code, max_count, language)
+      assert_code(code)
+      # skip provider if relatedness was set to zero or we don't respond to this code type
+      return [] unless @weight > 0.0
+
+      tf = @provider_instance.get_fields(code, max_count, language)
+      Rails.logger.info "#{@provider_instance} found: "
+      Rails.logger.info tf.empty? ? 'nothing' : tf
+      fields_multiply_relatedness(tf, @weight)
+    end
+  end
+
+  public
   def initialize
     super
-    # weights for each provider
-    @weights = {
-        MDCInfoProvider => @@default_weights[0],
-        IcdRangeInfoProvider => @@default_weights[1],
-        ThesaurInfoProvider => @@default_weights[2],
-        StringmatchInfoProvider => @@default_weights[3],
-        ChopRangeInfoProvider => @@default_weights[4]
-    }
 
-    @components = {
-        :icd => [MDCInfoProvider, IcdRangeInfoProvider,ThesaurInfoProvider, StringmatchInfoProvider],
-        :chop => [ChopRangeInfoProvider, MDCInfoProvider]
-    }
-
+    # the order of the elements in this array is important, 
+    # only because the admin panel (
+    # TODO: REMOVE) sends the weights expecting this order!
+    @providers = [
+      ProviderInstance.new(MDCInfoProvider.new,         0.4),
+      ProviderInstance.new(IcdRangeInfoProvider.new,    0.6),
+      ProviderInstance.new(ThesaurInfoProvider.new,     1),
+      ProviderInstance.new(StringmatchInfoProvider.new, 0.8),
+      ProviderInstance.new(ChopRangeInfoProvider.new,   0.75)
+    ]
   end
 
   def get_fields(code, max_count, language)
-    # Let all information providers return their results into fields
-    fields = get_provider_results(@components[get_code_type(code)], code, max_count, language)
+    assert_code(code)
+    assert_count(max_count)
+    assert_language(language)
 
-    fields = remove_duplicate_fields fields
+    # Let all information providers return their results into fields
+    fields = get_provider_results(code, max_count, language)
+
+    fields = fold_duplicate_fields fields
 
     fields = generate_compound_fields(fields, language) # implements #171
 
@@ -49,16 +68,14 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields[0..max_count-1]
   end
 
-  # Helper 
-  # TODO move... however we only need this here so...
-  # http://stackoverflow.com/questions/3897525/ruby-array-contained-in-array-any-order
-  private
-  def is_subset?(a, of_b)
-    a.to_set.subset?(of_b.to_set)
-  end
-  public
-
+  private  
+  # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
+  # @param codes an array of fs_codes (2 - 210)
+  # @return The same list of fields but with those removed that have a code not in codes
   def extract_fields_with_code_in(fields, codes) 
+    assert_fields_array(fields)
+    assert_field_code(codes[0]) if codes.length > 0
+
     fields = fields.dup # copy
     fields.delete_if {|f| !codes.include?(f.code)}
     fields
@@ -68,6 +85,8 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # @return The same list of fields plus all compounds that can be generated from it.
   # Implements #
   def generate_compound_fields(fields, language)
+    assert_fields_array(fields)
+
     # TODO Remove logging
     # TODO Test (what code gets more specific results thanks to this?) -- once we have "Kinder" in the dictionary this should be easy to find
 
@@ -92,72 +111,33 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
 
+  def get_provider_results(code, max_count, language)
+    fields = []
+    @providers.each do |provider|
+      fields.concat(provider.get_results(code, max_count, language))
+    end
+    fields
+  end
+  
+  public
   # Handle
   # /api/v1/admin/set??? (values?)
-  # TODO Document!
-  # Assign new weights ot each info provider. Values is a simple list (?).
+  # TODO remove for final version...
+  # Assign new weights to each info provider. Values is a simple list (?).
   def set_relatedness_weight(vals)
-    @weights.each_with_index do |(key, value), index|
-      @weights[key] = vals[index] || value
+    @providers.each_with_index do |provider, index|
+       provider.weight = vals[index] if vals[index]
     end
   end
 
   # TODO Document!
   def get_relatedness_weight
-    @weights.values
+    @providers.map {|provider| provider.weight}
   end
 
   def reset_weights
-    self.set_relatedness_weight(@@default_weights)
-  end
-
-  def get_provider_results(components, code, max_count, language)
-    fields = []
-    components.each do |provider|
-      #p_each(10) # This makes the stacktrace useless - reports all errors here as "Worker error", also loses all puts
-
-      relatedness = @weights[provider]
-      # skip provider if relatedness was set to zero
-      next unless relatedness > 0.0
-
-      tf = @@providers[provider].get_fields(code, max_count, language)
-      Rails.logger.info "#{provider} found: "
-      Rails.logger.info tf.empty? ? 'nothing' : tf
-
-      # TODO Couldn't we get a race if we do this in parallel?
-      fields.concat(fields_multiply_relatedness(tf, relatedness))
+    @providers.each do |provider|
+       provider.reset_weight
     end
-    fields
-  end
-
-  # Pass over the resulting filelds array and remove duplicates, summing up their
-  # relatedness.
-  # TODO Maybe we should just take the max. That is take the first and sort
-  # before we do this.
-
-  private
-  def remove_duplicate_fields(fields)
-    out_fields = {}
-
-    fields.each do |field|
-      fs_code = field.code.to_i
-
-      if out_fields.has_key? fs_code
-        # PF: We could argue about this algorithm...
-        out_fields[fs_code].relatedness += field.relatedness
-        out_fields[fs_code].relatedness = 1.0 if out_fields[fs_code].relatedness > 1.0
-      else
-        out_fields[fs_code] = field
-      end
-    end
-
-    out_fields.values
-  end
-
-
-  # Multipliy the relatedness of the fields in fcs by fac (0-1).
-  def fields_multiply_relatedness(fcs, fac)
-    fcs.each { |fc| fc.relatedness *= fac }
-    fcs
   end
 end

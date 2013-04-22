@@ -4,7 +4,10 @@
 # table).
 class MDCInfoProvider < DatabaseInfoProvider
   def get_fields(code, max_count, language)
+    assert_language(language)
+    assert_count(max_count)
     code_type = get_code_type(code)
+    return [] if code_type == :unknown
 
     drgs = (code_type == :icd) ? db.get_drgs_for_icd(code) : db.get_drgs_for_chop(code)
 

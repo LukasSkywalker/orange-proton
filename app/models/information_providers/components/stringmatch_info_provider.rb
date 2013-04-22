@@ -1,63 +1,71 @@
-#encoding: utf-8
-
 # This finds Fachgebiete related to an illness by comparing the (german) name of the 
 # illness or any of it's synonyms and inclusiva to a list of keywords related to a fachgebiet.
 # This is based on a manually created list of keywords and exclusiva.
 class StringmatchInfoProvider < DatabaseInfoProvider
   
   def get_fields(icd_code, max_count, language)
-    if self.db.get_icd_entry(icd_code, 'de').nil?    # all the keywords are in German
-      raise ProviderLookupError.new('no_icd_chop_data', language)
-    else
-      entry = self.db.get_icd_entry(icd_code, 'de')
-    end
+    assert_language(language)
+    assert_count(max_count)
+    return [] unless get_code_type(icd_code) == :icd
+
+    # all the keywords are in German, so we need the german entry
+    entry = self.db.get_icd_entry(icd_code, 'de')
     Rails.logger.info entry
+    raise ProviderLookupError.new('no_icd_chop_data', language) if entry.nil?
+
     keywords = self.db.get_fachgebiete_keywords() 
 
-    code_text = entry['text'].downcase # TODO Take synonyms and inclusiva into account (?)
+    fs = [] # array of fields (FieldEntry s)
 
-    fs = []
-    keywords.each do |document|
-      fs_entry = get_fs(code_text, document, 1, language)
-      unless fs_entry.nil?
-        fs << fs_entry unless fs.include? fs_entry
-      end
+    # Search for keywords in illness text (main name)
+    code_text = entry['text'].downcase 
+    keywords.each do |keyword_entry|
+      fs.concat(get_fs(code_text, keyword_entry, 
+                        1, # full relatedness for keywords in main name
+                        language))
     end
 
-
-    code_text=''
+    # Consolidate synonyms into one string
+    code_text = ''
     synonyms = entry['synonyms']
-    unless synonyms.nil?
+    if !synonyms.nil?
       entry['synonyms'].each do |syn|
-        code_text << syn.downcase
+        code_text += syn.downcase
       end
     end
 
-    keywords.each do |document|
-      fs_entry = get_fs(code_text, document, 0.3, language)
-      unless fs_entry.nil?
-        fs << fs_entry if fs.select{|entry| entry.name == fs_entry.name}.empty?
-      end
+    # Search for keywords in synonym string
+    keywords.each do |keyword_entry|
+      fs.concat(get_fs(code_text, keyword_entry, 
+                        0.3, # keywords matched in synonyms are just fallbacks
+                        # TODO Couldn't we raise this a bit?
+                        language))
     end
+    
+    # TODO Take inclusiva into account (?)
+    fs = fold_duplicate_fields fs
 
     fs
   end
 
-  def get_fs(code_text, document, relevance, language)
-    fs_entry = nil
-    if code_text.include? document['keyword'].downcase
-      valid = true
-      document['exklusiva'].each do |exkl|
-        if code_text.include? exkl.downcase
-          valid = false
-        end
-      end
-      if valid
-        document['fmhcodes'].each do |fs_code|
-          fs_entry = fs_code_to_field_entry(fs_code.to_i, relevance, language)
-        end
+  private
+  # @return An array of the FieldEntries of the given keyword_entry
+  # if code_text contains the keyword and none of the exclusiva 
+  # otherwise the array is empty.
+  def get_fs(code_text, keyword_entry, relatedness, language)
+    return [] unless code_text.include? keyword_entry['keyword'].downcase
+
+    keyword_entry['exklusiva'].each do |exkl|
+      if code_text.include? exkl.downcase
+        return [] # if the text matches an exclusiva of the keyword, no results
       end
     end
-    fs_entry
+
+    fs_entries = []
+    keyword_entry['fmhcodes'].each do |fs_code|
+      fs_entries << fs_code_to_field_entry(fs_code.to_i, relatedness, language)
+    end
+    assert_fields_array(fs_entries)
+    fs_entries
   end
 end

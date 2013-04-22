@@ -1,19 +1,16 @@
 # Abstract base class for all information providers utilizing the db (which are basically all of them)
 class DatabaseInfoProvider <  BaseInformationProvider
-
-  attr_reader :db, :locator
+  attr_reader :db
 
   def initialize
     @db = DatabaseAdapter.new
-    @locator = DoctorLocator.new
   end
 
-  def get_doctors(field_code, lat, long, count)
-    self.locator.find_doctors(field_code, lat, long, count)
-  end
-
+  # Return the raw chop/icd db entry for the given code in the given language.
+  # @throws ProviderLookupError s 
   def get_icd_or_chop_data (code, language)
-    type = self.get_code_type(code)
+    assert_language(language)
+    type = get_code_type(code)
     case type
       when :icd
         data = self.db.get_icd_entry(code, language)
@@ -32,13 +29,15 @@ class DatabaseInfoProvider <  BaseInformationProvider
     data
   end
 
-  def get_field_name(field_code, language)
-    self.db.get_fs_name(field_code,language)
-  end
-
   # @param field_codes [Array] an array of fs codes (2-210)
-  # @return An array of field codes formatted as by API standard ({name : "...", relatedness: relatedness, field: code} for each code)
+  # @return An array of field codes formatted as by API standard ({name : "...",
+  # relatedness: relatedness, field: code} for each code, that is an array of
+  # FieldEntry objects)
   def fs_codes_to_fields(field_codes, relatedness, lang)
+    assert_kind_of(Array, field_codes)
+    assert_relatedness(relatedness)
+    assert_language(lang)
+
     out = []
     field_codes.each do |fc|
       out << fs_code_to_field_entry(fc, relatedness, lang)
@@ -48,6 +47,9 @@ class DatabaseInfoProvider <  BaseInformationProvider
 
   # same as above, but just for one code
   def fs_code_to_field_entry(fs_code, relatedness, lang)
+    assert_relatedness(relatedness)
+    assert_language(lang)
+    assert_kind_of(Numeric, fs_code)
     FieldEntry.new(self.db.get_fs_name(fs_code, lang),
                    relatedness,
                    fs_code
