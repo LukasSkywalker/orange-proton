@@ -50,11 +50,13 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
 
   # Helper 
-  # TODO move
+  # TODO move... however we only need this here so...
   # http://stackoverflow.com/questions/3897525/ruby-array-contained-in-array-any-order
+  private
   def is_subset?(a, of_b)
     a.to_set.subset?(of_b.to_set)
   end
+  public
 
   def extract_fields_with_code_in(fields, codes) 
     fields = fields.dup # copy
@@ -84,7 +86,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
         fs.each {|f| rmean += f.relatedness}
         rmean /= fs.size
         Rails.logger.info "components: #{fs}, mean #{rmean}"
-        fields << new_fs_field_entry(rc['result'], rmean, language)
+        fields << fs_code_to_field_entry(rc['result'], rmean, language)
       end
     }
     fields

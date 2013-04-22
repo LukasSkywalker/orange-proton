@@ -2,6 +2,8 @@
 # up all the ICD code ranges the code belongs to (e.g. B26 is in something like B20-B30, which is in A00-B99 etc.)
 # This is based on a manually created table specifying fields for these ranges.
 class IcdRangeInfoProvider < DatabaseInfoProvider
+  @@level_ratings = [0.2, 0.6, 0.8, 1.0]
+
   def get_fields(icd_code, max_count, language)
     ranges = db.get_icd_ranges(icd_code)
     fields = []
@@ -9,7 +11,10 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
       codes = range['fmhcodes']
       codes.each() do |code|
         name = db.get_fs_name(code, language)
-        relatedness = 0.6 + (range['level'].to_i * 0.1)
+        level = range['level'].to_i
+
+        relatedness = @@level_ratings[level - 1]
+
         if (fields.select{|f| f.code==code }).empty?
           fields << FieldEntry.new(name, relatedness, code)
         else

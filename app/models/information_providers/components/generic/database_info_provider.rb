@@ -1,13 +1,11 @@
-require_relative '../doctor_locator'
-
 # Abstract base class for all information providers utilizing the db (which are basically all of them)
 class DatabaseInfoProvider <  BaseInformationProvider
 
-  attr_accessor :db, :locator
+  attr_reader :db, :locator
 
   def initialize
-    self.db = DatabaseAdapter.new
-    self.locator = DoctorLocator.new
+    @db = DatabaseAdapter.new
+    @locator = DoctorLocator.new
   end
 
   def get_doctors(field_code, lat, long, count)
@@ -21,6 +19,7 @@ class DatabaseInfoProvider <  BaseInformationProvider
         data = self.db.get_icd_entry(code, language)
 
         # Drop codes not in german ICD table, fixes #176
+        # We do this here since we want to keep the db as delivered (it might change)
         if self.db.get_icd_entry(code, 'de').nil?   # TODO Test
           data = nil
         end
@@ -42,13 +41,13 @@ class DatabaseInfoProvider <  BaseInformationProvider
   def fs_codes_to_fields(field_codes, relatedness, lang)
     out = []
     field_codes.each do |fc|
-      out << new_fs_field_entry(fc, relatedness, lang)
+      out << fs_code_to_field_entry(fc, relatedness, lang)
     end
     out
   end
 
   # same as above, but just for one code
-  def new_fs_field_entry(fs_code, relatedness, lang)
+  def fs_code_to_field_entry(fs_code, relatedness, lang)
     FieldEntry.new(self.db.get_fs_name(fs_code, lang),
                    relatedness,
                    fs_code

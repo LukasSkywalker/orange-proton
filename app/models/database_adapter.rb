@@ -87,9 +87,9 @@ class DatabaseAdapter
     fmhs
   end
 
-  # @return All FS codes manually mapped to this icd code.
-  def get_manually_mapped_fs_codes_for_icd(icd_code)
-    documents = @client['manualMappings']['manualMappings'].find({icd_code: icd_code})
+  private 
+  def get_manually_mapped_fs_codes(searchhash) 
+  documents = @client['manualMappings']['manualMappings'].find(searchhash)
     fs = []
     documents.each do |document|
       fs << document['fs_code']
@@ -97,16 +97,16 @@ class DatabaseAdapter
 
     fs
   end
+  public
+
+  # @return All FS codes manually mapped to this icd code.
+  def get_manually_mapped_fs_codes_for_icd(icd_code)
+    get_manually_mapped_fs_codes({icd_code: icd_code})
+  end
 
   # @return All FS codes manually mapped to this chop code.
   def get_manually_mapped_fs_codes_for_chop(chop_code)
-    documents = @client['manualMappings']['manualMappings'].find({chop_code: chop_code})
-    fs = []
-    documents.each do |document|
-      fs << document['fs_code']
-    end
-
-    fs
+    get_manually_mapped_fs_codes({chop_code: chop_code})
   end
 
   # @return An array of available thesaur_name s
