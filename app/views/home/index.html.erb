@@ -2,9 +2,7 @@
 <html>
     <head>
         <title>OrangeProton</title>
-        <%= stylesheet_link_tag    "application", :media => "all" %>
-        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyAjPl4yzI4xYU9yw2GgptYV547pFo3ounE"></script>
-        <%= javascript_include_tag "application" %>
+        <%= stylesheet_link_tag "application", :media => "all" %>
         <%= csrf_meta_tags %>
     </head>
     <body>
@@ -39,5 +37,7 @@
             </div>
         </div>
         <div id="mindmap"></div>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&key=AIzaSyAjPl4yzI4xYU9yw2GgptYV547pFo3ounE"></script>
+        <%= javascript_include_tag "application" %>
     </body>
 </html>
