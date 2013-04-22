@@ -213,6 +213,7 @@ var mindmapper = {
                 var s = [];
                 var fields = response.result.fields;
                 fields.sortBy('relatedness');
+                fields.reverse();
                 for (var i = 0; i < Math.min(options.max_fields, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
