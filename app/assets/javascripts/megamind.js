@@ -27,13 +27,15 @@ var megamind = {
    * @property {Number} [options.verticalWobbling=0.6] how much the vertical position of nodes should vary
    * @property {Number} [options.horizontalWobbling=0.6] how much the horizontal position of nodes should vary
    * @property {Number} [options.animationDuration=400] duration of appearance animation in ms
+   * @property {Boolean} [options.shuffle=true] whether megamind is allowed to shuffle the nodes inside a container. Disabling shuffling leads to a much less dense packing and generally doesn't look cool. Only use if you really need to.
    */
   options: {
     horizontalFillAmount: 0.8,
     verticalFillAmount: 0.8,
     verticalWobbling: 0.6,
     horizontalWobbling: 0.6,
-    animationDuration: 400
+    animationDuration: 400,
+    shuffle: true
   },
 
   /**
@@ -357,7 +359,6 @@ var megamind = {
   Canvas.prototype.distribute = function () {
     this.container.trigger('beforePosition');
     var elements = this.nodeElements();
-    elements.shuffle();
 
     // some preprocessing: add required classes
     for (var i = 0; i < elements.length; i++) {
@@ -369,9 +370,11 @@ var megamind = {
     }
 
     // sort nodes by height
-    elements.sort(function (a, b) {
-      return b.height() - a.height();
-    });
+    if( this.options.shuffle ) {
+      elements.sort(function (a, b) {
+        return b.height() - a.height();
+      });
+    }
 
     // main layout loop
     var bestRatio = Infinity;
@@ -388,12 +391,25 @@ var megamind = {
           break;
         }
         var added = false;
-        for(var j = 0; j < this.rows.length; j++) {
-          var row = this.rows[j];
-          if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount * width ) {   //we can fill it in
-            row.addNode(n);
+        if( this.options.shuffle ) {    // we are allowed to add node to earlier row
+          for(var j = 0; j < this.rows.length; j++) {
+            var row = this.rows[j];
+            if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount * width ) {   //we can fill it in
+              row.addNode(n);
+              added = true;
+              break;
+            }
+          }
+        } else {                        // we need to preserve input order, so only try to add to last row
+          if( this.rows.length === 0 ) {
+            this.addRow(n);
             added = true;
-            break;
+          } else {
+            var row = this.rows[this.rows.length - 1];
+            if( row.spaceUsed() + n.width() <= this.width * this.options.horizontalFillAmount * width ) {   //we can fill it in
+              row.addNode(n);
+              added = true;
+            }
           }
         }
         if( !added ) {  //we've been unable to insert the node
@@ -418,9 +434,11 @@ var megamind = {
     this.rows = bestDistribution;
 
     // randomize positions
-    this.shuffle();
-    for (var i = 0; i < this.rows.length; i++) {
-      this.rows[i].shuffle();
+    if( this.options.shuffle ) {
+      this.shuffle();
+      for (var i = 0; i < this.rows.length; i++) {
+        this.rows[i].shuffle();
+      }
     }
     this.space();
     this.container.trigger('afterPosition');

@@ -212,6 +212,7 @@ var mindmapper = {
 
                 var s = [];
                 var fields = response.result.fields;
+                fields.sortBy('relatedness');
                 for (var i = 0; i < Math.min(options.max_fields, fields.length); i++) {
                     var f = fields[i].field;
                     var n = fields[i].name;
@@ -230,7 +231,7 @@ var mindmapper = {
                     s.push(newdiv);
                 }
 
-                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field');
+                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
             },
 
