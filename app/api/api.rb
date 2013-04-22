@@ -1,5 +1,7 @@
 # This handles the API queries, using the Grape API gem.
 class API < Grape::API
+  include ApiResponse
+
   # API specification for grape (url prefixes)
   prefix 'api'
   version 'v1'
@@ -21,7 +23,7 @@ class API < Grape::API
 
   # Always rescue ProviderLookupErrors and
   rescue_from ProviderLookupError do |error|
-    response = ApiResponse::Error.error_response(error.message, error.language).to_json
+    response = Error.error_response(error.message, error.language).to_json
     Rack::Response.new(response, 200, { 'Content-type' => 'application/json' }).finish
   end
 
@@ -45,7 +47,7 @@ class API < Grape::API
       icd_data = API.provider.get_icd_or_chop_data(code, lang)
       fields = API.provider.get_fields(code, max_count, lang)
 
-      ApiResponse::Success.field_response(icd_data, fields, type)
+      Success.field_response(icd_data, fields, type)
     end
   end
 
@@ -67,7 +69,7 @@ class API < Grape::API
       max_count = params[:count]
 
       doctors = API.provider.get_doctors(field_code, latitude, longitude, max_count)
-      ApiResponse::Success.response(doctors)
+      Success.response(doctors)
     end
   end
 
@@ -84,7 +86,7 @@ class API < Grape::API
       field_code = params[:code]
 
       field_name = API.provider.get_field_name(field_code, lang)
-      ApiResponse::Success.name_response field_name
+      Success.name_response field_name
     end
   end
 
@@ -115,13 +117,11 @@ class API < Grape::API
 
       desc 'Return provider weights'
       get 'get' do
-        Rails.logger.info 'Got Get weights Request'
         encode_weight_values
       end
 
       desc 'Reset weights to default values'
       post 'reset' do
-        Rails.logger.info 'Got Reset Request'
         API.provider.reset_weights
         encode_weight_values
       end
@@ -133,7 +133,6 @@ class API < Grape::API
 
       post 'set' do
         values = extract_weight_values(params[:values])
-        Rails.logger.info "Got Reset Request with #{values}"
         API.provider.set_relatedness_weight(values)
         encode_weight_values
       end

@@ -83,7 +83,7 @@ describe DatabaseAdapter do
 
   it 'should match the doctors collections' do
     @doc_fs.count().should be(152)
-    @docs.count().should be(25528)
+    @docs.count().should be(25610)
   end
 
   #it 'should match the keywords collection' do
