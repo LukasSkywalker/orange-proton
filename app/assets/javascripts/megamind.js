@@ -223,6 +223,7 @@ var megamind = {
     this.resize();
     this.container = mm;
     this.options = $.extend({}, megamind.options, options);
+    this.allNodes = [];
     return this;
   }
 
@@ -327,10 +328,8 @@ var megamind = {
 
   Canvas.prototype.nodeElements = function () {
     var nodes = [];
-    for(var i = 0; i < this.rows.length; i++) {
-      for(var j = 0; j < this.rows[i].nodes.length; j++) {
-        nodes.push(this.rows[i].nodes[j].el);
-      }
+    for(var i = 0; i < this.allNodes.length; i++) {
+      nodes.push(this.allNodes[i]);
     }
     return nodes;
   };
@@ -345,6 +344,7 @@ var megamind = {
    * @param {String[]} elements the HTML code of the nodes to add
    */
   Canvas.prototype.addNodes = function(elements) {
+    this.allNodes = elements;
     for(var i = 0; i < elements.length; i++) {
       var n = new Node(elements[i], null);
       if(this.rows.length == 0)
