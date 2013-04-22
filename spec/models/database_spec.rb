@@ -39,6 +39,7 @@ describe DatabaseAdapter do
     @keywords = client['fachgebieteKeywords']['fachgebieteKeywords']
   end
 
+=begin
   it 'should match the fachgebieteUndSpezialisierungen collections' do
     @fs.count().should eq(110)
     @f.count().should eq(47)
@@ -86,9 +87,10 @@ describe DatabaseAdapter do
     @docs.count().should be(25610)
   end
 
-  #it 'should match the keywords collection' do
-  #  @keywords.count().should be(157)
-  #end
+  it 'should match the keywords collection' do
+    @keywords.count().should be(157)
+  end
+=end
 
   it 'should not raise error when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
     expect{@db.get_mdc_code('9')}.to_not raise_error NoMethodError
