@@ -16,4 +16,5 @@
 //= require i18n/shims
 //= require i18n
 //= require i18n/translations
+//= require libraries
 //= require_tree .
