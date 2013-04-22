@@ -1,3 +1,4 @@
+/*global Raphael:true, $:true, jQuery:true, document:true, console:true */
 /**
  * @class megamind
  * Megamind has a concept of different containers where the different nodes are put. This allows us to
@@ -18,6 +19,8 @@
 
  You get the picture.
  */
+
+"use strict";
 
 var megamind = {
   /**
@@ -164,7 +167,7 @@ var megamind = {
       var $mm = $(this.first());
       var data = $mm.data();
       var debugElements = $('.debug');
-      if (debugElements.length == 0) {
+      if (debugElements.length === 0) {
         $.each(data.canvases, function (i, c) {
           var canvas = $("<div class='debug' style='position: absolute; border: 1px solid black'>C" + i + " " + c.fillRatio() + "</div>");
           canvas.appendTo($mm);
@@ -177,7 +180,7 @@ var megamind = {
               var node = $("<div class='debug' style='position: absolute; border: 1px solid red'>N" + k + "</div>");
               node.appendTo($mm);
               node.css({left: n.left(), top: n.top(), width: n.width(), height: n.height()});
-            })
+            });
           });
         });
         return true;
@@ -311,8 +314,8 @@ var megamind = {
     var gaps = this.rows.length + 1;
     var spacing = spaceLeft / gaps;
     for (var i = 0; i < this.rows.length; i++) {
-      var amount = (1 - this.options.verticalWobbling / 2) * spacing
-          + Math.random() * this.options.verticalWobbling * spacing;
+      var amount = (1 - this.options.verticalWobbling / 2) * spacing +
+        Math.random() * this.options.verticalWobbling * spacing;
       this.rows[i].move(0, amount);
       this.rows[i].space();
     }
@@ -347,14 +350,14 @@ var megamind = {
     this.allNodes = elements;
     for(var i = 0; i < elements.length; i++) {
       var n = new Node(elements[i], null);
-      if(this.rows.length == 0)
+      if(this.rows.length === 0)
         this.addRow(n);
       else
         this.rows[0].addNode(n);
     }
     this.distribute();
     this.render();
-  }
+  };
 
   Canvas.prototype.distribute = function () {
     this.container.trigger('beforePosition');
@@ -501,8 +504,8 @@ var megamind = {
     var spacing = spaceLeft / gaps;
     for (var i = 0; i < this.nodes.length; i++) {
       var n = this.nodes[i];
-      var amount = (1 - this.canvas.options.horizontalWobbling / 2) * spacing
-          + Math.random() * this.canvas.options.horizontalWobbling * spacing;  // if WOBBLING is 0.4 or 40%:
+      var amount = (1 - this.canvas.options.horizontalWobbling / 2) * spacing +
+        Math.random() * this.canvas.options.horizontalWobbling * spacing;  // if WOBBLING is 0.4 or 40%:
       // move between 80 and 120% of the spacing
       n.move(amount, 0);
     }
@@ -624,6 +627,6 @@ var megamind = {
   };
 
   jQuery.fn.isInDom = function () {
-    return jQuery.contains(document.documentElement, this)
-  }
+    return jQuery.contains(document.documentElement, this);
+  };
 })(jQuery);
