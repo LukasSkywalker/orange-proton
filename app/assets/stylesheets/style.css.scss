@@ -312,6 +312,10 @@ input[type=text] {
     top: 2px;
     bottom: 2px;
   }
+  margin: {
+    left: 5px;
+    right: 5px;
+  }
 }
 
 input[type=button] {
@@ -319,6 +323,10 @@ input[type=button] {
   border-radius: 5px;
   padding-left: 15px !important;
   padding-right: 15px !important;
+  margin: {
+    left: 5px;
+    right: 5px;
+  }
   height: 32px;
   border: 1px solid #ccc;
   @include clickable;
@@ -415,4 +423,8 @@ input[type=button] {
 
 #location-input{
   height: 25px;
+}
+
+.right {
+  float: right;
 }

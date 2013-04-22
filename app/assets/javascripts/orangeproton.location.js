@@ -141,7 +141,8 @@ orangeproton.location = {
     var $popup = $('<div id="location-popup"></div>');
     var $search = $('<input type="text" id="location-input"/>');
     var $searchButton = $('<input type="button" value="Suche"/>');
-    var $resetButton = $('<input type="button" value="Reset"/>');
+    var $resetButton = $('<input type="button" class="right" value="Löschen"/>');
+    var $setButton = $('<input type="button" class="right" value="Speichern"/>');
     var $currentLocation = $('<p></p>').addClass('location');
 
     $search.enterHandler(function() {
@@ -163,9 +164,13 @@ orangeproton.location = {
       map.setCenter(location.lat, location.lng);
     });
 
+    $setButton.on('click', null, function onSetButtonClick() {
+      $.fancybox.close();
+    });
+
     var $map = $('<div id="location-map"></div>').width(800).height(500);
 
-    $popup.append($search).append($searchButton).append($resetButton)
+    $popup.append($search).append($searchButton).append($resetButton).append($setButton)
         .append($currentLocation).append($map).appendTo('body');
 
     //$map.css({width: '100%', height: '100%', position: 'relative'});
@@ -181,6 +186,7 @@ orangeproton.location = {
     $('#location-map').data('map', map);
 
     $.fancybox($popup, {
+      closeBtn: false,
       afterShow: function () { $.fancybox.update(); },
       beforeClose: function() { $('#location-popup').remove(); }
     });
