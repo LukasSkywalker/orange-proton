@@ -11,8 +11,10 @@ it:
   legend: "Leggenda"
   location: "Luogo"
   error: "Errore"
-  show: "Mostrare informazioni"
-  hide: "Nascondere informazioni"
+  reset: "Resettare"
+  save: "Salvare"
+  position: "Selezionare posizione"
+  doc_help: "Dottore bipedibapedi" #TODO Translate...
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"
