@@ -63,7 +63,10 @@ $(document).ready(function () {
         orangeproton.language.setLocale(lang);
         if (code != '') {
             History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
-            if (force) History.Adapter.trigger(window, 'statechange');
+            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang)
+                History.Adapter.trigger(window, 'statechange');
+            mindmapper.prevCode = code;
+            mindmapper.prevLang = lang;
         }
     });
 
@@ -130,6 +133,8 @@ $(document).ready(function () {
  * @class MindMapper
  */
 var mindmapper = {
+    prevLang: null,
+    prevCode: null,
 
     /**
      * Performs the API request and displays the data in the mindmap
