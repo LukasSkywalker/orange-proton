@@ -86,10 +86,7 @@ $(document).ready(function () {
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
         togglePanels();
-        $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
     });
-
-    $('#hide-panels').html(orangeproton.language.getPanelTogglerText());
 
     // start geolocation
     orangeproton.location.startGeoLocation();
