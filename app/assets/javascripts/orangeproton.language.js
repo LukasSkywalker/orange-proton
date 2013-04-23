@@ -26,5 +26,12 @@ orangeproton.language = {
     });
 
     $('#legend-title').html('<p>' + I18n.t('legend') + '</p>');
+
+    $('#info-title').html('<p>' + I18n.t('info_title') + '</p>');
+
+    $('#info-text').html('<p>' + I18n.t('info_text') + '</p>');
+
+    $('#loc').html(I18n.t('location') + ': ');
+
   }
 };

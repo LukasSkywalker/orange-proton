@@ -12,12 +12,14 @@ en:
   inclusiva: "Inclusiva"
   search: "Search"
   legend: "Legend"
-  location: "Location"
+  location: "Your location"
   error: "Error"
   reset: "Reset"
   save: "Save"
   position: "Select position"
   doc_help: "Doctors near you"
+  info_title: "Help"
+  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden." #TODO Translate...
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

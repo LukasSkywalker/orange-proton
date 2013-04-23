@@ -9,12 +9,14 @@ fr:
   inclusiva: "Inclusiva"
   search: "Chercher"
   legend: "Légende"
-  location: "Lieu"
+  location: "Votre lieu"
   error: "Erreur"
   reset: "Reculer"
   save: "Enregistrer"
   position: "Choisir position"
   doc_help: "Médcins près de vous"
+  info_title: "Aide"
+  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden." #TODO Translate...
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"

@@ -1,5 +1,30 @@
 /* Use SASS (http://sass-lang.com/) here */
 
+/***********MIXINS************/
+
+/* sets the radius for all vendor-prefixes (and unprefixed) */
+@mixin border-radius($rad) {
+  -webkit-border-radius: $rad;
+  -moz-border-radius: $rad;
+  border-radius: $rad;
+}
+
+/* sets the border of the nodes */
+@mixin node-border($color) {
+  @include border-radius(7px);
+  border: 2px solid $color;
+}
+
+/* all clickable elements */
+@mixin clickable {
+  &:hover{
+    cursor: pointer;
+  }
+}
+
+
+/***********Rest************/
+
 #mindmap {
   position: absolute;
   top: 51px;
@@ -23,25 +48,6 @@ body, html{
   padding: 0;
 }
 
-/* sets the radius for all vendor-prefixes (and unprefixed) */
-@mixin border-radius($rad) {
-  -webkit-border-radius: $rad;
-  -moz-border-radius: $rad;
-  border-radius: $rad;
-}
-
-/* sets the border of the nodes */
-@mixin node-border($color) {
-  @include border-radius(7px);
-  border: 2px solid $color;
-}
-
-/* all clickable elements */
-@mixin clickable {
-  &:hover{
-    cursor: pointer;
-  }
-}
 
 /* containers */
 div.container {
@@ -120,6 +126,22 @@ div.node, div.legend {
   z-index: 10;
   display: none;
 
+  .title{
+    background: #eee;
+    border-bottom: 1px solid #c5c5c5;
+    @include border-radius(7px);
+    margin: 0 -10px 0 -10px;
+    margin-bottom: 0;
+    font-size:  16px;
+    height: 25px;
+    text-align: center;
+    padding: 5px;
+
+    p{
+      margin: 0;
+    }
+  }
+
   /* the bow with the legend and the admin panel*/
   #panels {
     width: 100%;
@@ -127,15 +149,18 @@ div.node, div.legend {
     float: right;
     overflow: hidden;
 
-    /* the admin panel */
-    #admin {
+    .panel{
       margin: 10px;
       margin-left: 0;
       border: 1px solid #c5c5c5;
       @include border-radius(7px);
-      font-size: 0.8em;
       padding: 0 10px 0 10px;
       position: relative;
+    }
+
+    /* the admin panel */
+    #admin {
+      font-size: 0.8em;
 
       p{
         margin-bottom: 3px;
@@ -157,12 +182,6 @@ div.node, div.legend {
 
     /* the legend */
     #legend {
-      margin: 10px;
-      margin-left: 0;
-      border: 1px solid #c5c5c5;
-      @include border-radius(7px);
-      padding: 0 10px 0 10px;
-      position: relative;
 
       /* the items of the legend */
       .legend {
@@ -197,21 +216,6 @@ div.node, div.legend {
   border-right: none;
 }
 
-.title{
-  background: #eee;
-  border-bottom: 1px solid #c5c5c5;
-  @include border-radius(7px);
-  margin: 0 -10px 0 -10px;
-  margin-bottom: 0;
-  font-size:  16px;
-  height: 25px;
-  text-align: center;
-  padding: 5px;
-
-  p{
-    margin: 0;
-  }
-}
 
 #search-bar {
   position: fixed;
@@ -240,6 +244,26 @@ div.node, div.legend {
     @include clickable;
   }
 
+  .hide-arrow {
+    border: 1px solid #cccccc;
+    display: inline;
+    position: absolute;
+    width: 100px;
+    padding-top: 3px;
+    overflow: hidden;
+    border-radius: 7px;
+    float: right;
+    background: url(arrow.png) no-repeat right white;
+    height: 32px;
+    right: 15px;
+    top: 10px;
+
+    &.svg {
+      background: url(arrow.svg) no-repeat right white !important;
+      background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
+      height: 27px !important;
+    }
+  }
 
   #location-container{
     margin: 16px auto 0 auto;
@@ -255,6 +279,7 @@ div.node, div.legend {
       line-height: 30px;
       vertical-align: middle;
       margin: 0;
+      max-width: 200px;
     }
 
     .globe{
@@ -282,26 +307,7 @@ div.node, div.legend {
   }
 }
 
-.hide-arrow {
-  border: 1px solid #cccccc;
-  display: inline;
-  position: absolute;
-  width: 100px;
-  padding-top: 3px;
-  overflow: hidden;
-  border-radius: 7px;
-  float: right;
-  background: url(arrow.png) no-repeat right white;
-  height: 32px;
-  right: 15px;
-  top: 10px;
 
-  &.svg {
-    background: url(arrow.svg) no-repeat right white !important;
-    background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
-    height: 27px !important;
-  }
-}
 
 input[type=text] {
   border-radius: 5px;
@@ -338,6 +344,17 @@ input[type=button] {
 .docOverlay, #location-popup {
   height: 100%;
   width: 100%;
+
+
+  .location p {
+      position: relative;
+      display: inline;
+      height: 30px;
+      line-height: 30px;
+      vertical-align: middle;
+      margin: 0;
+    }
+
 
   h3 {
     margin-left: 5px;
@@ -432,7 +449,9 @@ input[type=button] {
   float: right;
 }
 
-.hint{
-  font-size:  0.8em;
-  font-style: italic;
+.front-container{
+  z-index: 100;
 }
+
+
+

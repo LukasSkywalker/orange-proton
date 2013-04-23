@@ -9,12 +9,14 @@ de:
   inclusiva: "Inklusiva"
   search: "Suchen"
   legend: "Legende"
-  location: "Ort"
+  location: "Euer Ort"
   error: "Fehler"
   reset: "Löschen"
   save: "Speichern"
   position: "Positionsauswahl"
   doc_help: "Ärzte in ihrer Umgebung"
+  info_title: "Hilfe"
+  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden. <br /> Um ihren Standort zu ändern, klicken sie auf die Adresse oben."
 
 
 #errors

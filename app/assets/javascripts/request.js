@@ -36,7 +36,7 @@ $(document).ready(function () {
     $(document).on('locationChange', function () {
         var pos = orangeproton.location.getLocation();
         orangeproton.location.reverseGeoCode(pos.lat, pos.lng, function (lat, lng, address) {
-            $('.location').html('<p class="icon-globe globe"></p>' + address.ellipses(100));
+            $('.location').html('<p class="icon-globe globe"></p><p id="loc">'+ I18n.t('location') +': </p><p>' + address.ellipses(100) + '</p>');
         });
     });
 
