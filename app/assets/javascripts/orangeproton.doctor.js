@@ -41,11 +41,13 @@ orangeproton.doctor = {
         }
 
         var $overlay = $('<div class="docOverlay"></div>');
-        var $docList = $('<div id="docList"><ul></ul></div>');
+        var $docList = $('<div id="docList"></div>');
         var $map = $('<div id="map"></div>');
         var $mapFrame = $('<div id="map-frame"></div>');
+        var $help = $('<div id="map-help"><h2>'+ I18n.t('doc_help')+'</h2></div> ');
         $map.append($mapFrame);
         $overlay.append($docList).append($map).append('<div style="clear:both;"></div>').appendTo('body');
+        $overlay.prepend($help);
 
         var map = new GMaps({
             div: '#map-frame',

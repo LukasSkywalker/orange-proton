@@ -14,6 +14,7 @@ it:
   reset: "Resettare"
   save: "Salvare"
   position: "Selezionare posizione"
+  doc_help: "Dottore bipedibapedi" #TODO Translate...
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"

@@ -17,6 +17,7 @@ en:
   reset: "Reset"
   save: "Save"
   position: "Select position"
+  doc_help: "Doctors near you"
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

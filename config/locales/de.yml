@@ -14,6 +14,7 @@ de:
   reset: "Löschen"
   save: "Speichern"
   position: "Positionsauswahl"
+  doc_help: "Ärzte in ihrer Umgebung"
 
 
 #errors
