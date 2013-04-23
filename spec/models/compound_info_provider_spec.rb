@@ -3,7 +3,7 @@ require 'spec_helper'
 
 # makes private methods public to make them testable
 class CompoundInfoProvider
-  public :remove_duplicate_fields, :fields_multiply_relatedness
+  public :fold_duplicate_fields, :fields_multiply_relatedness
 end
 
 describe CompoundInfoProvider do
@@ -36,7 +36,7 @@ describe CompoundInfoProvider do
   #end
 
   it 'should remove duplicate fields' do
-    var = @provider.remove_duplicate_fields([@field1, @field2, @field3])
+    var = @provider.fold_duplicate_fields([@field1, @field2, @field3])
     var.should include(@field1, @field3)
     var.should_not include(@field2)
   end

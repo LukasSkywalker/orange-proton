@@ -48,6 +48,7 @@ class DatabaseInfoProvider <  BaseInformationProvider
     assert_relatedness(relatedness)
     assert_language(lang)
     assert_kind_of(Numeric, fs_code)
+    assert_field_code(fs_code)
     FieldEntry.new(self.db.get_fs_name(fs_code, lang),
                    relatedness,
                    fs_code

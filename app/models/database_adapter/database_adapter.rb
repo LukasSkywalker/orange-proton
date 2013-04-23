@@ -207,9 +207,9 @@ class DatabaseAdapter
   def get_compound_results_components
     d = @compounds.find()
     d = (d.nil?) ? [] : d.to_a
-    assert_field_code(d[0]['result']) if d.length > 0
-    assert_field_code(d[0]['components'][0]) if d.length > 0
-    return d
+    #assert_field_code(d[0]['result']) if d.length > 0
+    #assert_field_code(d[0]['components'][0]) if d.length > 0
+    d
   end
 
   # @return At most max_count fields related to the icd_code specified, sorted

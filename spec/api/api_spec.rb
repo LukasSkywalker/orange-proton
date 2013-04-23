@@ -65,7 +65,6 @@ describe API do
     end
 
     it 'should respond with hash if required parameters are sent' do
-      API.provider.should_receive(:get_code_type).with('B26.3').and_call_original
       API.provider.should_receive(:get_icd_or_chop_data).with('B26.3', 'de').and_call_original
       API.provider.should_receive(:get_fields).with('B26.3', 4, 'de').and_call_original
 

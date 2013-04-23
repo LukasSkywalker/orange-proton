@@ -7,6 +7,7 @@ describe ChopRangeInfoProvider do
     @provider = ChopRangeInfoProvider.new
   end
 
+=begin
   it 'should include these specialities' do
     chop = '01'
     field1 = FieldEntry.new('Gehirn- und Nervenchirurgie (Neurochirurgie)', 1, 26)
@@ -15,4 +16,5 @@ describe ChopRangeInfoProvider do
     var = @provider.get_fields(chop, 1, 'de')
     var.should include(field1, field2)
   end
+=end
 end
