@@ -85,7 +85,9 @@ orangeproton.doctor = {
             var $menuItem = $(element.format(i, title, name, address));
 
             $menuItem.on('change', {details: doc}, function doctorClick(e) {
-                $('#map-frame').data('map').setCenter(e.data.details.lat, e.data.details.long);
+                var map = $('#map-frame').data('map');
+                map.setCenter(e.data.details.lat, e.data.details.long);
+                google.maps.event.trigger(map, 'resize');
             });
             $docList.append($menuItem);
         }
@@ -94,6 +96,7 @@ orangeproton.doctor = {
         $.fancybox($overlay[0], $.extend({}, opts, {
             afterShow: function () {
                 $('#map-frame').css({height: '100%'});
+                google.maps.event.trigger($('#map-frame').data('map'), 'resize');
             },
             beforeClose: function () {
                 $('.docOverlay').remove();
