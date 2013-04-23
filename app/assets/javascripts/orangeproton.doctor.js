@@ -16,7 +16,7 @@ orangeproton.doctor = {
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
-            url: '/api/v1/docs/get?lat={0}&long={1}&field={2}&count={3}'.format(lat, lng, field, count),
+            url: op.apiBase + '/docs/get?lat={0}&long={1}&field={2}&count={3}'.format(lat, lng, field, count),
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",

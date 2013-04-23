@@ -1,9 +1,19 @@
 /**
- * All default options for orange-proton
+ * Global options
+ * @class op
+ * @property {String} [apiBase=/api/v1]
+ */
+var op = { apiBase: '/api/v1' };
+
+/**
  * @class orangeproton.options
+ * All default options for orange-proton
  */
 var orangeproton = orangeproton || {};
 orangeproton.options = {
+  /**
+   * Configurations for various libraries
+   */
   libraries: {
     fancybox: {
       maxWidth: 1000,
@@ -26,6 +36,9 @@ orangeproton.options = {
     }
   },
 
+  /**
+   * How many nodes should be displayed of each type
+   */
   display: {
     max_syn: 5, // max number of synonyms to display
     max_fields: 7, // max number of fields

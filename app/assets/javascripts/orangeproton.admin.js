@@ -9,7 +9,7 @@ orangeproton.admin = {
    */
   loadPanel: function(){
       jQuery.ajax({
-          url: '/api/v1/admin/weights/get',
+          url: op.apiBase + '/admin/weights/get',
           type: 'GET',
           datatype: 'json',
           contentType: "charset=UTF-8",
@@ -27,7 +27,7 @@ orangeproton.admin = {
         params.push($(e).slider( 'value' ));
       });
       jQuery.ajax({
-          url: '/api/v1/admin/weights/set?values=' + params,
+          url: op.apiBase + '/admin/weights/set?values=' + params,
           type: 'POST',
           success: orangeproton.admin.displaySliders
       });
@@ -62,7 +62,7 @@ orangeproton.admin = {
    */
   resetWeights: function(){
       jQuery.ajax({
-          url: '/api/v1/admin/weights/reset',
+          url: op.apiBase + '/admin/weights/reset',
           type: 'POST',
           success: orangeproton.admin.displaySliders
       });
