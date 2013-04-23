@@ -11,8 +11,9 @@ it:
   legend: "Leggenda"
   location: "Luogo"
   error: "Errore"
-  show: "Mostrare informazioni"
-  hide: "Nascondere informazioni"
+  reset: "Resettare"
+  save: "Salvare"
+  position: "Selezionare posizione"
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"

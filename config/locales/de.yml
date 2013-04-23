@@ -11,8 +11,10 @@ de:
   legend: "Legende"
   location: "Ort"
   error: "Fehler"
-  show: "Zeige Informationen"
-  hide: "Verstecke Informationen"
+  reset: "Löschen"
+  save: "Speichern"
+  position: "Positionsauswahl"
+
 
 #errors
   no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"
