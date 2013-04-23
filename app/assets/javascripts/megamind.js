@@ -220,8 +220,18 @@ var megamind = {
    * Represents a node-container
    */
   function Canvas(mm, areas, className, options) {
+    var text = getText();
+    function getText() {
+        if(className==="inclusiva-exclusiva"){
+           var part = className.split("-");
+            return I18n.t(part[0]) + " & " + I18n.t(part[1])
+        } else {
+           return I18n.t(className);
+        }
+    }
+
     this.rows = [];
-    this.el = $('<div></div>').addClass('container').addClass(className);
+    this.el = $('<div><div class="container-inner"><p class="show-type hidden '+ className +'">'+ text +'</p></div></div>').addClass('container').addClass(className);
     this.areas = areas;
     this.resize();
     this.container = mm;

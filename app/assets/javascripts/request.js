@@ -297,4 +297,11 @@ function togglePanels() {
     $panels.data('hidden', !panelHidden);
 }
 
+//Highlight the hovered node type
 
+function toggleHighlightContainer(type){
+    var $container = $('.container.' + type);
+    var $text = $container.find('p:first');
+    $container.toggleClass('active');
+    $text.toggleClass('hidden');
+}

@@ -94,6 +94,10 @@ input[type=button] {
   @include clickable;
 }
 
+.hidden{
+  display: none;
+}
+
 /***********Side panel************/
 
 #panels-container{
@@ -356,6 +360,56 @@ div.node, div.legend {
 div.container {
   position: absolute;
   z-index: 2;
+  padding: 5px;
+
+  &.active{
+    background: #ccc;
+  }
+
+  .container-inner{
+    position: relative;
+    width: 100%;
+    height: 100%;
+    p{
+      position: absolute;
+      //bottom-right
+      &.syn {
+        bottom: 0;
+        right: 10px;
+      }
+
+      //top-left
+      &.field {
+        top: 0;
+        left: 0;
+      }
+
+      //top-middle
+      &.drg {
+        top: 0;
+        left: 0;
+      }
+
+      //bottom-middle
+      &.inclusiva-exclusiva {
+        bottom: 0;
+        left: 0;
+      }
+
+      //top-right
+      &.super {
+        top: 0;
+        right: 10px;
+      }
+
+      //right-middle
+      &.sub {
+        top: 0;
+        right: 10px;
+      }
+    }
+  }
+
 }
 
 .front-container{
