@@ -23,7 +23,7 @@
 }
 
 
-/***********Rest************/
+/***********General************/
 
 #mindmap {
   position: absolute;
@@ -43,72 +43,49 @@ body {
   font-size: 12px;
 }
 
-body, html{
-  height: 98%;
-  padding: 0;
+input[type=text] {
+  border-radius: 5px;
+  border: 1px solid #cccccc;
+  padding: {
+    left: 2px;
+    top: 2px;
+    bottom: 2px;
+  }
+  margin: {
+    left: 5px;
+    right: 5px;
+  }
 }
 
+input[type=button] {
+  background-color: #eee;
+  border-radius: 5px;
+  padding-left: 15px !important;
+  padding-right: 15px !important;
+  margin: {
+    left: 5px;
+    right: 5px;
+  }
+  height: 32px;
+  border: 1px solid #ccc;
+  @include clickable;
 
-/* containers */
-div.container {
-  position: absolute;
-  z-index: 2;
+  &:hover {
+    background-color: #aaa;
+  }
 }
 
-/* nodes and legend items */
-div.node, div.legend {
-  background: #eee;
-  padding-left: 15px;
-  padding-right: 15px;
-  max-width: 250px;
-  word-wrap: break-word;
-  position:absolute;
-  text-align: center;
-  z-index: 7;
+.right {
+  float: right;
+}
 
-  &.syn {
-    @include node-border(black);
-    text-align: left;
-  }
+.messagebox {
+  margin: 1px;
+  width: 240px;
 
-  &.field {
-    @include node-border(blue);
-    @include clickable;
-    max-width: 180px;
-  }
-
-  &.drg {
-    @include node-border(red);
-  }
-
-  &.exclusiva {
-    @include node-border(green);
-  }
-
-  &.inclusiva {
-    @include node-border(orange);
-  }
-
-  &.super {
-    @include node-border(gray);
-  }
-
-  &.sub {
-    @include node-border(purple);
-  }
-
-  &.root {
-    background: #f5f5f5;
-    @include node-border(#e3e3e3);
-    @include border-radius(5px);
-    font-size: 20px;
-    z-index: 10;
-    max-width: 300px;
-    min-width: 200px;
-    min-height: 100px;
-    display: table-cell;
-    vertical-align: middle;
-
+  div.messagebox-buttons {
+    text-align: right;
+    margin-top: 10px;
   }
 }
 
@@ -116,6 +93,8 @@ div.node, div.legend {
 .clickable {
   @include clickable;
 }
+
+/***********Side panel************/
 
 #panels-container{
   max-width:  250px;
@@ -217,6 +196,8 @@ div.node, div.legend {
 }
 
 
+/***********Top bar************/
+
 #search-bar {
   position: fixed;
   width: 100%;
@@ -307,39 +288,89 @@ div.node, div.legend {
   }
 }
 
+/***********Nodes and Containers************/
 
+/* nodes and legend items */
+div.node, div.legend {
+  background: #eee;
+  padding-left: 15px;
+  padding-right: 15px;
+  max-width: 250px;
+  word-wrap: break-word;
+  position:absolute;
+  text-align: center;
+  z-index: 7;
 
-input[type=text] {
-  border-radius: 5px;
-  border: 1px solid #cccccc;
-  padding: {
-    left: 2px;
-    top: 2px;
-    bottom: 2px;
+  &.syn {
+    @include node-border(black);
+    text-align: left;
   }
-  margin: {
-    left: 5px;
-    right: 5px;
+
+  &.field {
+    @include node-border(blue);
+    @include clickable;
+    max-width: 180px;
+  }
+
+  &.drg {
+    @include node-border(red);
+  }
+
+  &.exclusiva {
+    @include node-border(green);
+  }
+
+  &.inclusiva {
+    @include node-border(orange);
+  }
+
+  &.super {
+    @include node-border(gray);
+  }
+
+  &.sub {
+    @include node-border(purple);
+  }
+
+  &.root {
+    background: #f5f5f5;
+    @include node-border(#e3e3e3);
+    @include border-radius(5px);
+    font-size: 20px;
+    z-index: 10;
+    max-width: 300px;
+    min-width: 200px;
+    min-height: 100px;
+    display: table-cell;
+    vertical-align: middle;
+
   }
 }
 
-input[type=button] {
-  background-color: #eee;
-  border-radius: 5px;
-  padding-left: 15px !important;
-  padding-right: 15px !important;
-  margin: {
-    left: 5px;
-    right: 5px;
-  }
-  height: 32px;
-  border: 1px solid #ccc;
-  @include clickable;
-
-  &:hover {
-    background-color: #aaa;
-  }
+.relatedness-container{
+  width: 100px;
+  height:  5px;
+  border: #49d 1px solid;
+  margin: 6px auto 6px auto;
 }
+
+.relatedness-display{
+  background: #49d;
+  height: 100%;
+  left: 0;
+}
+
+/* containers */
+div.container {
+  position: absolute;
+  z-index: 2;
+}
+
+.front-container{
+  z-index: 100;
+}
+
+/***********Overlay************/
 
 .docOverlay, #location-popup {
   height: 100%;
@@ -418,40 +449,13 @@ input[type=button] {
   }
 }
 
-.relatedness-container{
-  width: 100px;
-  height:  5px;
-  border: #49d 1px solid;
-  margin: 6px auto 6px auto;
-}
-
-.relatedness-display{
-  background: #49d;
-  height: 100%;
-  left: 0;
-}
-
-.messagebox {
-  margin: 1px;
-  width: 240px;
-
-  div.messagebox-buttons {
-    text-align: right;
-    margin-top: 10px;
-  }
-}
-
 #location-input{
   height: 25px;
 }
 
-.right {
-  float: right;
-}
 
-.front-container{
-  z-index: 100;
-}
+
+
 
 
 

@@ -296,3 +296,5 @@ function togglePanels() {
     }
     $panels.data('hidden', !panelHidden);
 }
+
+
