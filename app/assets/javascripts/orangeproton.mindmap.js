@@ -104,7 +104,7 @@ orangeproton.mindmap = {
     var otherWidth = panelHidden ? 20 : $("#panels").outerWidth() + 20;
     var windowWidth = window.innerWidth || document.body.offsetWidth || document.documentElement.offsetWidth;
     $("#mindmap").css({
-      width: windowWidth - otherWidth,
+      width: windowWidth - otherWidth- $("#hide-panels").width(),
       height: $(window).height() - $("#search-bar").outerHeight()
     });
   }
