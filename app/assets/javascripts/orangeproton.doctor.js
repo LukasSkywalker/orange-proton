@@ -88,6 +88,18 @@ orangeproton.doctor = {
                 var map = $('#map-frame').data('map');
                 map.setCenter(e.data.details.lat, e.data.details.long);
                 google.maps.event.trigger(map, 'resize');
+
+                map.removeMarker($('#map-frame').data('greenMarker'));
+
+                $('#map-frame').data('greenMarker', map.addMarker({
+                    lat: e.data.details.lat,
+                    lng: e.data.details.long,
+                    zIndex: google.maps.Marker.MAX_ZINDEX + 1,
+                    icon: "http://maps.google.com/mapfiles/ms/micons/green-dot.png",
+                    infoWindow: {
+                        content: '<div style="max-width: 200px;">' + e.data.details.title + '<br />' + e.data.details.name + '<br />' + e.data.details.address + '</div>'
+                    }
+                }));
             });
             $docList.append($menuItem);
         }
