@@ -19,9 +19,9 @@
 @mixin clickable {
   &:hover{
     cursor: pointer;
+    color: rgb(225,27,106); /* some red */
   }
 }
-
 
 /***********General************/
 
@@ -131,6 +131,7 @@ input[type=button] {
     .panel{
       margin: 10px;
       margin-left: 0;
+      background: white;
       border: 1px solid #c5c5c5;
       @include border-radius(7px);
       padding: 0 10px 0 10px;
@@ -204,6 +205,7 @@ input[type=button] {
   height: 50px;
   background: #f5f5f5;
   border-bottom: 1px solid #c5c5c5;
+  /* box-shadow: 0px 3px 8px #666; /* looks pretty neat... */
   top: 0;
   left: 0;
   z-index: 11;
@@ -219,7 +221,7 @@ input[type=button] {
 
   #search-button {
     margin-left: 16px;
-    margin-top: 12px;
+    margin-top: 16px;
     padding-top: 3px;
     float: left;
     @include clickable;
@@ -235,32 +237,23 @@ input[type=button] {
     border-radius: 7px;
     float: right;
     background: url(arrow.png) no-repeat right white;
-    height: 32px;
+    height: 29px !important;
     right: 15px;
     top: 10px;
 
     &.svg {
       background: url(arrow.svg) no-repeat right white !important;
       background-size: 30px 15px !important; /* you need to make your svg bigger than 1 px = 1 px to trick the browser into not prerendering it...*/
-      height: 27px !important;
     }
   }
 
   #location-container{
-    margin: 16px auto 0 auto;
+    margin: 19px auto 0 auto;
     max-width: 550px;
     overflow: hidden;
-    height: 35px;
-    right: 100px;
 
     p {
-      position: relative;
       display: inline;
-      height: 30px;
-      line-height: 30px;
-      vertical-align: middle;
-      margin: 0;
-      max-width: 200px;
     }
 
     .globe{
@@ -270,7 +263,6 @@ input[type=button] {
 
     .location {
       max-width: 430px;
-      float: left;
       font-size: 0.8em;
       @include clickable;
     }

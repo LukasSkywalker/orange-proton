@@ -26,7 +26,7 @@ class DoctorLocator
       assert_kind_of(Numeric, d_lat)  unless d_lat.nil?
 
       # Calculate distances. Invalid Coordinates are considered to be *very* far away.
-      Rails.logger.info "Doctor entry <#{doc}> has illegal coordinates" if (d_lat.nil? || d_long.nil?)
+      Rails.logger.info "Doctor entry <#{doc}> has illegal/missing coordinates" if (d_lat.nil? || d_long.nil?)
       doc['distance'] = (d_lat.nil? or d_long.nil?) ? 999999 : 
         Geocoder::Calculations.distance_between([d_lat, d_long], [lat, long])
     end
