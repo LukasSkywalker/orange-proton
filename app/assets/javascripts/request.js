@@ -207,7 +207,8 @@ var mindmapper = {
                 var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
                 var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
-                var inclusiva = orangeproton.mindmap.generateBubbles(data.inclusiva, options.max_inclusiva, 'inclusiva', icdPattern);
+                var inc = orangeproton.mindmap.preprocessNodes(data.inclusiva);
+                var inclusiva = orangeproton.mindmap.generateBubbles(inc, options.max_inclusiva, 'inclusiva', icdPattern);
                 var c = $mm.megamind('addCanvas', ['bottom'], 'inclusiva-exclusiva');
                 c.addNodes(exclusiva.concat(inclusiva));
 
