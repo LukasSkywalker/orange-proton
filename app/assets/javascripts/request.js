@@ -3,6 +3,7 @@ var orangeproton = orangeproton || {};
 $(document).ready(function () {
     var $codeInput = $('#code-name');
     var $lang = $('#lang');
+    var $catalog = $('#catalog');
     var $mode = $('#mode');
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
@@ -28,6 +29,11 @@ $(document).ready(function () {
 
     I18n.defaultLocale = 'de';
     I18n.fallbacks = true;
+    // add event handler for catalog change on UI element
+    $catalog.change(function () {
+      $(document).trigger('paramChange');
+    });
+
     // add event handler for language change on UI element
     $lang.change(function () {
       $(document).trigger('paramChange');
@@ -55,26 +61,39 @@ $(document).ready(function () {
 
     // add event handler for param changes (starts a search)
     $(document).on('paramChange', function (e, code, lang, force, mode) {
-        var $code = $('#code-name');
-        var $lang = $('#lang');
-        var $mode = $('#mode');
+        var $code    = $('#code-name');
+        var $lang    = $('#lang');
+        var $catalog = $('#catalog');
+        var $mode    = $('#mode');
 
         code = code || $code.val();
+        catalog = catalog || $catalog.val();
         lang = lang || $lang.val();
         mode = mode || $mode.val();
         code = code.toUpperCase();
 
         $code.val(code);
         $lang.val(lang);
+        $catalog.val(catalog);
         $mode.val(mode);
 
+        // Change language if requested
         orangeproton.language.setLocale(lang);
+
+
         if (code != '') {
-            History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang + "&mode=" + mode);
+            // make sure back button works
+            History.pushState(
+                    {code: code, lang: lang, catalog: catalog}, 
+                    "OrangeProton", 
+                    "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
+                    );
+
             if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode)
                 History.Adapter.trigger(window, 'statechange');
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
+            mindmapper.prevCatalog = catalog;
             mindmapper.prevMode = mode;
         }
     });
@@ -135,6 +154,7 @@ $(document).ready(function () {
     if (codeParam !== undefined && codeParam !== '') {
         var code = codeParam.toUpperCase();
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
+        var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
         var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
         $(document).trigger('paramChange', [code, lang, false, mode]);
     }
@@ -168,12 +188,10 @@ var mindmapper = {
      * @param {String} lang the search language
      */
     getICD: function (input, lang, mode) {
-        var params = '?code={0}&lang={1}'.format(input, lang);
+        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, "icd_2012_ch") // TODO I get invalid parameter catalog if I use catalog here, prolly cuz it's not defined);
         var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
-            url: op.apiBase + '/fields/get' + params + '&count=' + count +
-           '&catalog=icd_2012_ch' // TODO Implement catalog selection 
-            ,
+            url: op.apiBase + '/fields/get' + params + '&count=' + count,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",

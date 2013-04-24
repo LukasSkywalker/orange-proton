@@ -9,16 +9,18 @@
         <div id="search-bar">
             <input id="code-name" type="text" placeholder="ICD Code">
             <p id="search-button" class="icon-search icon-large clickable"></p>
+            <div class="catalog-arrow">
+                <select name="catalog" id="catalog" size="1">
+                    <option value="icd_2010_ch">ICD 2010 CH</option>
+                    <option value="icd_2012_ch">ICD 2012 CH</option>
+                    <option value="chop_2012_ch">CHOP 2012 CH</option>
+                    <option value="chop_2013_ch">CHOP 2013 CH</option>
+                </select>
+            </div>
             <div id="location-container">
               <div id="location-inner" class="clickable">
                 <p class="location"></p>
               </div>
-            </div>
-            <div class="mode-arrow">
-              <select name="mode" id="mode" size="1">
-                <option value="sd">Standard</option>
-                <option value="ad">Advanced</option>
-              </select>
             </div>
             <div class="hide-arrow">
                 <select name="lang" id="lang" size="1">
@@ -27,6 +29,12 @@
                     <option value="it">Italiano</option>
                     <option value="en">English</option>
                 </select>
+            </div>
+            <div class="mode-arrow">
+              <select name="mode" id="mode" size="1">
+                <option value="sd">Standard</option>
+                <option value="ad">Advanced</option>
+              </select>
             </div>
         </div>
         <div id="hide-panels" class="clickable"><h3>?</h3></div>

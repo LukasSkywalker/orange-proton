@@ -10,6 +10,7 @@ class API < Grape::API
   format :json
 
   # The InfoProvider used to return all Query Results
+  # TODO These should really be @@ and not publicly accessible. Only the tests need them.
   cattr_accessor :doctor_locator
   cattr_accessor :provider
   cattr_accessor :localised_data_provider
@@ -46,7 +47,7 @@ class API < Grape::API
         desc: 'The language of the response'
       requires :catalog, type: String, 
         regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_cd\b|icd_2012_ch\b/,
-        desc: 'The catalog of the response'
+        desc: 'The catalog the code is to be searched in'
     end
 
     get 'get' do
@@ -57,8 +58,9 @@ class API < Grape::API
       # TODO This should be handled with an api error returned to the client
       # instead.
 
-      type     = get_code_type(code)
-      # the regex should not differ from the regex used to check this
+      type = get_code_type(code)
+      # the regex should not differ from the regex used to check this,
+      # so this method should detect a code type as well
       assert(type != :unknown) 
 
       # Get data

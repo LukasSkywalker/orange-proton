@@ -9,34 +9,35 @@ describe DatabaseAdapter do
   end
 
   it 'should return drgs or empty field for icd code' do
-    drg = @adapter.get_drgs_for_icd('A00.0')
+    drg = @adapter.get_drgs_for_code('A00.0', 'icd_2012_ch')
     drg.should include('G46A', 'G67D', 'G50Z', 'G67B', 'G46B', 'G67C', 'G46C', 'A13F')
 
-    no_drg = @adapter.get_drgs_for_icd('A00')
+    no_drg = @adapter.get_drgs_for_code('A00', 'icd_2012_ch')
     no_drg.should be_empty
   end
 
   it 'should return drgs or empty field for chop code' do
-    chop = @adapter.get_drgs_for_chop('00.10')
+    chop = @adapter.get_drgs_for_code('00.10', 'chop_2013_ch')
     chop.should include('S01Z', 'J11B', 'L18B')
 
-    no_chop = @adapter.get_drgs_for_chop('00.4')
+    no_chop = @adapter.get_drgs_for_code('00.4', 'chop_2013_ch')
     no_chop.should be_empty
   end
 
   it 'should get an icd entry' do
-    entry = @adapter.get_icd_entry('B20.9', 'en')
+    # example of en entry in the en but not the german db
+    entry = @adapter.get_catalog_entry('B20.9', 'en', 'icd_2012_ch')
     entry.should eq(@client['icd_2012_ch']['en'].find_one({code: 'B20.9'}))
 
-    no_entry = @adapter.get_icd_entry('B20.9', 'de')
+    no_entry = @adapter.get_catalog_entry('B20.9', 'de', 'icd_2012_ch')
     no_entry.should be_nil
     end
 
   it 'should get a chop entry' do
-    entry = @adapter.get_chop_entry('44.22', 'it')
+    entry = @adapter.get_catalog_entry('44.22', 'it', 'chop_2013_ch')
     entry.should eq(@client['chop_2013_ch']['it'].find_one({code: '44.22'}))
 
-    no_entry = @adapter.get_chop_entry('88.00', 'it')
+    no_entry = @adapter.get_catalog_entry('88.00', 'it', 'chop_2013_ch')
     no_entry.should be_nil
   end
 
@@ -48,16 +49,6 @@ describe DatabaseAdapter do
   it 'should find the fs code by mdc' do
     fs = @adapter.get_fs_code_by_mdc(15)
     fs.should==[73]
-  end
-
-  it 'should find manually mapped fs code for icd' do
-    fs = @adapter.get_manually_mapped_fs_codes_for_icd('L65')
-    fs.should==[7]
-  end
-
-  it 'should find manually mapped fs code for chop' do
-    fs = @adapter.get_manually_mapped_fs_codes_for_chop('88.23')
-    fs.should==[129]
   end
 
   it 'should return all thesaur collections' do
@@ -137,15 +128,6 @@ describe DatabaseAdapter do
 
     @adapter.instance_variable_get(:@compounds).stub(:find).and_return(['any compound'])
     @adapter.get_compound_results_components.should eq(['any compound'])
-  end
-
-  it 'should find fields with character matching' do
-    fields = @adapter.get_fields_by_char_match('F65', 11).size
-    fields.should be(11)
-
-    #stubbed_cursor = @adapter.instance_variable_get(:@r_icd_fs).stub(:find).with(anything, anything).and_return('any match')
-    #stubbed_cursor.stub(:limit).with(1).and_return('any match')
-    #@adapter.get_fields_by_char_match('F65', 11).should eq('any match')
   end
 
   it 'should find the icd ranges' do

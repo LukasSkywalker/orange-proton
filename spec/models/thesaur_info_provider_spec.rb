@@ -24,15 +24,11 @@ describe ThesaurInfoProvider do
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'chirurgie')
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'gynäkologie')
 
-    @db.should_receive(:get_fs_name).with(2, 'de').exactly(:once)
-    @db.should_receive(:get_fs_name).with(3, 'de').exactly(:once)
-    @db.should_not_receive(:get_fs_name).with(4, anything)
-    @db.should_not_receive(:get_fs_name).with(5, anything)
 
-    fields = @provider.get_fields('B26.9', 4, 'de')
+    fields = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
 
     fields.should have_at_most(4).items
-    fields.should ==[FieldEntry.new('Allg. Chirurgie', 1, 2), FieldEntry.new('Plast. Chirurgie', 1, 3)]
+    fields.should ==[FieldEntry.new(1, 2), FieldEntry.new(1, 3)]
   end
 
   it 'should only return fields of second thesaur fs codes' do
@@ -42,15 +38,10 @@ describe ThesaurInfoProvider do
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'chirurgie')
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'gynäkologie')
 
-    @db.should_receive(:get_fs_name).with(4, 'de').exactly(:once)
-    @db.should_receive(:get_fs_name).with(5, 'de').exactly(:once)
-    @db.should_not_receive(:get_fs_name).with(2, anything)
-    @db.should_not_receive(:get_fs_name).with(3, anything)
-
-    fields = @provider.get_fields('B26.9', 4, 'de')
+    fields = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
 
     fields.should have_at_most(4).items
-    fields.should ==[FieldEntry.new('Allg. Gynäkologie', 1, 4), FieldEntry.new('Invasive Gynäkologie', 1, 5)]
+    fields.should ==[FieldEntry.new(1, 4), FieldEntry.new(1, 5)]
   end
 
   it 'should return all fields of all thesaurs' do
@@ -60,18 +51,13 @@ describe ThesaurInfoProvider do
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'chirurgie')
     @db.should_receive(:is_icd_code_in_thesaur_named?).with('B26.9', 'gynäkologie')
 
-    @db.should_receive(:get_fs_name).with(2, 'de').exactly(:once)
-    @db.should_receive(:get_fs_name).with(3, 'de').exactly(:once)
-    @db.should_receive(:get_fs_name).with(4, 'de').exactly(:once)
-    @db.should_receive(:get_fs_name).with(5, 'de').exactly(:once)
-
-    fields = @provider.get_fields('B26.9', 4, 'de')
+    fields = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
 
     fields.should have_at_most(4).items
-    fields.should ==[FieldEntry.new('Allg. Chirurgie', 1, 2),
-                     FieldEntry.new('Plast. Chirurgie', 1, 3),
-                     FieldEntry.new('Allg. Gynäkologie', 1, 4),
-                     FieldEntry.new('Invasive Gynäkologie', 1, 5)]
+    fields.should ==[FieldEntry.new( 1, 2),
+                     FieldEntry.new(1, 3),
+                     FieldEntry.new(1, 4),
+                     FieldEntry.new(1, 5)]
 
   end
 
@@ -84,7 +70,7 @@ describe ThesaurInfoProvider do
 
     @db.should_not_receive(:get_fs_name)
 
-    fields = @provider.get_fields('B26.9', 4, 'de')
+    fields = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
 
     fields.should be_empty
   end

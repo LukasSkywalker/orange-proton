@@ -84,7 +84,7 @@ class DatabaseAdapter
   # @return An array of the drgs (most common diagnoses) for a given ICD/CHOP code.
   def get_drgs_for_code(code, catalog)
     assert_catalog(catalog)
-    assert_icd_code(code)
+    assert_code(code)
     doc = @catalogs[catalog]["de"].find_one({code: code})
     doc.nil? ? [] : doc['drgs']
   end
@@ -206,17 +206,6 @@ class DatabaseAdapter
     #assert_field_code(d[0]['result']) if d.length > 0
     #assert_field_code(d[0]['components'][0]) if d.length > 0
     d
-  end
-
-  # @return At most max_count fields related to the icd_code specified, sorted
-  # by character sequence match length between the german illness name and the 
-  # field name.
-  def get_fields_by_char_match(icd_code, max_count)
-    assert_count(max_count)
-    assert_icd_code(icd_code)
-    @r_icd_fs.find({icd_code: icd_code, by_seq_match: {'$exists' => true}},
-                   fields: [:by_seq_match,:fs_code],
-                   sort: {by_seq_match: 'descending'}).limit(max_count).to_a
   end
 
   # @return An array of all ICD Code ranges (as specified by the who) a given 

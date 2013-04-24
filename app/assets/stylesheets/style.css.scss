@@ -8,6 +8,9 @@
  $light-grey: #eeeeee;
  $dark-grey: #aaa;
  $grey: #c5c5c5;
+ /* TODO use constants for positions too 
+  
+  are these sass doing? Pretty neat...*/
 
 /***********MIXINS************/
 
@@ -167,7 +170,6 @@ input[type=button] {
         margin-top: 3px;
       }
 
-
       input[type=button]{
         margin: 5px;
       }
@@ -214,6 +216,7 @@ input[type=button] {
 
 #search-bar {
   position: fixed;
+  overflow: hidden; /* allow contained divs to be side by side */
   width: 100%;
   height: 50px;
   background: $light-grey;
@@ -240,10 +243,9 @@ input[type=button] {
     @include clickable;
   }
 
+  /* TODO rename, this is only used for the language selection */
   .hide-arrow {
     border: 1px solid $grey;
-    display: inline;
-    position: absolute;
     width: 100px;
     padding-top: 3px;
     overflow: hidden;
@@ -251,8 +253,9 @@ input[type=button] {
     float: right;
     background: url(arrow.png) no-repeat right white;
     height: 29px !important;
-    right: 15px;
-    top: 10px;
+    margin-left: 16px;
+    margin-top: 10px;
+    margin-right: 16px;
 
     &.svg {
       background: url(arrow.svg) no-repeat right white !important;
@@ -260,19 +263,35 @@ input[type=button] {
     }
   }
 
+  /* TODO Share code with above */
  .mode-arrow {
    border: 1px solid $grey;
-   display: inline;
-   position: absolute;
    width: 105px;
    padding-top: 3px;
-   overflow: hidden;
    border-radius: 7px;
    float: right;
    background: url(arrow.png) no-repeat right white;
    height: 29px !important;
-   right: 135px;
-   top: 10px;
+   margin-left: 16px;
+   margin-top: 10px;
+
+   &.svg {
+     background: url(arrow.svg) no-repeat right white !important;
+     background-size: 30px 15px !important;
+   }
+  }
+
+  /* TODO Share code with above */
+  .catalog-arrow {
+   border: 1px solid $grey;
+   width: 155px;
+   padding-top: 3px;
+   border-radius: 7px;
+   float: left;
+   background: url(arrow.png) no-repeat right white;
+   height: 29px !important;
+   margin-left: 16px;
+   margin-top: 10px;
 
    &.svg {
      background: url(arrow.svg) no-repeat right white !important;
@@ -283,14 +302,14 @@ input[type=button] {
   #location-container{
     height: 32px;
     max-width: 300px;
-    overflow: hidden;
     @include border-radius(5px);
     border: 1px solid $grey;
     background: white;
     line-height: 28px;
     vertical-align: center;
     margin-top: 10px;
-    margin-left: 290px;
+    float:left;
+    margin-left: 16px;
 
     #location-inner{
       padding: 2px;
@@ -325,7 +344,7 @@ input[type=button] {
 
   #mode {
     background: transparent;
-    width: 125px;
+    width: 105px;
     line-height: 1;
     border: 0;
     border-radius: 0;
@@ -333,6 +352,18 @@ input[type=button] {
     height: 25px;
     -webkit-appearance: none;
   }
+  
+  #catalog {
+    background: transparent;
+    width: 155px;
+    line-height: 1;
+    border: 0;
+    border-radius: 0;
+    padding: 3px 5px 3px 15px;
+    height: 25px;
+    -webkit-appearance: none;
+  }
+  
 }
 
 /***********Nodes and Containers************/

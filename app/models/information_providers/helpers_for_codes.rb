@@ -1,11 +1,11 @@
+
+
 def assert_language(str)
-  raise "#{str} is not a valid language " unless str == 'de' || str == 'en' || str == 'it' || str == 'fr'
+  raise "#{str} is not a valid language" unless str == 'de' || str == 'en' || str == 'it' || str == 'fr'
 end
 
 def assert_field_code(fs_code)
-  assert_kind_of(Integer, fs_code)
-  assert(fs_code >= 2)
-  assert(fs_code <= 210)
+  raise "#{fs_code} is not a valid field code" unless fs_code.kind_of?(Integer) && fs_code >= 2 && fs_code <= 210
 end
 
 # classifies the code from user input to icd or chop or unknown

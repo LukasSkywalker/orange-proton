@@ -1,6 +1,11 @@
 #encoding: utf-8
 require 'spec_helper'
 
+class DatabaseInfoProvider
+  attr_reader :db   # we need to be able to access this in order to stub it.
+end
+
+
 describe StringmatchInfoProvider do
 
   before do
@@ -18,20 +23,19 @@ describe StringmatchInfoProvider do
     ]
     @provider = StringmatchInfoProvider.new
     @db = @provider.db
-    @db.stub(:get_fs_name).with(2, anything).and_return('codologie')
 
   end
 
   it 'should recognize keyword' do
     @sampleentry['text'] = 'This is a TEST'
-    @db.stub(:get_icd_entry).with(anything, 'de').and_return(@sampleentry)
+    @db.stub(:get_catalog_entry).with(anything, 'de', 'icd_2012_ch').and_return(@sampleentry)
     @returned_keywords[0]['keyword'] = 'Test'
     @returned_keywords[0]['fmhcodes'] = [2]
     @db.stub(:get_fachgebiete_keywords).and_return(@returned_keywords)
 
-    fields = @provider.get_fields('B00',4,'de')
+    fields = @provider.get_fields('B00',4,'icd_2012_ch')
 
-    fields.should ==[FieldEntry.new('codologie', 1, 2)]
+    fields.should ==[FieldEntry.new(1, 2)]
   end
 
   it 'should not recognize keyword not contained' do
@@ -41,7 +45,7 @@ describe StringmatchInfoProvider do
     @returned_keywords[0]['fmhcodes'] = [2]
     @db.stub(:get_fachgebiete_keywords).and_return(@returned_keywords)
 
-    fields = @provider.get_fields('B00',4,'de')
+    fields = @provider.get_fields('B00',4,'icd_2012_ch')
 
     fields.should ==[]
   end
@@ -54,13 +58,13 @@ describe StringmatchInfoProvider do
     @returned_keywords[0]['fmhcodes'] = [2]
     @db.stub(:get_fachgebiete_keywords).and_return(@returned_keywords)
 
-    fields = @provider.get_fields('B00',4,'de')
+    fields = @provider.get_fields('B00',4,'icd_2012_ch')
 
     fields.should ==[]
   end
 
-  it 'should raise error when keyword is not available in german' do
-    expect{@provider.get_fields('B20.9', 1, 'en')}.to raise_error(ProviderLookupError, "no_icd_chop_data")
+  it 'should return nothing when keyword is not available in german' do
+    @provider.get_fields('B20.9', 1, 'icd_2012_ch')==[] # this icd code does not exist
   end
 
 end

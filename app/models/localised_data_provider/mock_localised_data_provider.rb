@@ -7,6 +7,7 @@ class MockLocalisedDataProvider
     assert_code(code) # we are replying with an icd code here, don't ask for something
     # else! PF: Which test failed when this was assert_icd_code???
     assert_language(language)
+    {data:
     {
         :superclass => 'B26',
         :text => 'Mumps',
@@ -14,12 +15,14 @@ class MockLocalisedDataProvider
         :synonyms => %w(Ziegenpeter Alpoehi Heidi),
         :drgs => %w(A13F A13C A13D),
         :superclass_text => 'SomeTextHere'
+    }  ,
+     :language => "de"
     }
   end
 
   def localise_field_entries(api_fields_array, language)
-    # TODO ... how did this work without a db until now?
-    raise NotImplementedError
+    # TODO Implement and use in tests
+    #raise NotImplementedError
   end
 
 end

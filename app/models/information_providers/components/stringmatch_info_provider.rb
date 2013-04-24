@@ -10,7 +10,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     # all the keywords are in German, so we need the german entry
     entry = @db.get_catalog_entry(code, 'de', catalog)
     Rails.logger.info entry
-    return [] unless @db # cannot work unless there is a german entry
+    return [] if entry.nil? # cannot work unless there is a german entry
 
     keywords = @db.get_fachgebiete_keywords()
     get_fs_for_entry(keywords, entry, max_count)

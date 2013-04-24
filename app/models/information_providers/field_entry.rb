@@ -15,19 +15,26 @@ class FieldEntry
     @code = field_code.to_i
   end
 
+  private
+  def clamp_relatedness
+    @relatedness = 1.0 if @relatedness > 1.0
+    @relatedness = 0.0 if @relatedness < 0.0
+  end
+  public
+
   # clamps the relatedness to the allowed range
   def increase_relatedness(r)
     @relatedness += r
-    @relatedness = 1.0 if @relatedness > 1.0
-    @relatedness = 0.0 if @relatedness < 0.0
-    assert_relatedness(@relatedness)
+    clamp_relatedness
   end
 
+  # clamps the relatedness to the allowed range
   def multiply_relatedness(f)
     @relatedness *= f
-    assert_relatedness(f)
+    clamp_relatedness
   end
 
+  # @param r a valid relatedness ([0,1])
   def set_relatedness(r)
     assert_relatedness(r)
     @relatedness = r
@@ -94,9 +101,9 @@ def normalize_relatedness(api_fields_array)
   return fields_multiply_relatedness(api_fields_array, 1.0/tot)
 end
 
-# Multipliy the relatedness of the fields in fcs by fac (0-1). In place.
+# Multipliy the relatedness of the fields in fcs by fac.
+# Clamps the resulting relatedness. In place.
 def fields_multiply_relatedness(api_fields_array, fac)
-  assert_relatedness(fac)
   assert_fields_array(api_fields_array)
 
   api_fields_array.each { |fc| fc.multiply_relatedness( fac) }
