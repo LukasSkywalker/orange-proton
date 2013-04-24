@@ -28,7 +28,7 @@
 @mixin clickable {
   &:hover{
     cursor: pointer;
-    background-color: $grey;
+    background-color: $dark-grey;
   }
 }
 
@@ -53,7 +53,7 @@ body {
 }
 
 input[type=text] {
-  border-radius: 5px;
+  @include border-radius(5px);
   border: 1px solid $grey;
   padding: {
     left: 2px;
@@ -264,7 +264,7 @@ input[type=button] {
    border: 1px solid $grey;
    display: inline;
    position: absolute;
-   width: 100px;
+   width: 105px;
    padding-top: 3px;
    overflow: hidden;
    border-radius: 7px;
@@ -281,15 +281,21 @@ input[type=button] {
   }
 
   #location-container{
-    margin: 7px auto 0 auto;
-    height: 30px;
+    height: 32px;
     max-width: 300px;
     overflow: hidden;
-    @include border-radius(7px);
-    background: $grey;
-    line-height: 30px;
+    @include border-radius(5px);
+    border: 1px solid $grey;
+    background: white;
+    line-height: 28px;
     vertical-align: center;
-    padding: 3px;
+    margin-top: 10px;
+    margin-left: 290px;
+
+    #location-inner{
+      padding: 2px;
+      padding-left: 5px;
+    }
 
     p {
       display: inline;
@@ -303,7 +309,6 @@ input[type=button] {
     .location {
       max-width: 430px;
       font-size: 0.8em;
-      @include clickable;
     }
   }
 
@@ -394,6 +399,7 @@ div.node, div.legend {
   height:  5px;
   border: $blue 1px solid;
   margin: 6px auto 6px auto;
+  background: white;
 }
 
 .relatedness-display{
@@ -407,18 +413,65 @@ div.node, div.legend {
 div.container {
   position: absolute;
   z-index: 2;
-  padding: 5px;
 
-  &.active{
-    background: $light-grey;
+  //black
+  &.syn {
+    &.active{
+      background: lighten(black, 30%);
+    }
   }
 
-  .container-inner{
+  //blue
+  &.field {
+    &.active{
+      background: lighten($blue, 30%);
+    }
+  }
+
+  //red
+  &.drg {
+    &.active, &.active2{
+      background: lighten($red, 30%);
+    }
+  }
+
+  //orange
+  &.inclusiva-exclusiva {
+    &.active, &.active2{
+      background: lighten($orange, 30%);
+    }
+  }
+
+  //grey
+  &.super {
+    &.active, &.active2{
+      background: lighten($grey, 10%);
+    }
+  }
+
+  //purple
+  &.sub {
+    &.active, &.active2{
+      background: lighten($purple, 30%);
+    }
+  }
+
+  &.active, &.active2{
+    .container-inner{
+      p{
+        display: inline;
+      }
+    }
+  }
+
+  .container-inner {
     position: relative;
     width: 100%;
     height: 100%;
     p{
+      padding: 5px;
       position: absolute;
+      display: none;
       //bottom-right
       &.syn {
         bottom: 0;
@@ -454,6 +507,7 @@ div.container {
         top: 0;
         right: 10px;
       }
+
     }
   }
 
