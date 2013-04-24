@@ -24,7 +24,7 @@ orangeproton.location = {
     var url = 'http://freegeoip.net/json/';
     jQuery.ajax({
       url: url,
-      type: 'GET',
+      dataType: 'jsonp',
       success: function( response ) {
         var lat = response.latitude;
         var lng = response.longitude;
