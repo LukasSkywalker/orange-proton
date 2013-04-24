@@ -46,7 +46,7 @@ class API < Grape::API
       requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/,
         desc: 'The language of the response'
       requires :catalog, type: String, 
-        regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_cd\b|icd_2012_ch\b/,
+        regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_ch\b|icd_2012_ch\b/,
         desc: 'The catalog the code is to be searched in'
     end
 

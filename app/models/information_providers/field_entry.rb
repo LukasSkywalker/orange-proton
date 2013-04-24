@@ -41,7 +41,7 @@ class FieldEntry
   end
 
   def to_s
-    "Name: #{self.name}, Relatedness: #{self.relatedness}, Code: #{self.code}"
+    "<Name: #{self.name}, Relatedness: #{self.relatedness}, Code: #{self.code}>"
   end
 
   def ==(other)
