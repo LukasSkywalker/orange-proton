@@ -3,6 +3,7 @@ var orangeproton = orangeproton || {};
 $(document).ready(function () {
     var $codeInput = $('#code-name');
     var $lang = $('#lang');
+    var $mode = $('#mode');
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
 
@@ -32,6 +33,11 @@ $(document).ready(function () {
       $(document).trigger('paramChange');
     });
 
+    // add event handler for mode change on UI element
+    $mode.change(function () {
+        $(document).trigger('paramChange');
+    });
+
     // add event handler for location change
     $(document).on('locationChange', function () {
         var pos = orangeproton.location.getLocation();
@@ -48,25 +54,28 @@ $(document).ready(function () {
     $(window).resize( $.debounce( 250, resize ) );
 
     // add event handler for param changes (starts a search)
-    $(document).on('paramChange', function (e, code, lang, force) {
+    $(document).on('paramChange', function (e, code, lang, force, mode) {
         var $code = $('#code-name');
         var $lang = $('#lang');
+        var $mode = $('#mode');
 
         code = code || $code.val();
         lang = lang || $lang.val();
-
+        mode = mode || $mode.val();
         code = code.toUpperCase();
 
         $code.val(code);
         $lang.val(lang);
+        $mode.val(mode);
 
         orangeproton.language.setLocale(lang);
         if (code != '') {
-            History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang);
-            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang)
+            History.pushState({code: code, lang: lang}, "OrangeProton", "?code=" + code + "&lang=" + lang + "&mode=" + mode);
+            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode)
                 History.Adapter.trigger(window, 'statechange');
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
+            mindmapper.prevMode = mode;
         }
     });
 
@@ -96,7 +105,7 @@ $(document).ready(function () {
     // Watch for changes in the history and start new search
     History.Adapter.bind(window, 'statechange', function () { // Note: We are using statechange instead of popstate
         var State = History.getState(); // Note: We are using History.getState() instead of event.state
-        var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de)
+        var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de&mode=sd)
         var lang = State.data.lang;
 
         if (code !== undefined && code !== '') {
@@ -105,7 +114,7 @@ $(document).ready(function () {
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
-            mindmapper.getICD(code, lang);
+            mindmapper.getICD(code, lang, $mode.val());
         }
     });
 
@@ -114,7 +123,8 @@ $(document).ready(function () {
     if (codeParam !== undefined && codeParam !== '') {
         var code = codeParam.toUpperCase();
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
-        $(document).trigger('paramChange', [code, lang]);
+        var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
+        $(document).trigger('paramChange', [code, lang, false, mode]);
     }
 
     // set the locale and load translations
@@ -123,6 +133,7 @@ $(document).ready(function () {
     //add svg class to elements where we have an SVG-image
     if (orangeproton.generic.supportsSVG()) {
         $('.hide-arrow').addClass('svg');
+        $('.mode-arrow').addClass('svg');
     }
 });
 /**
@@ -132,6 +143,7 @@ $(document).ready(function () {
 var mindmapper = {
     prevLang: null,
     prevCode: null,
+    prevMode: null,
 
     /**
      * Performs the API request and displays the data in the mindmap
@@ -143,7 +155,7 @@ var mindmapper = {
      * @param {String} input the search term
      * @param {String} lang the search language
      */
-    getICD: function (input, lang) {
+    getICD: function (input, lang, mode) {
         var params = '?code={0}&lang={1}'.format(input, lang);
         var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
@@ -199,18 +211,21 @@ var mindmapper = {
                 var c = $mm.megamind('addCanvas', ['right'], 'sub');
                 c.addNodes(subclasses);
 
-                var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                var c = $mm.megamind('addCanvas', ['top'], 'drg');
-                c.addNodes(drgs);
+                //mode setting
+                if(mode == 'ad'){
+                    var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
+                    var c = $mm.megamind('addCanvas', ['top'], 'drg');
+                    c.addNodes(drgs);
 
-                var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
-                var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
-                var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
+                    var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
+                    var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
+                    var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
 
-                var inc = orangeproton.mindmap.preprocessNodes(data.inclusiva);
-                var inclusiva = orangeproton.mindmap.generateBubbles(inc, options.max_inclusiva, 'inclusiva', icdPattern);
-                var c = $mm.megamind('addCanvas', ['bottom'], 'inclusiva-exclusiva');
-                c.addNodes(exclusiva.concat(inclusiva));
+                    var inc = orangeproton.mindmap.preprocessNodes(data.inclusiva);
+                    var inclusiva = orangeproton.mindmap.generateBubbles(inc, options.max_inclusiva, 'inclusiva', icdPattern);
+                    var c = $mm.megamind('addCanvas', ['bottom'], 'inclusiva-exclusiva');
+                    c.addNodes(exclusiva.concat(inclusiva));
+                }
 
                 var s = [];
                 var fields = response.result.fields;
