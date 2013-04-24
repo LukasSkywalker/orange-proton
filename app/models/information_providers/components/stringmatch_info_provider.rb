@@ -3,26 +3,27 @@
 # This is based on a manually created list of keywords and exclusiva.
 class StringmatchInfoProvider < DatabaseInfoProvider
   
-  def get_fields(icd_code, max_count, language)
-    assert_language(language)
+  def get_fields(icd_code, max_count, catalog)
+    @db.assert_catalog(catalog)
     assert_count(max_count)
     return [] unless get_code_type(icd_code) == :icd
 
     # all the keywords are in German, so we need the german entry
-    entry = self.db.get_icd_entry(icd_code, 'de')
+    entry = @db.get_catalog_entry(icd_code, 'de', catalog)
     Rails.logger.info entry
-    raise ProviderLookupError.new('no_icd_chop_data', language) if entry.nil?
+    return [] if entry.nil? # Cannot work if we don't have a german entry
 
-    keywords = self.db.get_fachgebiete_keywords() 
+    keywords = @db.get_fachgebiete_keywords() 
 
     fs = [] # array of fields (FieldEntry s)
 
     # Search for keywords in illness text (main name)
     code_text = entry['text'].downcase 
     keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry, 
-                        1, # full relatedness for keywords in main name
-                        language))
+      fs.concat(get_fs(code_text, 
+                       keyword_entry,
+                        1 # full relatedness for keywords in main name
+                      ) )
     end
 
     # Consolidate synonyms into one string
@@ -37,9 +38,9 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     # Search for keywords in synonym string
     keywords.each do |keyword_entry|
       fs.concat(get_fs(code_text, keyword_entry, 
-                        0.3, # keywords matched in synonyms are just fallbacks
+                        0.3 # keywords matched in synonyms are just fallbacks
                         # TODO Couldn't we raise this a bit?
-                        language))
+                      ) )
     end
     
     # TODO Take inclusiva into account (?)
@@ -51,7 +52,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
   # @return An array of the FieldEntries of the given keyword_entry
   # if code_text contains the keyword and none of the exclusiva 
   # otherwise the array is empty.
-  def get_fs(code_text, keyword_entry, relatedness, language)
+  def get_fs(code_text, keyword_entry, relatedness)
     return [] unless code_text.include? keyword_entry['keyword'].downcase
 
     keyword_entry['exklusiva'].each do |exkl|
@@ -61,7 +62,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     end
 
     return keyword_entry['fmhcodes'].map { |fs_code|
-      fs_code_to_field_entry(fs_code.to_i, relatedness, language)
+      fs_code_to_field_entry(fs_code.to_i, relatedness)
     }
   end
 end

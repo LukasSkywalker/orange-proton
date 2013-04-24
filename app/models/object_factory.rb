@@ -28,5 +28,17 @@ module ObjectFactory
       end
     end
 
+    def get_localised_data_provider
+      case Rails.env
+        when 'test'
+          MockLocalisedDataProvider.new
+        when 'development-remote', 'development', 'production'
+          LocalisedDataProvider.new
+        else
+          raise "No localised data provider for environment #{Rails.env}"
+      end
+    end
+
+
   end
 end

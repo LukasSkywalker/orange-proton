@@ -7,12 +7,7 @@ class BaseInformationProvider
 
   # @return An array of FieldEntries (empty if nothing found). May not contain
   # fs_codes multiple times (TODO Assert in API/CompoundInfoProvider?)
-  def get_fields(code, max_count, language)
-    raise NotImplementedError
-  end
-
-  # The raw icd/chop database entry hash
-  def get_icd_or_chop_data(code, language)
+  def get_fields(code, max_count, catalog)
     raise NotImplementedError
   end
 end

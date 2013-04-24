@@ -1,5 +1,5 @@
 def assert_language(str)
-  assert(str == 'de' || str == 'en' || str == 'it' || str == 'fr')
+  raise "#{str} is not a valid language " unless str == 'de' || str == 'en' || str == 'it' || str == 'fr'
 end
 
 def assert_field_code(fs_code)

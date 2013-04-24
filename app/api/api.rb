@@ -12,8 +12,10 @@ class API < Grape::API
   # The InfoProvider used to return all Query Results
   cattr_accessor :doctor_locator
   cattr_accessor :provider
-  self.provider       = ObjectFactory.get_information_provider
-  self.doctor_locator = ObjectFactory.get_doctor_locator
+  cattr_accessor :localised_data_provider
+  self.provider                = ObjectFactory.get_information_provider
+  self.doctor_locator          = ObjectFactory.get_doctor_locator
+  self.localised_data_provider = ObjectFactory.get_localised_data_provider
 
   # Some handy helpers for the API
   helpers do
@@ -31,7 +33,7 @@ class API < Grape::API
   end
 
   # Handles the most important queries:
-  # /api/v1/fields/get?code=string&count=integer&lang=string
+  # /api/v1/fields/get?code=string&count=integer&lang=string&catalog=...
   desc 'Returns data'
   resource :fields do
     params do
@@ -42,24 +44,48 @@ class API < Grape::API
         desc: 'Number of fields to be displayed'
       requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/,
         desc: 'The language of the response'
+      requires :catalog, type: String, 
+        regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_cd\b|icd_2012_ch\b/,
+        desc: 'The catalog of the response'
     end
 
     get 'get' do
       code      = params[:code]
-
+      catalog   = params[:catalog]
       max_count = params[:count]
       assert_count(max_count) # don't allow excessive queries
       # TODO This should be handled with an api error returned to the client
       # instead.
 
       type     = get_code_type(code)
-      icd_data = API.provider.get_icd_or_chop_data(code, lang)
-      assert_kind_of(Hash, icd_data)
-      fields   = API.provider.get_fields(code, max_count, lang)
+      # the regex should not differ from the regex used to check this
+      assert(type != :unknown) 
+
+      # Get data
+      r = API.localised_data_provider.get_icd_or_chop_data(code,
+                                                           lang,
+                                                           catalog)
+      data = r[:data]
+      assert_kind_of(Hash, data)
+      # data might not have been available and we had to fall back to another 
+      # language
+      data_language = r[:language] 
+      assert_language(data_language)
+
+      # Get fields
+      fields = API.provider.get_fields(code, max_count, catalog)
       assert_fields_array(fields)
       assert(fields.length <= max_count)
 
-      Success.field_response(icd_data, fields, type)
+      # we can always localise the field names to the requested language
+      API.localised_data_provider.localise_field_entries(fields, lang)
+
+      Success.field_response(data,
+                             fields, 
+                             type, 
+                             data_language,
+                             data_language != lang # whether we had to fall back 
+                            )
     end
   end
 
@@ -89,7 +115,9 @@ class API < Grape::API
 
       doctors = API.doctor_locator.find_doctors(field_code, latitude, 
                                                 longitude, max_count)
+      assert_kind_of(Array, doctors)
       assert(doctors.length <= max_count)
+      assert_kind_of(Hash, doctors[0]) if doctors.length > 0
 
       Success.response(doctors)
     end

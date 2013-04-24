@@ -10,6 +10,10 @@ def assert_kind_of(kclass,v)
   <#{v.class.name}>."  unless v.kind_of?(kclass)
 end
 
+def assert_boolean(a)
+  raise "<#{a}> is not a boolean (TrueClass or FalseClass)" unless a.kind_of?(FalseClass) || a.kind_of?(TrueClass)
+end
+
 # Raises an exception if the argument is nil, false or 0
 def assert(a)
   if (a == nil || a.kind_of?(FalseClass) || (a.kind_of?(Numeric) && a == 0))

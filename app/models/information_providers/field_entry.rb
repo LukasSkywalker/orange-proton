@@ -4,21 +4,33 @@ def assert_relatedness(r)
 end
 
 class FieldEntry
-  attr_reader :name, :code
-
-  # TODO This can still be changed to a non-relatedness after initialization...
-  # but we need to be able to modify it -- custom accessor?
-  attr_accessor :relatedness
+  attr_reader :name, :code, :relatedness
 
   # @param code either an icd or chop code
-  def initialize(name, relatedness, field_code)
-    assert_kind_of(String, name)
+  def initialize(relatedness, field_code)
     assert_field_code(field_code)
-    assert_relatedness(relatedness)
 
-    @name = name
-    self.relatedness = relatedness
+    set_relatedness(relatedness)
+    @name = "<unlocalized #{field_code}>"
     @code = field_code.to_i
+  end
+
+  # clamps the relatedness to the allowed range
+  def increase_relatedness(r)
+    @relatedness += r
+    @relatedness = 1.0 if @relatedness > 1.0
+    @relatedness = 0.0 if @relatedness < 0.0
+    assert_relatedness(@relatedness)
+  end
+
+  def multiply_relatedness(f)
+    @relatedness *= f
+    assert_relatedness(f)
+  end
+
+  def set_relatedness(r)
+    assert_relatedness(r)
+    @relatedness = r
   end
 
   def to_s
@@ -30,6 +42,36 @@ class FieldEntry
       self.name == other.name && 
       self.relatedness == other.relatedness
   end
+
+  def localise(db, lang)
+    assert_language(lang)
+    assert(db)
+    @name = db.get_fs_name(self.code, lang)
+  end
+end
+
+# @param field_codes [Array] an array of fs codes (2-210)
+# @return An array of field codes formatted as by API standard ({name : "...",
+# relatedness: relatedness, field: code} for each code, that is an array of
+# FieldEntry objects)
+def fs_codes_to_fields(field_codes, relatedness)
+  assert_kind_of(Array, field_codes)
+  assert_kind_of(Integer, field_codes[0]) if field_codes.length > 0
+  assert_relatedness(relatedness)
+
+  field_codes.map { |fc|
+    fs_code_to_field_entry(fc, relatedness)
+  }
+end
+
+# same as above, but just for one code
+def fs_code_to_field_entry(fs_code, relatedness)
+  assert_relatedness(relatedness)
+  assert_field_code(fs_code)
+  FieldEntry.new(
+                 relatedness,
+                 fs_code
+                )
 end
 
 def assert_fields_array(api_fields_array)
@@ -54,9 +96,10 @@ end
 
 # Multipliy the relatedness of the fields in fcs by fac (0-1). In place.
 def fields_multiply_relatedness(api_fields_array, fac)
+  assert_relatedness(fac)
   assert_fields_array(api_fields_array)
 
-  api_fields_array.each { |fc| fc.relatedness *= fac }
+  api_fields_array.each { |fc| fc.multiply_relatedness( fac) }
   api_fields_array
 end
 
@@ -79,8 +122,7 @@ def fold_duplicate_fields(fields)
       next
     end
     # is duplicate
-    out_fields[fs_code].relatedness += field.relatedness
-    out_fields[fs_code].relatedness = 1.0 if out_fields[fs_code].relatedness > 1.0
+    out_fields[fs_code].increase_relatedness(field.relatedness)
   end
 
   out_fields.values

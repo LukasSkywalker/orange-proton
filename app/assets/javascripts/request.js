@@ -171,7 +171,9 @@ var mindmapper = {
         var params = '?code={0}&lang={1}'.format(input, lang);
         var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
-            url: op.apiBase + '/fields/get' + params + '&count=' + count,
+            url: op.apiBase + '/fields/get' + params + '&count=' + count +
+           '&catalog=icd_2012_ch' // TODO Implement catalog selection 
+            ,
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",

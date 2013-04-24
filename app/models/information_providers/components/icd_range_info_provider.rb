@@ -6,12 +6,12 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
   # Weights for fs_codes found in the ranges of level 1 to 4 (in that order)
   @@level_ratings = [0.2, 0.6, 0.8, 1.0]
 
-  def get_fields(icd_code, max_count, language)
-    assert_language(language)
+  def get_fields(icd_code, max_count, catalog)
+    @db.assert_catalog(catalog)
     assert_count(max_count)
     return [] unless get_code_type(icd_code) == :icd
 
-    ranges = db.get_icd_ranges(icd_code)
+    ranges =@db.get_icd_ranges(icd_code)
 
     fields = []
     ranges.each do |range|
@@ -24,13 +24,15 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
 
         # If this is a new code, add it
         if (fields.select{|f| f.code==code }).empty?
-          fields << fs_code_to_field_entry(code, relatedness, language)
+          fields << fs_code_to_field_entry(code, relatedness)
         else
           # otherwise possibly upgrade relatedness
-          unless (fields.select{|f| f.code==code and f.relatedness<relatedness}).empty?
-            existing = fields.select{|f| f.code==code and f.relatedness<relatedness}[0]
+          existing = fields.select{|f| f.code==code and f.relatedness<relatedness} 
+          unless existing.empty?
+            assert_equal(existing.length, 1)
+            existing = existing[0]
             Rails.logger.info existing
-            existing.relatedness = relatedness
+            existing.set_relatedness(relatedness)
             Rails.logger.info existing
           end
         end

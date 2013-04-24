@@ -21,12 +21,14 @@ class CompoundInfoProvider < DatabaseInfoProvider
     end 
 
     # @return The fields found by this provider for the given code
-    def get_results(code, max_count, language)
+    def get_results(code, max_count, catalog)
       assert_code(code)
+      assert_count(max_count)
+
       # skip provider if relatedness was set to zero or we don't respond to this code type
       return [] unless @weight > 0.0
 
-      tf = @provider_instance.get_fields(code, max_count, language)
+      tf = @provider_instance.get_fields(code, max_count, catalog)
       Rails.logger.info "#{@provider_instance} found: "
       Rails.logger.info tf.empty? ? 'nothing' : tf
       return fields_multiply_relatedness(tf, @weight)
@@ -49,17 +51,17 @@ class CompoundInfoProvider < DatabaseInfoProvider
     ]
   end
 
-  def get_fields(code, max_count, language)
+  def get_fields(code, max_count, catalog)
     assert_code(code)
     assert_count(max_count)
-    assert_language(language)
+    @db.assert_catalog(catalog)
 
     # Let all information providers return their results into fields
-    fields = get_provider_results(code, max_count, language)
+    fields = get_provider_results(code, max_count, catalog)
 
     fields = fold_duplicate_fields fields
 
-    fields = generate_compound_fields(fields, language) # implements #171
+    fields = generate_compound_fields(fields, catalog) # implements #171
 
     fields.sort! do |x, y|
       y.relatedness <=> x.relatedness
@@ -84,7 +86,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
   # @return The same list of fields plus all compounds that can be generated from it.
   # Implements #
-  def generate_compound_fields(fields, language)
+  def generate_compound_fields(fields, catalog)
     assert_fields_array(fields)
 
     # TODO Remove logging
@@ -94,7 +96,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     codes = fields.map {|f| f.code}
     Rails.logger.info "codes are: #{codes}"
 
-    rcs = db.get_compound_results_components
+    rcs =@db.get_compound_results_components
     Rails.logger.info "compound table is #{rcs}"
 
     rcs.each {|rc|
@@ -105,16 +107,16 @@ class CompoundInfoProvider < DatabaseInfoProvider
         fs.each {|f| rmean += f.relatedness}
         rmean /= fs.size
         Rails.logger.info "components: #{fs}, mean #{rmean}"
-        fields << fs_code_to_field_entry(rc['result'], rmean, language)
+        fields << fs_code_to_field_entry(rc['result'], rmean, catalog)
       end
     }
     fields
   end
 
-  def get_provider_results(code, max_count, language)
+  def get_provider_results(code, max_count, catalog)
     fields = []
     @providers.each do |provider|
-      fields.concat(provider.get_results(code, max_count, language))
+      fields.concat(provider.get_results(code, max_count, catalog))
     end
     fields
   end

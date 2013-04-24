@@ -23,25 +23,32 @@ class DatabaseAdapter
 
     # Store some of the databases in variables so we don't need to redo this 
     # over and over.
-    @icd = {
-      :de => @client['icd_2012_ch']['de'],
-      :fr => @client['icd_2012_ch']['fr'],
-      :it => @client['icd_2012_ch']['it'],
-      :en => @client['icd_2012_ch']['en']
+    @catalogs = {
+      "icd_2010_ch" =>  {
+      "de" => @client['icd_2010_ch']['de'],
+      "fr" => @client['icd_2010_ch']['fr'],
+    },
+    "icd_2012_ch" =>  {
+      "de" => @client['icd_2012_ch']['de'],
+      "fr" => @client['icd_2012_ch']['fr'],
+      "it" => @client['icd_2012_ch']['it'],
+      "en" => @client['icd_2012_ch']['en']
+    },
+      "chop_2012_ch" => {
+      "de" => @client['chop_2012_ch']['de'],
+      "fr" => @client['chop_2012_ch']['fr'],
+    },
+    "chop_2013_ch" => {
+      "de" => @client['chop_2013_ch']['de'],
+      "fr" => @client['chop_2013_ch']['fr'],
+      "it" => @client['chop_2013_ch']['it'],
     }
-
-    @chop = {
-      :de => @client['chop_2013_ch']['de'],
-      :fr => @client['chop_2013_ch']['fr'],
-      :it => @client['chop_2013_ch']['it'],
-      :en => @client['chop_2013_ch']['de'] # hardwired fallback. 
-      # TODO Notify client of fallback.
     }
 
     @fs          = 
       @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
 
-    @r_icd_fs    = @client['relationFSZuICD']['relationFSZuICD']
+    # TODO make catalog specific?
     @r_mdc_fs    = @client['mdc']['mdcCodeToFSCode']
     @keywords    = @client['fachgebieteKeywords']['fachgebieteKeywords']
     @doctors     = @client['doctors']['doctors']
@@ -52,33 +59,34 @@ class DatabaseAdapter
     @thesaurusToFSCode = 'thesaurusToFSCode'
   end
 
-  # @return An array of the drgs (most common diagnoses) for a given ICD.
-  def get_drgs_for_icd(icd_code)
-    assert_icd_code(icd_code)
-    doc = @icd[:de].find_one({code: icd_code})
-    doc.nil? ? [] : doc['drgs']
+  def assert_catalog(catalog)
+    raise "catalog #{catalog} does not exist " unless (@catalogs.has_key?(catalog))
   end
+  
+  # True if the <catalog> database (must exist in some language) exists in <language>.
+  def has_data_for_language_and_catalog?(language, catalog)
+    assert_catalog(catalog)
+    assert_language(language)
 
-  # @return An array of the drgs (most common diagnoses) for a given chop.
-  def get_drgs_for_chop(code)
-    assert_chop_code(code)
-    doc = @chop[:de].find_one({code: code})
-    doc.nil? ? [] : doc['drgs']
+    @catalogs[catalog].has_key?(language)
   end
 
   # @return The raw icd database entry for the given ICD code. 
   # nil if there's no entry for the given code
-  def get_icd_entry(icd_code, language)
-    assert_icd_code(icd_code)
+  def get_catalog_entry(code, language, catalog)
+    assert_code(code)
     assert_language(language)
-    @icd[language.to_sym].find_one({code: icd_code})
+    assert_catalog(catalog)
+    assert(has_data_for_language_and_catalog?(language, catalog))
+    @catalogs[catalog][language].find_one({code: code})
   end
-
-  # @return The raw chop database entry for the given chop code.
-  # nil if there's no entry for the given code
-  def get_chop_entry(code, language)
-    assert_chop_code(code)
-    @chop[language.to_sym].find_one({code: code})
+  
+  # @return An array of the drgs (most common diagnoses) for a given ICD/CHOP code.
+  def get_drgs_for_code(code, catalog)
+    assert_catalog(catalog)
+    assert_icd_code(code)
+    doc = @catalogs[catalog]["de"].find_one({code: code})
+    doc.nil? ? [] : doc['drgs']
   end
 
   # @return The fachgebieteKeywords table as a an array
@@ -113,19 +121,7 @@ class DatabaseAdapter
     fs
   end
   public
-
-  # @return All FS codes manually mapped to this icd code.
-  def get_manually_mapped_fs_codes_for_icd(icd_code)
-    assert_icd_code(icd_code)
-    get_manually_mapped_fs_codes({icd_code: icd_code})
-  end
-
-  # @return All FS codes manually mapped to this chop code.
-  def get_manually_mapped_fs_codes_for_chop(chop_code)
-    assert_chop_code(chop_code)
-    get_manually_mapped_fs_codes({chop_code: chop_code})
-  end
-
+  
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
     a = @client['thesauren'].collection_names
