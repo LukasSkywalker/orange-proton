@@ -1,4 +1,13 @@
 /* Use SASS (http://sass-lang.com/) here */
+/***********VARIABLES************/
+ $blue: #33B5E5;
+ $red: #FF4444;
+ $green:  #99CC00;
+ $purple: #AA66CC;
+ $orange: #FFBB33;
+ $light-grey: #eeeeee;
+ $dark-grey: #aaa;
+ $grey: #c5c5c5;
 
 /***********MIXINS************/
 
@@ -19,7 +28,7 @@
 @mixin clickable {
   &:hover{
     cursor: pointer;
-    color: rgb(225,27,106); /* some red */
+    background-color: $grey;
   }
 }
 
@@ -45,7 +54,7 @@ body {
 
 input[type=text] {
   border-radius: 5px;
-  border: 1px solid #cccccc;
+  border: 1px solid $grey;
   padding: {
     left: 2px;
     top: 2px;
@@ -58,7 +67,7 @@ input[type=text] {
 }
 
 input[type=button] {
-  background-color: #eee;
+  background-color: $light-grey;
   border-radius: 5px;
   padding-left: 15px !important;
   padding-right: 15px !important;
@@ -67,11 +76,11 @@ input[type=button] {
     right: 5px;
   }
   height: 32px;
-  border: 1px solid #ccc;
+  border: 1px solid $light-grey;
   @include clickable;
 
   &:hover {
-    background-color: #aaa;
+    background-color: $dark-grey;
   }
 }
 
@@ -110,8 +119,8 @@ input[type=button] {
   display: none;
 
   .title{
-    background: #eee;
-    border-bottom: 1px solid #c5c5c5;
+    background: $light-grey;
+    border-bottom: 1px solid $grey;
     @include border-radius(7px);
     margin: 0 -10px 0 -10px;
     margin-bottom: 0;
@@ -136,7 +145,7 @@ input[type=button] {
       margin: 10px;
       margin-left: 0;
       background: white;
-      border: 1px solid #c5c5c5;
+      border: 1px solid $grey;
       @include border-radius(7px);
       padding: 0 10px 0 10px;
       position: relative;
@@ -183,7 +192,7 @@ input[type=button] {
   position: absolute;
   top: 80px;
   right: 0px;
-  background: #f5f5f5;
+  background: $light-grey;
   width: 30px;
   height: 30px;
   z-index: 8;
@@ -195,7 +204,7 @@ input[type=button] {
   -moz-border-radius-bottomright: 0px;
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
-  border: 1px #ccc solid;
+  border: 1px $grey solid;
   vertical-align: middle;
   border-right: none;
 }
@@ -207,8 +216,8 @@ input[type=button] {
   position: fixed;
   width: 100%;
   height: 50px;
-  background: #f5f5f5;
-  border-bottom: 1px solid #c5c5c5;
+  background: $light-grey;
+  border-bottom: 1px solid $grey;
   /* box-shadow: 0px 3px 8px #666; /* looks pretty neat... */
   top: 0;
   left: 0;
@@ -232,7 +241,7 @@ input[type=button] {
   }
 
   .hide-arrow {
-    border: 1px solid #cccccc;
+    border: 1px solid $grey;
     display: inline;
     position: absolute;
     width: 100px;
@@ -252,7 +261,7 @@ input[type=button] {
   }
 
  .mode-arrow {
-   border: 1px solid #cccccc;
+   border: 1px solid $grey;
    display: inline;
    position: absolute;
    width: 100px;
@@ -272,9 +281,15 @@ input[type=button] {
   }
 
   #location-container{
-    margin: 19px auto 0 auto;
-    max-width: 550px;
+    margin: 7px auto 0 auto;
+    height: 30px;
+    max-width: 300px;
     overflow: hidden;
+    @include border-radius(7px);
+    background: $grey;
+    line-height: 30px;
+    vertical-align: center;
+    padding: 3px;
 
     p {
       display: inline;
@@ -319,7 +334,7 @@ input[type=button] {
 
 /* nodes and legend items */
 div.node, div.legend {
-  background: #eee;
+  background: $light-grey;
   padding-left: 15px;
   padding-right: 15px;
   max-width: 250px;
@@ -334,34 +349,34 @@ div.node, div.legend {
   }
 
   &.field {
-    @include node-border(blue);
+    @include node-border($blue);
     @include clickable;
     max-width: 180px;
   }
 
   &.drg {
-    @include node-border(red);
+    @include node-border($red);
   }
 
   &.exclusiva {
-    @include node-border(green);
+    @include node-border($green);
   }
 
   &.inclusiva {
-    @include node-border(orange);
+    @include node-border($orange);
   }
 
   &.super {
-    @include node-border(gray);
+    @include node-border($grey);
   }
 
   &.sub {
-    @include node-border(purple);
+    @include node-border($purple);
   }
 
   &.root {
-    background: #f5f5f5;
-    @include node-border(#e3e3e3);
+    background: $light-grey;
+    @include node-border($grey);
     @include border-radius(5px);
     font-size: 20px;
     z-index: 10;
@@ -377,12 +392,12 @@ div.node, div.legend {
 .relatedness-container{
   width: 100px;
   height:  5px;
-  border: #49d 1px solid;
+  border: $blue 1px solid;
   margin: 6px auto 6px auto;
 }
 
 .relatedness-display{
-  background: #49d;
+  background: $blue;
   height: 100%;
   left: 0;
   float: left;
@@ -395,7 +410,7 @@ div.container {
   padding: 5px;
 
   &.active{
-    background: #ccc;
+    background: $light-grey;
   }
 
   .container-inner{
@@ -500,12 +515,12 @@ div.container {
     /* the label for the input behind the doc list */
     label {
       display:inline-block;
-      background-color:#ddd;
+      background-color: $light-grey;
       padding:4px 11px;
       width: 100%;
       &:hover {
-        background-color: #666 !important;
-        color: #fff !important;
+        background-color: $dark-grey !important;
+        color: white !important;
       }
     }
 
@@ -514,7 +529,7 @@ div.container {
       display:none;
 
       &:checked + label {
-        background-color: #bbb;
+        background-color: $grey;
       }
 
       .active:after {
@@ -531,10 +546,3 @@ div.container {
 #location-input{
   height: 25px;
 }
-
-
-
-
-
-
-
