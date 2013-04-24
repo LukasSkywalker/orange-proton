@@ -22,7 +22,7 @@ $(document).ready(function () {
     $codeInput.focus();
 
     // add click handler for location display
-    $('.location').on('click', null, function () {
+    $('#location-container').on('click', null, function () {
       orangeproton.location.showMap();
     });
 
@@ -205,7 +205,7 @@ var mindmapper = {
 
                     if (newdiv != '')
                         synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)).hover(function(){
-                            toggleHighlightContainer('syn');
+                            //toggleHighlightContainer('syn');
                         }));
                 }
                 else {
@@ -264,7 +264,7 @@ var mindmapper = {
                     });
                     s.push(newdiv);
                     newdiv.hover(function(){
-                        toggleHighlightContainer('field');
+                        //toggleHighlightContainer('field');
                     });
                 }
 
@@ -332,11 +332,22 @@ function togglePanels() {
     $panels.data('hidden', !panelHidden);
 }
 
-//Highlight the hovered node type
-
+//Highlight the hovered node type (with huge hack...)
+var last;
 function toggleHighlightContainer(className){
-    var $container = $('.container.' + className);
-    var $text = $container.find('p:first');
-    $container.toggleClass('active');
-    $text.toggleClass('hidden');
+    if(last!==className){
+        $('.container').removeClass('active', 400);
+        $('.show-type').hide('fade');
+
+        var $container = $('.container.' + className);
+        var $text = $container.find('p:first');
+        var $front =$('.front-container.' + className);
+        $front.addClass('hidden');
+        $container.toggleClass('active', 400);
+        $text.toggle('fade');
+        $front.removeClass('hidden');
+
+        last = className;
+    }
+
 }

@@ -28,8 +28,7 @@ orangeproton.mindmap = {
           .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'))// make asdf {b} become b<br />asdf
           .attr('title', I18n.t(className))
           .hover(function(){
-              toggleHighlightContainer(className);
-              console.log('bbb');
+              //toggleHighlightContainer(className);
           });
       if (pattern) {
         var result = text.match(pattern);

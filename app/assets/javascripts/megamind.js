@@ -232,8 +232,8 @@ var megamind = {
 
     this.rows = [];
     this.el = $('<div><div class="container-inner"><p class="show-type hidden '+ className +'">'+ text +'</p></div></div>').addClass('container').addClass(className);
-    this.overlay =  $('<div></div>').addClass('front-container').addClass(className).hover(function(){
-        toggleHighlightContainer(className);
+    this.overlay =  $('<div></div>').addClass('front-container').addClass(className).mouseenter(function(){
+        toggleHighlightContainer(className, 400);
     });
     this.areas = areas;
     this.resize();
