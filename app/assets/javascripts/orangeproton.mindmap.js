@@ -26,7 +26,11 @@ orangeproton.mindmap = {
       var $element = $('<div></div>')
           .addClass(className)
           .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'))// make asdf {b} become b<br />asdf
-          .attr('title', I18n.t(className));
+          .attr('title', I18n.t(className))
+          .hover(function(){
+              toggleHighlightContainer(className);
+              console.log('bbb');
+          });
       if (pattern) {
         var result = text.match(pattern);
         if (result) {

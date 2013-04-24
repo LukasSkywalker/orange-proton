@@ -88,6 +88,18 @@ $(document).ready(function () {
         togglePanels();
     });
 
+    //hover handler for front-container
+    /*$('#mindmap').on('afterDraw', function() {
+        $('.front-container').hover(function(){
+            console.log($(this));
+            var type = $(this).attr('class').split(' ')[1];
+            toggleHighlightContainer(type);
+            console.log('hover:' + type);
+        });
+    }); */
+
+
+
     // start geolocation
     orangeproton.location.startGeoLocation();
 
@@ -178,7 +190,9 @@ var mindmapper = {
                     }).join('');
 
                     if (newdiv != '')
-                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)));
+                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)).hover(function(){
+                            toggleHighlightContainer('syn');
+                        }));
                 }
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
@@ -232,6 +246,9 @@ var mindmapper = {
                         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
                     });
                     s.push(newdiv);
+                    newdiv.hover(function(){
+                        toggleHighlightContainer('field');
+                    });
                 }
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
@@ -300,8 +317,8 @@ function togglePanels() {
 
 //Highlight the hovered node type
 
-function toggleHighlightContainer(type){
-    var $container = $('.container.' + type);
+function toggleHighlightContainer(className){
+    var $container = $('.container.' + className);
     var $text = $container.find('p:first');
     $container.toggleClass('active');
     $text.toggleClass('hidden');

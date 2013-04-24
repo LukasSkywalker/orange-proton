@@ -232,6 +232,9 @@ var megamind = {
 
     this.rows = [];
     this.el = $('<div><div class="container-inner"><p class="show-type hidden '+ className +'">'+ text +'</p></div></div>').addClass('container').addClass(className);
+    this.overlay =  $('<div></div>').addClass('front-container').addClass(className).hover(function(){
+        toggleHighlightContainer(className);
+    });
     this.areas = areas;
     this.resize();
     this.container = mm;
@@ -264,12 +267,16 @@ var megamind = {
     this.xOffset = left;
     this.yOffset = top;
     this.el.css({left: this.xOffset, top: this.yOffset, width: this.width, height: this.height});
+    this.overlay.css({left: this.xOffset, top: this.yOffset, width: this.width, height: this.height});
   };
 
   Canvas.prototype.render = function () {
     this.container.trigger('beforeDraw');
     if( !this.el.isInDom() ) {
       this.el.appendTo(this.container);
+    }
+    if( !this.overlay.isInDom() ) {
+      this.overlay.appendTo(this.container);
     }
     for (var i = 0; i < this.rows.length; i++) {
       for (var j = 0; j < this.rows[i].nodes.length; j++) {
@@ -287,7 +294,6 @@ var megamind = {
         var line = this.container.data().canvas
             .path('M{0} {1}L{0} {1}'.format(x1, y1))
             .attr({stroke: color});
-
         var newPath = {path: path};
         line.animate(newPath, this.options.animationDuration);
       }

@@ -354,6 +354,7 @@ div.node, div.legend {
   background: #49d;
   height: 100%;
   left: 0;
+  float: left;
 }
 
 /* containers */
@@ -413,7 +414,8 @@ div.container {
 }
 
 .front-container{
-  z-index: 100;
+  z-index: 4;
+  position: absolute;
 }
 
 /***********Overlay************/
