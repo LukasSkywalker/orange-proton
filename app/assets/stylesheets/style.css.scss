@@ -581,15 +581,10 @@ div.container {
   }
 
   #map {
-    float: left;
+    float: right;
     display: inline;
     width: 60%;
     height: 85%;
-
-    #map-frame {
-      height: 100%;
-      width: 100%;
-    }
   }
 
   #location-map {
