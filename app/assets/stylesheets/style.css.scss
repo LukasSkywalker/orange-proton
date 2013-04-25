@@ -1,16 +1,22 @@
 /* Use SASS (http://sass-lang.com/) here */
 /***********VARIABLES************/
- $blue: #33B5E5;
- $red: #FF4444;
- $green:  #99CC00;
- $purple: #AA66CC;
- $orange: #FFBB33;
- $light-grey: #eeeeee;
- $dark-grey: #aaa;
- $grey: #c5c5c5;
- /* TODO use constants for positions too 
-  
-  are these sass doing? Pretty neat...*/
+$blue: #33B5E5;
+$red: #FF4444;
+$green: #99CC00;
+$purple: #AA66CC;
+$orange: #FFBB33;
+$light-grey: #eeeeee;
+$dark-grey: #aaa;
+$grey: #c5c5c5;
+$dark-red: #CC0000;
+$dark-blue: #0099CC;
+$dark-orange: #FF8800;
+$dark-green: #669900;
+$dark-purple: #9933CC;
+
+/* TODO use constants for positions too
+
+ are these sass doing? Pretty neat...*/
 
 /***********MIXINS************/
 
@@ -29,7 +35,7 @@
 
 /* all clickable elements */
 @mixin clickable {
-  &:hover{
+  &:hover {
     cursor: pointer;
     background-color: $dark-grey;
   }
@@ -41,17 +47,17 @@
   position: absolute;
   top: 51px;
 
-  svg{
+  svg {
     z-index: 3;
   }
-  .rvml{
+  .rvml {
     z-index: 3;
   }
 }
 
 body {
   padding: 0;
-  font-family: Verdana ,sans-serif;
+  font-family: Verdana, sans-serif;
   font-size: 12px;
 }
 
@@ -106,14 +112,14 @@ input[type=button] {
   @include clickable;
 }
 
-.hidden{
+.hidden {
   display: none;
 }
 
 /***********Side panel************/
 
-#panels-container{
-  max-width:  250px;
+#panels-container {
+  max-width: 250px;
   position: absolute;
   top: 50px;
   right: 0;
@@ -121,18 +127,18 @@ input[type=button] {
   z-index: 10;
   display: none;
 
-  .title{
+  .title {
     background: $light-grey;
     border-bottom: 1px solid $grey;
     @include border-radius(7px);
     margin: 0 -10px 0 -10px;
     margin-bottom: 0;
-    font-size:  16px;
+    font-size: 16px;
     height: 25px;
     text-align: center;
     padding: 5px;
 
-    p{
+    p {
       margin: 0;
     }
   }
@@ -144,7 +150,7 @@ input[type=button] {
     float: right;
     overflow: hidden;
 
-    .panel{
+    .panel {
       margin: 10px;
       margin-left: 0;
       background: white;
@@ -158,19 +164,19 @@ input[type=button] {
     #admin {
       font-size: 0.8em;
 
-      p{
+      p {
         margin-bottom: 3px;
       }
 
-      .provider{
+      .provider {
         font-size: 1.25em;
       }
 
-      .admin-slider{
+      .admin-slider {
         margin-top: 3px;
       }
 
-      input[type=button]{
+      input[type=button] {
         margin: 5px;
       }
     }
@@ -183,13 +189,13 @@ input[type=button] {
         margin: 10px;
         padding-left: 10px;
         text-align: center;
-        position:  relative;
+        position: relative;
       }
     }
   }
 }
 
-#hide-panels{
+#hide-panels {
   display: inline-table;
   position: absolute;
   top: 80px;
@@ -211,7 +217,6 @@ input[type=button] {
   border-right: none;
 }
 
-
 /***********Top bar************/
 
 #search-bar {
@@ -232,7 +237,7 @@ input[type=button] {
     margin-top: 10px;
     margin-left: 15px;
     padding-left: 15px;
-    float:left;
+    float: left;
   }
 
   #search-button {
@@ -264,43 +269,44 @@ input[type=button] {
   }
 
   /* TODO Share code with above */
- .mode-arrow {
-   border: 1px solid $grey;
-   width: 105px;
-   padding-top: 3px;
-   border-radius: 7px;
-   float: right;
-   background: url(arrow.png) no-repeat right white;
-   height: 29px !important;
-   margin-left: 16px;
-   margin-top: 10px;
+  .mode-arrow {
+    border: 1px solid $grey;
+    width: 105px;
+    padding-top: 3px;
+    border-radius: 7px;
+    float: right;
+    background: url(arrow.png) no-repeat right white;
+    height: 29px !important;
+    margin-left: 16px;
+    margin-top: 10px;
 
-   &.svg {
-     background: url(arrow.svg) no-repeat right white !important;
-     background-size: 30px 15px !important;
-   }
+    &.svg {
+      background: url(arrow.svg) no-repeat right white !important;
+      background-size: 30px 15px !important;
+    }
   }
 
   /* TODO Share code with above */
   .catalog-arrow {
-   border: 1px solid $grey;
-   width: 155px;
-   padding-top: 3px;
-   border-radius: 7px;
-   float: left;
-   background: url(arrow.png) no-repeat right white;
-   height: 29px !important;
-   margin-left: 16px;
-   margin-top: 10px;
+    border: 1px solid $grey;
+    width: 155px;
+    padding-top: 3px;
+    border-radius: 7px;
+    float: left;
+    background: url(arrow.png) no-repeat right white;
+    height: 29px !important;
+    margin-left: 16px;
+    margin-top: 10px;
 
-   &.svg {
-     background: url(arrow.svg) no-repeat right white !important;
-     background-size: 30px 15px !important;
-   }
+    &.svg {
+      background: url(arrow.svg) no-repeat right white !important;
+      background-size: 30px 15px !important;
+    }
   }
 
-  #location-container{
+  #location-container {
     height: 32px;
+    min-width: 200px;
     max-width: 300px;
     @include border-radius(5px);
     border: 1px solid $grey;
@@ -308,10 +314,10 @@ input[type=button] {
     line-height: 28px;
     vertical-align: center;
     margin-top: 10px;
-    float:left;
+    float: left;
     margin-left: 16px;
 
-    #location-inner{
+    #location-inner {
       padding: 2px;
       padding-left: 5px;
       height: 28px;
@@ -321,7 +327,7 @@ input[type=button] {
       display: inline;
     }
 
-    .globe{
+    .globe {
       font-size: 1.5em;
       margin-right: 3px;
     }
@@ -353,7 +359,7 @@ input[type=button] {
     height: 25px;
     -webkit-appearance: none;
   }
-  
+
   #catalog {
     background: transparent;
     width: 155px;
@@ -364,7 +370,7 @@ input[type=button] {
     height: 25px;
     -webkit-appearance: none;
   }
-  
+
 }
 
 /***********Nodes and Containers************/
@@ -376,12 +382,12 @@ div.node, div.legend {
   padding-right: 15px;
   max-width: 250px;
   word-wrap: break-word;
-  position:absolute;
+  position: absolute;
   text-align: center;
   z-index: 7;
 
   &.syn {
-    @include node-border(black);
+    @include node-border($dark-blue);
     text-align: left;
   }
 
@@ -404,7 +410,7 @@ div.node, div.legend {
   }
 
   &.super {
-    @include node-border($grey);
+    @include node-border($dark-green);
   }
 
   &.sub {
@@ -426,15 +432,15 @@ div.node, div.legend {
   }
 }
 
-.relatedness-container{
+.relatedness-container {
   width: 100px;
-  height:  5px;
+  height: 5px;
   border: $blue 1px solid;
   margin: 6px auto 6px auto;
   background: white;
 }
 
-.relatedness-display{
+.relatedness-display {
   background: $blue;
   height: 100%;
   left: 0;
@@ -448,49 +454,49 @@ div.container {
 
   //black
   &.syn {
-    &.active{
-      background: lighten(black, 30%);
+    &.active {
+      background: lighten($dark-blue, 30%);
     }
   }
 
   //blue
   &.field {
-    &.active{
+    &.active {
       background: lighten($blue, 30%);
     }
   }
 
   //red
   &.drg {
-    &.active, &.active2{
+    &.active {
       background: lighten($red, 30%);
     }
   }
 
   //orange
   &.inclusiva-exclusiva {
-    &.active, &.active2{
+    &.active {
       background: lighten($orange, 30%);
     }
   }
 
   //grey
   &.super {
-    &.active, &.active2{
-      background: lighten($grey, 10%);
+    &.active {
+      background: lighten($dark-green, 50%);
     }
   }
 
   //purple
   &.sub {
-    &.active, &.active2{
+    &.active {
       background: lighten($purple, 30%);
     }
   }
 
-  &.active, &.active2{
-    .container-inner{
-      p{
+  &.active {
+    .container-inner {
+      p {
         display: inline;
       }
     }
@@ -500,7 +506,7 @@ div.container {
     position: relative;
     width: 100%;
     height: 100%;
-    p{
+    p {
       padding: 5px;
       position: absolute;
       display: none;
@@ -540,12 +546,16 @@ div.container {
         right: 10px;
       }
 
+      &.show-type {
+        font-size: 20px;
+      }
     }
+
   }
 
 }
 
-.front-container{
+.front-container {
   z-index: 4;
   position: absolute;
 }
@@ -556,34 +566,32 @@ div.container {
   height: 100%;
   width: 100%;
 
-
   .location p {
-      position: relative;
-      display: inline;
-      height: 30px;
-      line-height: 30px;
-      vertical-align: middle;
-      margin: 0;
-    }
-
+    position: relative;
+    display: inline;
+    height: 30px;
+    line-height: 30px;
+    vertical-align: middle;
+    margin: 0;
+  }
 
   h3 {
     margin-left: 5px;
   }
 
-  #map{
-    float:left;
-    display:inline;
+  #map {
+    float: left;
+    display: inline;
     width: 60%;
     height: 85%;
 
-    #map-frame{
+    #map-frame {
       height: 100%;
       width: 100%;
     }
   }
 
-  #location-map{
+  #location-map {
     float: left;
     display: inline;
     width: 700px;
@@ -591,8 +599,8 @@ div.container {
   }
 
   #docList {
-    float:left;
-    display:inline;
+    float: left;
+    display: inline;
     width: 40%;
     height: 85%;
     overflow: scroll;
@@ -600,9 +608,9 @@ div.container {
 
     /* the label for the input behind the doc list */
     label {
-      display:inline-block;
+      display: inline-block;
       background-color: $light-grey;
-      padding:4px 11px;
+      padding: 4px 11px;
       width: 100%;
       &:hover {
         background-color: $dark-grey !important;
@@ -612,7 +620,7 @@ div.container {
 
     /* the input element behind the doctor list */
     input[type="radio"] {
-      display:none;
+      display: none;
 
       &:checked + label {
         background-color: $grey;
@@ -629,6 +637,6 @@ div.container {
   }
 }
 
-#location-input{
+#location-input {
   height: 25px;
 }
