@@ -55,7 +55,9 @@ orangeproton.doctor = {
             });
             map.addMarker({
                 lat: orangeproton.location.getLocation().lat,
-                lng: orangeproton.location.getLocation().lng
+                lng: orangeproton.location.getLocation().lng,
+                icon: 'http://maps.google.com/mapfiles/ms/micons/green-dot.png',
+                infoWindow: { content: 'Ihr Standort' }
             });
             $('#map').data('map', map);
             
@@ -91,7 +93,7 @@ orangeproton.doctor = {
                     map.setCenter(e.data.details.lat, e.data.details.long);
                     google.maps.event.trigger(map, 'resize');
 
-                    map.removeMarker($('#map').data('greenMarker'));
+                    /*map.removeMarker($('#map').data('greenMarker'));
 
                     $('#map').data('greenMarker', map.addMarker({
                         lat: e.data.details.lat,
@@ -101,7 +103,7 @@ orangeproton.doctor = {
                         infoWindow: {
                             content: '<div style="max-width: 200px;">' + e.data.details.title + '<br />' + e.data.details.name + '<br />' + e.data.details.address + '</div>'
                         }
-                    }));
+                    }));*/
                 });
                 $docList.append($menuItem);
                 
