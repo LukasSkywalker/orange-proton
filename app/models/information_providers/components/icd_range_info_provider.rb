@@ -9,11 +9,12 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
   def get_fields(icd_code, max_count, catalog)
     @db.assert_catalog(catalog)
     assert_count(max_count)
+
     return [] unless get_code_type(icd_code) == :icd
 
-    ranges =@db.get_icd_ranges(icd_code)
-
+    ranges = @db.get_icd_ranges(icd_code)
     fields = []
+
     ranges.each do |range|
       codes = range['fmhcodes']
       codes.each do |code|
