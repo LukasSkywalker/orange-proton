@@ -54,7 +54,7 @@ describe ThesaurInfoProvider do
     fields = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
 
     fields.should have_at_most(4).items
-    fields.should ==[FieldEntry.new( 1, 2),
+    fields.should ==[FieldEntry.new(1, 2),
                      FieldEntry.new(1, 3),
                      FieldEntry.new(1, 4),
                      FieldEntry.new(1, 5)]

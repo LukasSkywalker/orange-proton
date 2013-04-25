@@ -22,12 +22,12 @@ class MDCInfoProvider < DatabaseInfoProvider
     mdcs.each do |mdc|
      @db.get_fs_code_by_mdc(mdc).each do |fs_code|
         # TODO give higher weight to fs_codes already included?
-        fs_codes<<fs_code unless fs_codes.include? fs_code || fs_codes.lenght >= max_count
+        fs_codes<<fs_code unless (fs_codes.include? fs_code) || (fs_codes.length >= max_count)
       end
     end
 
     fs_codes_to_fields(fs_codes, 1) # full relatedness, we don't know better
-                       
+
   end
 
 end

@@ -5,16 +5,33 @@ describe MDCInfoProvider do
 
   before do
     @provider = MDCInfoProvider.new
-    @icd = 'B26.9'  # Parotite epidemica senza complicanze
+    @db = @provider.db
   end
 
-  #it 'should include these specialities' do
-  #  field1 = FieldEntry.new('Malattie infettive', 1, 74)
-  #  field2 = FieldEntry.new('Medicina generale', 1, 5)
-  #  field3 = FieldEntry.new('medicina interna generale', 1, 162)
-  #
-  #  var = @provider.get_fields(@icd, 3, 'it')
-  #  var.should include(field1, field2, field3)
-  #end
+  it 'should return an empty array for unknown code' do
+    field = @provider.get_fields('C8.45', 1, 'icd_2012_ch')
+    field.should==[]
+  end
 
+  it 'should return duplicated fields only once for icd' do
+    @db.stub(:get_drgs_for_code).with('B26.9', 'icd_2012_ch').and_return ['T63B', 'T63A']
+    @db.stub(:get_mdc_code).with('T').and_return ['18B', '18B']
+    @db.stub(:get_fs_code_by_mdc).with(anything).and_return [74, 74]
+
+    field = @provider.get_fields('B26.9', 4, 'icd_2012_ch')
+
+    field.should==[FieldEntry.new(1, 74)]
+    field.should_not be([FieldEntry.new(1, 74), FieldEntry.new(1, 74)])
+  end
+
+  it 'should not return more than max count for icd' do
+    @db.stub(:get_drgs_for_code).with('B20', 'icd_2012_ch').and_return ['S63B', 'V60B', 'O01C']
+    @db.stub(:get_mdc_code).with(anything).and_return ['18A', 20, 14]
+    @db.stub(:get_fs_code_by_mdc).with(anything).and_return [74, 90, 39]
+
+    field = @provider.get_fields('B20', 2, 'icd_2012_ch')
+
+    field.should==[FieldEntry.new(1, 74), FieldEntry.new(1, 90)]
+    field.should_not be([FieldEntry.new(1, 74), FieldEntry.new(1, 90), FieldEntry.new(1, 39)])
+  end
 end
