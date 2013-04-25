@@ -29,10 +29,6 @@ $(document).ready(function () {
 
     I18n.defaultLocale = 'de';
     I18n.fallbacks = true;
-    // add event handler for catalog change on UI element
-    $catalog.change(function () {
-      $(document).trigger('paramChange');
-    });
 
     // add event handler for language change on UI element
     $lang.change(function () {
