@@ -4,45 +4,35 @@
 class DatabaseAdapter
   def initialize
     # Create a connection to the db based on the config/mongo.yml login data
-    # TODO Get rid of MongoMapper and do this manually
-    host = MongoMapper.connection.host
-    port = MongoMapper.connection.port
-    db_config = YAML::load(File.read(File.join(Rails.root, '/config/mongo.yml')))
+    db_config = YAML.load_file(File.join(Rails.root, '/config/mongo.yml'))
+    host = db_config[Rails.env]['host']
+    port = db_config[Rails.env]['port']
 
-    # doesn't it already have a connection? - PF
-    MongoMapper.connection = 
-      Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
-    MongoMapper.database = 'admin'
-    if db_config[Rails.env]
-      mongo = db_config[Rails.env]
-      if mongo['username'] && mongo['password']
-        MongoMapper.database.authenticate(mongo['username'], mongo['password'])
-      end
-    end
-    @client = MongoMapper.connection
+    @client = Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
+    authenticate(@client, db_config)
 
     # Store some of the databases in variables so we don't need to redo this 
     # over and over.
     @catalogs = {
-      "icd_2010_ch" =>  {
-      "de" => @client['icd_2010_ch']['de'],
-      "fr" => @client['icd_2010_ch']['fr'],
-    },
-    "icd_2012_ch" =>  {
-      "de" => @client['icd_2012_ch']['de'],
-      "fr" => @client['icd_2012_ch']['fr'],
-      "it" => @client['icd_2012_ch']['it'],
-      "en" => @client['icd_2012_ch']['en']
-    },
-      "chop_2012_ch" => {
-      "de" => @client['chop_2012_ch']['de'],
-      "fr" => @client['chop_2012_ch']['fr'],
-    },
-    "chop_2013_ch" => {
-      "de" => @client['chop_2013_ch']['de'],
-      "fr" => @client['chop_2013_ch']['fr'],
-      "it" => @client['chop_2013_ch']['it'],
-    }
+      'icd_2010_ch' =>  {
+        'de' => @client['icd_2010_ch']['de'],
+        'fr' => @client['icd_2010_ch']['fr'],
+      },
+      'icd_2012_ch' =>  {
+        'de' => @client['icd_2012_ch']['de'],
+        'fr' => @client['icd_2012_ch']['fr'],
+        'it' => @client['icd_2012_ch']['it'],
+        'en' => @client['icd_2012_ch']['en']
+      },
+      'chop_2012_ch' => {
+        'de' => @client['chop_2012_ch']['de'],
+        'fr' => @client['chop_2012_ch']['fr'],
+      },
+      'chop_2013_ch' => {
+        'de' => @client['chop_2013_ch']['de'],
+        'fr' => @client['chop_2013_ch']['fr'],
+        'it' => @client['chop_2013_ch']['it'],
+      }
     }
 
     @fs          = 
@@ -56,7 +46,15 @@ class DatabaseAdapter
     @icd_ranges  = @client['ICDRangeFSH']['mappings']
     @chop_ranges = @client['CHOPRangeFSH']['mappings']
 
-    @thesaurusToFSCode = 'thesaurusToFSCode'
+    @thesaur_to_fs_code = 'thesaurusToFSCode'
+  end
+
+  def authenticate(client, config)
+    return if client.nil? or config.nil?
+
+    user = config[Rails.env]['username']
+    pw = config[Rails.env]['password']
+    @client.db('admin').authenticate(user, pw)
   end
 
   def assert_catalog(catalog)
@@ -85,7 +83,7 @@ class DatabaseAdapter
   def get_drgs_for_code(code, catalog)
     assert_catalog(catalog)
     assert_code(code)
-    doc = @catalogs[catalog]["de"].find_one({code: code})
+    doc = @catalogs[catalog]['de'].find_one({code: code})
     doc.nil? ? [] : doc['drgs']
   end
 
@@ -125,7 +123,7 @@ class DatabaseAdapter
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
     a = @client['thesauren'].collection_names
-    a.delete(@thesaurusToFSCode)
+    a.delete(@thesaur_to_fs_code)
     a.delete('system.indexes')
     a
   end
@@ -154,7 +152,7 @@ class DatabaseAdapter
   # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
-    @client['thesauren'][@thesaurusToFSCode].find(
+    @client['thesauren'][@thesaur_to_fs_code].find(
       { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
     ).to_a.map {|fs| fs['fs_code'] }
   end
@@ -202,10 +200,9 @@ class DatabaseAdapter
   # used for merging two or more codes into one
   def get_compound_results_components
     d = @compounds.find()
-    d = (d.nil?) ? [] : d.to_a
+    (d.nil?) ? [] : d.to_a
     #assert_field_code(d[0]['result']) if d.length > 0
     #assert_field_code(d[0]['components'][0]) if d.length > 0
-    d
   end
 
   # @return An array of all ICD Code ranges (as specified by the who) a given 
