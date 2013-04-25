@@ -206,6 +206,7 @@ var mindmapper = {
 
                 var name = data.text;
                 var container = $mm.megamind();      //initialize
+                name = name.replace(/\{(.*?)\}/gi, '{<a href="#" onclick="event.preventDefault(); $(document).trigger(\'paramChange\', [\'$1\']);">$1</a>}');
                 var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hover(function(){
                     clearHighlight();
                 });
