@@ -52,6 +52,10 @@ $(document).ready(function () {
         });
     });
 
+    $('#search-bar').hover(function(){
+        clearHighlight();
+    });
+
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
         orangeproton.mindmap.resizeMindmap();
@@ -199,7 +203,12 @@ var mindmapper = {
 
                 var name = data.text;
                 var container = $mm.megamind();      //initialize
-                var rootNode = '<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name);
+                var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hover(function(){
+                    clearHighlight();
+                });
+
+                //Add handler to clear Highlight
+
                 var root = $mm.megamind('setRoot', rootNode);
 
                 var synonyms = [];
@@ -342,9 +351,7 @@ function togglePanels() {
 var last;
 function toggleHighlightContainer(className){
     if(last!==className){
-        $('.container').removeClass('active', 400);
-        $('.show-type').hide('fade');
-
+        clearHighlight();
         var $container = $('.container.' + className);
         var $text = $container.find('p:first');
         var $front =$('.front-container.' + className);
@@ -356,4 +363,10 @@ function toggleHighlightContainer(className){
         last = className;
     }
 
+}
+
+function clearHighlight(){
+    $('.container').removeClass('active', 400);
+    $('.show-type').hide('fade');
+    last = undefined;
 }
