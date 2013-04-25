@@ -9,19 +9,16 @@ class ChopRangeInfoProvider < DatabaseInfoProvider
 
     return [] unless get_code_type(chop_code) == :chop
 
-    ranges =@db.get_chop_ranges(chop_code)
+    ranges = @db.get_chop_ranges(chop_code)
     fields = []
 
     ranges.each do |range|
       codes = range['fmhcodes']
-
-      codes.each do |code| 
+      codes.each do |code|
         code = code.to_i # some of these are floats in the db unfortunately...
-        fields << fs_code_to_field_entry(code,
-                                 1.0 # full relatedness, we don't know better
-                                 # TODO Consider size/precision of range like in icd
-                                 # range?
-                                        )
+        fields << fs_code_to_field_entry(code, 1.0) # full relatedness, we don't know better
+                                                    # MH: adapt chop_range_spec if you change relatedness
+                                 # TODO Consider size/precision of range like in icd range?
       end
     end
 

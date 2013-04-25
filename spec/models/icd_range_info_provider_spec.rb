@@ -2,30 +2,39 @@
 require 'spec_helper'
 
 describe IcdRangeInfoProvider do
-=begin
 
   before do
     @provider = IcdRangeInfoProvider.new
+    @db = @provider.db
+
+    @hash1 = {'level'=>1, 'beginning'=>'A00', 'ending'=>'B99', 'fmhcodes'=>[74]}
+    @hash2 = {'level'=>2, 'beginning'=>'B20', 'ending'=>'B24', 'fmhcodes'=>[7]}
+    @hash3 = {'level'=>2, 'beginning'=>'B20', 'ending'=>'B24', 'fmhcodes'=>[74, 7]}
   end
 
-  it 'should include these specialities' do
-    icd = 'C30'  # Tumeur maligne des fosses nasales et de l'oreille moyenne
-
-    field1 = FieldEntry.new('Cytopathologie', 0.7, 125)
-    field2 = FieldEntry.new('Radio-oncologie / radiothérapie', 1, 103)
-    field3 = FieldEntry.new('Onco-hématologie pédiatrique', 0.7, 117)
-    field4 = FieldEntry.new('Oncologie médicale', 1, 96)
-
-    var = @provider.get_fields(icd, 4, 'fr')
-    var.should include(field1, field2, field3, field4)
+  it 'should return an empty array for chop code' do
+    field = @provider.get_fields('85.33', 1, 'chop_2012_ch')
+    field.should==[]
   end
 
-  it 'S69.9 should include these specialities' do
-    icd = 'S69.9'
-    field1 = FieldEntry.new('Handchirurgie', 0.8, 129)
+  it 'should increase relatedness for duplicated fhmcodes' do
+    # stub without duplication
+    @db.stub(:get_icd_ranges).with('B20').and_return [@hash1, @hash2]
+    field = @provider.get_fields('B20', 3, 'icd_2012_ch')
+    field.should==[FieldEntry.new(0.2, 74), FieldEntry.new(0.6, 7)]
 
-    var = @provider.get_fields(icd, 4, 'de')
-    var.should include(field1)
+    # stub with duplication
+    @db.stub(:get_icd_ranges).with('B20').and_return [@hash1, @hash3]
+    field = @provider.get_fields('B20', 3, 'icd_2012_ch')
+    field.should==[FieldEntry.new(0.6, 74), FieldEntry.new(0.6, 7)]
   end
-=end
+
+  it 'should not return more fields than max count' do
+    # calculate with duplicated relatedness
+    @db.stub(:get_icd_ranges).with('B20').and_return [@hash1, @hash3]
+    field = @provider.get_fields('B20', 1, 'icd_2012_ch')
+
+    field.should==[FieldEntry.new(0.6, 74)]
+    field.should_not be([FieldEntry.new(0.2, 74)])
+  end
 end
