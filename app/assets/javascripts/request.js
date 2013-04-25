@@ -86,14 +86,16 @@ $(document).ready(function () {
 
 
         if (code != '') {
-            // make sure back button works
+            // save state in history, including all parameters
             History.pushState(
-                    {code: code, lang: lang, catalog: catalog}, 
-                    "OrangeProton", 
+                    {code: code, lang: lang, catalog: catalog, mode: mode},
+                    "OrangeProton",
                     "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
                     );
-
-            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode)
+            // when no parameter changed, the statechange event won't be fired after calling pushState(). This is why we allow to 'force' a statechange, for example
+            // when the user presses the search button again. To prevent firing manually when pushState() already fired, we check whether parameters changed
+            // and if they didn't we fire.
+            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode && mindmapper.prevCatalog === catalog)
                 History.Adapter.trigger(window, 'statechange');
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
@@ -130,14 +132,19 @@ $(document).ready(function () {
         var State = History.getState(); // Note: We are using History.getState() instead of event.state
         var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de&mode=sd)
         var lang = State.data.lang;
+        var catalog = State.data.catalog;
+        var mode = State.data.mode;
 
+        // update the UI elements and start search when back-button is used or statechange is fired manually
         if (code !== undefined && code !== '') {
             $('#code-name').val(code);
             $('#lang').val(lang);
+            $('#mode').val(mode);
+            $('#catalog').val(catalog);
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
-            mindmapper.getICD(code, lang, $mode.val(), $catalog.val());
+            mindmapper.getICD(code, lang, mode, catalog);
         }
     });
 
@@ -148,7 +155,7 @@ $(document).ready(function () {
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
         var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
         var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
-        $(document).trigger('paramChange', [code, lang, false, mode]);
+        $(document).trigger('paramChange', [code, lang, false, mode, catalog]);
     }
 
     // set the locale and load translations
