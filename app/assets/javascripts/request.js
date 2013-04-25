@@ -29,10 +29,6 @@ $(document).ready(function () {
 
     I18n.defaultLocale = 'de';
     I18n.fallbacks = true;
-    // add event handler for catalog change on UI element
-    $catalog.change(function () {
-      $(document).trigger('paramChange');
-    });
 
     // add event handler for language change on UI element
     $lang.change(function () {
@@ -52,6 +48,10 @@ $(document).ready(function () {
         });
     });
 
+    $('#search-bar').hover(function(){
+        clearHighlight();
+    });
+
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
         orangeproton.mindmap.resizeMindmap();
@@ -60,7 +60,7 @@ $(document).ready(function () {
     $(window).resize( $.debounce( 250, resize ) );
 
     // add event handler for param changes (starts a search)
-    $(document).on('paramChange', function (e, code, lang, force, mode) {
+    $(document).on('paramChange', function (e, code, lang, force, mode, catalog) {
         var $code    = $('#code-name');
         var $lang    = $('#lang');
         var $catalog = $('#catalog');
@@ -82,14 +82,16 @@ $(document).ready(function () {
 
 
         if (code != '') {
-            // make sure back button works
+            // save state in history, including all parameters
             History.pushState(
-                    {code: code, lang: lang, catalog: catalog}, 
-                    "OrangeProton", 
+                    {code: code, lang: lang, catalog: catalog, mode: mode},
+                    "OrangeProton",
                     "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
                     );
-
-            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode)
+            // when no parameter changed, the statechange event won't be fired after calling pushState(). This is why we allow to 'force' a statechange, for example
+            // when the user presses the search button again. To prevent firing manually when pushState() already fired, we check whether parameters changed
+            // and if they didn't we fire.
+            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode && mindmapper.prevCatalog === catalog)
                 History.Adapter.trigger(window, 'statechange');
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
@@ -116,18 +118,6 @@ $(document).ready(function () {
         togglePanels();
     });
 
-    //hover handler for front-container
-    /*$('#mindmap').on('afterDraw', function() {
-        $('.front-container').hover(function(){
-            console.log($(this));
-            var type = $(this).attr('class').split(' ')[1];
-            toggleHighlightContainer(type);
-            console.log('hover:' + type);
-        });
-    }); */
-
-
-
     // start geolocation
     orangeproton.location.startGeoLocation();
 
@@ -138,14 +128,19 @@ $(document).ready(function () {
         var State = History.getState(); // Note: We are using History.getState() instead of event.state
         var code = State.data.code; // other values: State.title (OrangeProton) and  State.url (http://host/?code=B21&lang=de&mode=sd)
         var lang = State.data.lang;
+        var catalog = State.data.catalog;
+        var mode = State.data.mode;
 
+        // update the UI elements and start search when back-button is used or statechange is fired manually
         if (code !== undefined && code !== '') {
             $('#code-name').val(code);
             $('#lang').val(lang);
+            $('#mode').val(mode);
+            $('#catalog').val(catalog);
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
-            mindmapper.getICD(code, lang, $mode.val());
+            mindmapper.getICD(code, lang, mode, catalog);
         }
     });
 
@@ -156,7 +151,7 @@ $(document).ready(function () {
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
         var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
         var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
-        $(document).trigger('paramChange', [code, lang, false, mode]);
+        $(document).trigger('paramChange', [code, lang, false, mode, catalog]);
     }
 
     // set the locale and load translations
@@ -187,8 +182,8 @@ var mindmapper = {
      * @param {String} input the search term
      * @param {String} lang the search language
      */
-    getICD: function (input, lang, mode) {
-        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, "icd_2012_ch") // TODO I get invalid parameter catalog if I use catalog here, prolly cuz it's not defined);
+    getICD: function (input, lang, mode, catalog) {
+        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog)
         var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
             url: op.apiBase + '/fields/get' + params + '&count=' + count,
@@ -211,7 +206,13 @@ var mindmapper = {
 
                 var name = data.text;
                 var container = $mm.megamind();      //initialize
-                var rootNode = '<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name);
+                name = name.replace(/\{(.*?)\}/gi, '{<a href="#" onclick="event.preventDefault(); $(document).trigger(\'paramChange\', [\'$1\']);">$1</a>}');
+                var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hover(function(){
+                    clearHighlight();
+                });
+
+                //Add handler to clear Highlight
+
                 var root = $mm.megamind('setRoot', rootNode);
 
                 var synonyms = [];
@@ -269,7 +270,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field" title="' + I18n.t("field") + '">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field clickable" title="' + I18n.t("field") + '">' + f + ':' + n + '</i>' +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
                         '</div>' +
@@ -354,9 +355,7 @@ function togglePanels() {
 var last;
 function toggleHighlightContainer(className){
     if(last!==className){
-        $('.container').removeClass('active', 400);
-        $('.show-type').hide('fade');
-
+        clearHighlight();
         var $container = $('.container.' + className);
         var $text = $container.find('p:first');
         var $front =$('.front-container.' + className);
@@ -368,4 +367,10 @@ function toggleHighlightContainer(className){
         last = className;
     }
 
+}
+
+function clearHighlight(){
+    $('.container').removeClass('active', 400);
+    $('.show-type').hide('fade');
+    last = undefined;
 }

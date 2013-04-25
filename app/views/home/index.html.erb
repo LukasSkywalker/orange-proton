@@ -7,12 +7,12 @@
     </head>
     <body>
         <div id="search-bar">
-            <input id="code-name" type="text" placeholder="ICD Code">
+            <input id="code-name" type="text" placeholder="Code">
             <p id="search-button" class="icon-search icon-large clickable"></p>
             <div class="catalog-arrow">
                 <select name="catalog" id="catalog" size="1">
                     <option value="icd_2010_ch">ICD 2010 CH</option>
-                    <option value="icd_2012_ch">ICD 2012 CH</option>
+                    <option value="icd_2012_ch" selected="selected">ICD 2012 CH</option>
                     <option value="chop_2012_ch">CHOP 2012 CH</option>
                     <option value="chop_2013_ch">CHOP 2013 CH</option>
                 </select>
@@ -33,7 +33,7 @@
             <div class="mode-arrow">
               <select name="mode" id="mode" size="1">
                 <option value="sd">Standard</option>
-                <option value="ad">Advanced</option>
+                <option value="ad" selected="selected">Advanced</option> <!-- While development, this is selected. Remove when deploying -->
               </select>
             </div>
         </div>
