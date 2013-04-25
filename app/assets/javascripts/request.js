@@ -270,7 +270,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field" title="' + I18n.t("field") + '">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field clickable" title="' + I18n.t("field") + '">' + f + ':' + n + '</i>' +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
                         '</div>' +

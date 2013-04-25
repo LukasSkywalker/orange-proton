@@ -395,7 +395,6 @@ div.node, div.legend {
 
   &.field {
     @include node-border($blue);
-    @include clickable;
     max-width: 180px;
   }
 
