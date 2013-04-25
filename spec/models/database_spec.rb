@@ -4,7 +4,7 @@ require 'spec_helper'
 describe DatabaseAdapter do
   before do
     @db = DatabaseAdapter.new
-    client = MongoMapper.connection
+    client = @db.client
 
     @fs = client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
     @f = client['fachgebieteUndSpezialisierungen']['fachgebiete']

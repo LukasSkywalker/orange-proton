@@ -2,6 +2,8 @@
 # We do not compute compound information here -- the information providers use
 # the data they get from here to do this.
 class DatabaseAdapter
+  attr_accessor :client
+
   def initialize
     # Create a connection to the db based on the config/mongo.yml login data
     db_config = YAML.load_file(File.join(Rails.root, '/config/mongo.yml'))
