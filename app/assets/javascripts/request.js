@@ -60,7 +60,7 @@ $(document).ready(function () {
     $(window).resize( $.debounce( 250, resize ) );
 
     // add event handler for param changes (starts a search)
-    $(document).on('paramChange', function (e, code, lang, force, mode) {
+    $(document).on('paramChange', function (e, code, lang, force, mode, catalog) {
         var $code    = $('#code-name');
         var $lang    = $('#lang');
         var $catalog = $('#catalog');
@@ -116,18 +116,6 @@ $(document).ready(function () {
         togglePanels();
     });
 
-    //hover handler for front-container
-    /*$('#mindmap').on('afterDraw', function() {
-        $('.front-container').hover(function(){
-            console.log($(this));
-            var type = $(this).attr('class').split(' ')[1];
-            toggleHighlightContainer(type);
-            console.log('hover:' + type);
-        });
-    }); */
-
-
-
     // start geolocation
     orangeproton.location.startGeoLocation();
 
@@ -145,7 +133,7 @@ $(document).ready(function () {
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
-            mindmapper.getICD(code, lang, $mode.val());
+            mindmapper.getICD(code, lang, $mode.val(), $catalog.val());
         }
     });
 
@@ -187,8 +175,8 @@ var mindmapper = {
      * @param {String} input the search term
      * @param {String} lang the search language
      */
-    getICD: function (input, lang, mode) {
-        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, "icd_2012_ch") // TODO I get invalid parameter catalog if I use catalog here, prolly cuz it's not defined);
+    getICD: function (input, lang, mode, catalog) {
+        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog)
         var count = orangeproton.options.display.max_fields;
         jQuery.ajax({
             url: op.apiBase + '/fields/get' + params + '&count=' + count,
