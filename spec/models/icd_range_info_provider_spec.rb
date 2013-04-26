@@ -26,7 +26,7 @@ describe IcdRangeInfoProvider do
     # stub with duplication
     @db.stub(:get_icd_ranges).with('B20').and_return [@hash1, @hash3]
     field = @provider.get_fields('B20', 3, 'icd_2012_ch')
-    field.should==[FieldEntry.new(0.6, 74), FieldEntry.new(0.6, 7)]
+    field.should==[FieldEntry.new(0.6, 74), FieldEntry.new(0.54, 7)]
   end
 
   it 'should not return more fields than max count' do

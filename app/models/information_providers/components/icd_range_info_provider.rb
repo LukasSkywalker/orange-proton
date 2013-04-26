@@ -5,6 +5,7 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
 
   # Weights for fs_codes found in the ranges of level 1 to 4 (in that order)
   @@level_ratings = [0.2, 0.6, 0.8, 1.0]
+  @@ranking_decay_coefficient = 0.1
 
   def get_fields(icd_code, max_count, catalog)
     @db.assert_catalog(catalog)
@@ -17,10 +18,11 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
 
     ranges.each do |range|
       codes = range['fmhcodes']
-      codes.each do |code|
+      for i in 0..codes.length-1
+        code = codes[i]
         level = range['level'].to_i
         assert(level <= 4 && level >= 1)
-        relatedness = @@level_ratings[level - 1]
+        relatedness = @@level_ratings[level - 1]*(1-i*@@ranking_decay_coefficient)
         assert_relatedness(relatedness) # always good to assert
 
         # If this is a new code, add it
