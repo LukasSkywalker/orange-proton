@@ -7,12 +7,13 @@ $(document).ready(function () {
     var $mode = $('#mode');
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
+    var $searchBar = $('#search-bar');
 
     orangeproton.generic.injectConsoleLog();
 
     /* TOP-BAR */
     // start search on enter key press
-    $codeInput.enterHandler(function () {
+    $searchBar.enterHandler(function () {
         $(document).trigger('paramChange', [null, null, true]);
     });
     // start search on button click
