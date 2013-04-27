@@ -223,9 +223,7 @@ var mindmapper = {
                     }).join('');
 
                     if (newdiv != '')
-                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)).hover(function(){
-                            //toggleHighlightContainer('syn');
-                        }));
+                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)));
                 }
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
@@ -282,9 +280,6 @@ var mindmapper = {
                         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
                     });
                     s.push(newdiv);
-                    newdiv.hover(function(){
-                        //toggleHighlightContainer('field');
-                    });
                 }
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
@@ -359,10 +354,9 @@ function toggleHighlightContainer(className){
         var $container = $('.container.' + className);
         var $text = $container.find('p:first');
         var $front =$('.front-container.' + className);
-        $front.addClass('hidden');
         $container.toggleClass('active', 400);
-        $text.toggle('fade');
-        $front.removeClass('hidden');
+        //$text.toggle('fade');
+
 
         last = className;
     }
@@ -371,6 +365,6 @@ function toggleHighlightContainer(className){
 
 function clearHighlight(){
     $('.container').removeClass('active', 400);
-    $('.show-type').hide('fade');
+    //$('.show-type').hide('fade');
     last = undefined;
 }
