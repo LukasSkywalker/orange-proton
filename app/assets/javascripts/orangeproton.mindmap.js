@@ -26,7 +26,6 @@ orangeproton.mindmap = {
       var $element = $('<div></div>')
           .addClass(className)
           .html(text.replace(/(.*) \{(.*)\}/i, '$2<br />$1'))// make asdf {b} become b<br />asdf
-          .attr('title', I18n.t(className))
           .hoverIntent(function (){
               var type;
               if(className==='inclusiva' || className==='exclusiva'){

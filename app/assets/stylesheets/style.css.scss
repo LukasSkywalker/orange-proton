@@ -37,7 +37,7 @@ $dark-purple: #9933CC;
 @mixin clickable {
   &:hover {
     cursor: pointer;
-    background-color: $dark-grey;
+    background-color: $grey;
   }
 }
 
@@ -445,7 +445,7 @@ div.node, div.legend {
 .relatedness-container {
   width: 100px;
   height: 5px;
-  border: $blue 1px solid;
+  border: $dark-blue 1px solid;
   margin: 6px auto 6px auto;
   background: white;
 }
