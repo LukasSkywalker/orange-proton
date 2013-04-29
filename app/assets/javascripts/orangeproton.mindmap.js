@@ -105,7 +105,7 @@ orangeproton.mindmap = {
     var windowWidth = window.innerWidth || document.body.offsetWidth || document.documentElement.offsetWidth;
     $("#mindmap").css({
       width: windowWidth - otherWidth- $("#hide-panels").width(),
-      height: $(window).height() - $("#search-bar").outerHeight()
+      height: $(window).height() - $("#search-bar").outerHeight() - 2
     });
   }
 };
