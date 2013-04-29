@@ -10,7 +10,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
     attr_accessor :weight # not attr_accesor weight, this needs to be an identifier
 
     def initialize provider_instance, weight
-      assert_kind_of(BaseInformationProvider, provider_instance)
       assert_relatedness(weight)
       @provider_instance = provider_instance
       @weight = @default_weight = weight
