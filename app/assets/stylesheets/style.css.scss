@@ -467,6 +467,9 @@ div.container {
   &.syn {
     @include opacity(0.3);
     background: lighten($dark-blue, 30%);
+    ul{
+      margin:0;
+    }
     &.active {
       @include opacity(1);
     }
@@ -532,12 +535,13 @@ div.container {
     height: 100%;
     p {
       @include opacity(0.5);
-      padding: 5px;
+      padding: 2px;
       position: absolute;
+      margin: 0;
       //bottom-right
       &.syn {
         bottom: 0;
-        right: 10px;
+        right: 5px;
       }
 
       //top-left
@@ -561,13 +565,13 @@ div.container {
       //top-right
       &.super {
         top: 0;
-        right: 10px;
+        right: 5px;
       }
 
       //right-middle
       &.sub {
         top: 0;
-        right: 10px;
+        right: 5px;
       }
 
       &.show-type {

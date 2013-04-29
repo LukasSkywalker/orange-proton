@@ -76,7 +76,7 @@ $(document).ready(function () {
         catalog = catalog || $catalog.val();
         lang = lang || $lang.val();
         mode = mode || $mode.val();
-        code = code.toUpperCase();
+        code = $.trim(code.toUpperCase());
 
         $code.val(code);
         $lang.val(lang);
@@ -153,7 +153,7 @@ $(document).ready(function () {
     var codeParam = orangeproton.generic.getUrlVars()["code"];
 
     if (codeParam !== undefined && codeParam !== '') {
-        var code = codeParam.toUpperCase();
+        var code = $.trim(codeParam.toUpperCase());
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
         var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
         var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
