@@ -279,6 +279,7 @@ input[type=button] {
     width: 105px;
     padding-top: 3px;
     border-radius: 7px;
+    overflow: hidden;
     float: right;
     background: url(arrow.png) no-repeat right white;
     height: 29px !important;
@@ -294,7 +295,8 @@ input[type=button] {
   /* TODO Share code with above */
   .catalog-arrow {
     border: 1px solid $grey;
-    width: 155px;
+    width: 135px;
+    overflow: hidden;
     padding-top: 3px;
     border-radius: 7px;
     float: left;
@@ -358,7 +360,7 @@ input[type=button] {
 
   #mode {
     background: transparent;
-    width: 105px;
+    width: 135px;
     line-height: 1;
     border: 0;
     border-radius: 0;
@@ -369,7 +371,7 @@ input[type=button] {
 
   #catalog {
     background: transparent;
-    width: 155px;
+    width: 165px;
     line-height: 1;
     border: 0;
     border-radius: 0;
