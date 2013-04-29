@@ -294,17 +294,24 @@ var mindmapper = {
                         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
                     });
                     s.push(newdiv);
+                    $(newdiv).hoverIntent(function (){
+                        toggleHighlightContainer('field');
+                    },null);
                 }
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
                 mindmapper.hideSpinner();
+                $('.syn.node').hoverIntent(function (){
+                    toggleHighlightContainer('syn');
+                }, null);
             },
 
             error: mindmapper.handleApiError,
 
             complete: function(jqXhr) {
                 mindmapper.requestQueue.removeElement(jqXhr);
+
             }
         });
         mindmapper.requestQueue.push(req);
