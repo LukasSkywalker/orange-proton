@@ -66,6 +66,10 @@ body {
   font-size: 12px;
 }
 
+ul{
+  padding-left: 10px;
+}
+
 input[type=text] {
   @include border-radius(5px);
   border: 1px solid $grey;
@@ -276,7 +280,7 @@ input[type=button] {
   /* TODO Share code with above */
   .mode-arrow {
     border: 1px solid $grey;
-    width: 105px;
+    width: 110px;
     padding-top: 3px;
     border-radius: 7px;
     overflow: hidden;
@@ -295,7 +299,7 @@ input[type=button] {
   /* TODO Share code with above */
   .catalog-arrow {
     border: 1px solid $grey;
-    width: 135px;
+    width: 140px;
     overflow: hidden;
     padding-top: 3px;
     border-radius: 7px;
@@ -467,9 +471,6 @@ div.container {
   &.syn {
     @include opacity(0.3);
     background: lighten($dark-blue, 30%);
-    ul{
-      margin:0;
-    }
     &.active {
       @include opacity(1);
     }
