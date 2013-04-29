@@ -282,10 +282,11 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field clickable" ">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field clickable" "><div class="content">' + f + ':' + n + '</i>' +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
-                        '</div>' +
+                        '</div></div>' +
+                        '<p class="icon-user-md"></p>' +
                         '</div>');
                     newdiv.on('click', { field: f }, function (e) {
                         $(this).spin(orangeproton.options.libraries.spinner);
@@ -294,10 +295,11 @@ var mindmapper = {
                         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
                     });
                     s.push(newdiv);
-                    $(newdiv).hoverIntent(function (){
-                        toggleHighlightContainer('field');
-                    },null);
+
                 }
+                $(newdiv).hoverIntent(function (){
+                    toggleHighlightContainer('field');
+                },null);
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
@@ -305,6 +307,11 @@ var mindmapper = {
                 $('.syn.node').hoverIntent(function (){
                     toggleHighlightContainer('syn');
                 }, null);
+
+                $(".icon-user-md").each(function(){
+                      $(this).css({"line-height": $(this).parent().height()+'px'});
+                });
+
             },
 
             error: mindmapper.handleApiError,
