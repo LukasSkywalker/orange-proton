@@ -396,6 +396,8 @@ div.node, div.legend {
   &.syn {
     @include node-border($dark-blue);
     text-align: left;
+    overflow-y: scroll;
+    max-height: 150px;
   }
 
   &.field {

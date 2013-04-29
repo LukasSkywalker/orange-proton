@@ -40,7 +40,7 @@ orangeproton.options = {
    * How many nodes should be displayed of each type
    */
   display: {
-    max_syn: 5, // max number of synonyms to display
+    max_syn: 100, // max number of synonyms to display
     max_fields: 7, // max number of fields
     max_drgs: 10,
     max_sub: Infinity,

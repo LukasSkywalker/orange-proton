@@ -54,9 +54,9 @@ $(document).ready(function () {
         });
     });
 
-    $('#search-bar').hover(function(){
+    $('#search-bar').hoverIntent(function(){
         clearHighlight();
-    });
+    }, null);
 
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
@@ -221,9 +221,9 @@ var mindmapper = {
                 var name = data.text;
                 var container = $mm.megamind();      //initialize
                 name = name.replace(/\{(.*?)\}/gi, '{<a href="#" onclick="event.preventDefault(); $(document).trigger(\'paramChange\', [\'$1\']);">$1</a>}');
-                var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hover(function(){
+                var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hoverIntent(function(){
                     clearHighlight();
-                });
+                }, null);
 
                 //Add handler to clear Highlight
 
@@ -237,7 +237,7 @@ var mindmapper = {
                     }).join('');
 
                     if (newdiv != '')
-                        synonyms.push($('<div class="syn" title='+I18n.t("syn")+'><ul>{0}</ul></div>'.format(newdiv)));
+                        synonyms.push($('<div class="syn"><ul>{0}</ul></div>'.format(newdiv)));
                 }
                 else {
                     synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
@@ -374,9 +374,7 @@ function toggleHighlightContainer(className){
         var $container = $('.container.' + className);
         var $text = $container.find('p:first');
         var $front =$('.front-container.' + className);
-        $container.toggleClass('active', 400);
-        //$text.toggle('fade');
-
+        $container.clearQueue().toggleClass('active', 400);
 
         last = className;
     }
@@ -385,6 +383,5 @@ function toggleHighlightContainer(className){
 
 function clearHighlight(){
     $('.container').removeClass('active', 400);
-    //$('.show-type').hide('fade');
     last = undefined;
 }

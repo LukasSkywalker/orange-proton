@@ -232,9 +232,9 @@ var megamind = {
 
     this.rows = [];
     this.el = $('<div><div class="container-inner"><p class="show-type '+ className +'">'+ text +'</p></div></div>').addClass('container').addClass(className);
-    this.overlay =  $('<div></div>').addClass('front-container').addClass(className).mouseenter(function(){
+    this.overlay =  $('<div></div>').addClass('front-container').addClass(className).hoverIntent(function(){
         toggleHighlightContainer(className);
-    });
+    }, null);
     this.areas = areas;
     this.resize();
     this.container = mm;
