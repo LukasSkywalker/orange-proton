@@ -177,6 +177,8 @@ var mindmapper = {
     prevLang: null,
     prevCode: null,
     prevMode: null,
+    
+    requestQueue: [],
 
     /**
      * Performs the API request and displays the data in the mindmap
@@ -191,7 +193,13 @@ var mindmapper = {
     getICD: function (input, lang, mode, catalog) {
         var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog)
         var count = orangeproton.options.display.max_fields;
-        jQuery.ajax({
+        if( mindmapper.requestQueue.length > 0 ) {
+            for(var i = 0; i < mindmapper.requestQueue.length; i++) {
+                mindmapper.requestQueue[i].abort();
+            }
+        }
+        mindmapper.requestQueue = [];
+        var req = jQuery.ajax({
             url: op.apiBase + '/fields/get' + params + '&count=' + count,
             type: 'GET',
             dataType: 'json',
@@ -290,12 +298,16 @@ var mindmapper = {
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
+                mindmapper.hideSpinner();
             },
 
             error: mindmapper.handleApiError,
 
-            complete: mindmapper.hideSpinner
+            complete: function(jqXhr) {
+                mindmapper.requestQueue.removeElement(jqXhr);
+            }
         });
+        mindmapper.requestQueue.push(req);
     },
 
     /**
@@ -309,8 +321,10 @@ var mindmapper = {
             var message = jQuery.parseJSON(xhr.responseText).error;
             alert(message);
         } catch (e) {
-            if (error && error != '') alert(error);
+            if (error && error != '' && error != 'abort') alert(error);
         }
+        if( error != 'abort')
+            mindmapper.hideSpinner();
     },
 
     /**

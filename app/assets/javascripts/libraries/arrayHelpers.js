@@ -99,6 +99,13 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
+Array.prototype.removeElement = function(el) {
+  for(var i = 0; i < this.length; i++) {
+    if(this[i] == el)
+      this.splice(i, 1);
+  }
+};
+
 /* rotate array by the given steps */
 Array.prototype.rotate = function(p) {
   for(var l = this.length, p = (Math.abs(p) >= l && (p %= l), p < 0 && (p += l), p), i, x; p; p = (Math.ceil(l / p) - 1) * p - l + (l = p))
