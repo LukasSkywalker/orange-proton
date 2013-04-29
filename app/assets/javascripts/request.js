@@ -36,6 +36,11 @@ $(document).ready(function () {
       $(document).trigger('paramChange');
     });
 
+    // add event handler for catlog change
+    $catalog.change(function () {
+        $(document).trigger('paramChange');
+    });
+
     // add event handler for mode change on UI element
     $mode.change(function () {
         $(document).trigger('paramChange');
