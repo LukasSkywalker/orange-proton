@@ -114,11 +114,6 @@ $(document).ready(function () {
     // load the panel
     orangeproton.admin.loadPanel();
 
-    // event handler for hiding the individual panels
-    $('.title').click(function () {
-        $(this).next().toggle('blind');
-    });
-
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
         togglePanels();
