@@ -39,7 +39,7 @@ class DatabaseAdapter
     @chop_ranges = @client[@collections_config['chop_ranges'][0]][@collections_config['chop_ranges'][1]]
 
     @thesaur_to_fs = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
-    @thesaur_db = @client[@collections_config['thesaur_to_fs'][0]]
+    @thesaur_db = @client.db(@collections_config['thesaur_to_fs'][0])
 
 
   end
@@ -118,8 +118,9 @@ class DatabaseAdapter
   
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
-    a = @thesaur_db.collection_names
-    a.delete(@thesaur_to_fs.name)
+    a = @client['thesauren'].collection_names
+    a.delete('thesaurusToFSCode')
+    #a.delete(@thesaur_to_fs.name)
     a.delete('system.indexes')
     a
   end
@@ -148,7 +149,7 @@ class DatabaseAdapter
   # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
-    @thesaur_to_fs.find(
+    @client['thesauren']['thesaurusToFSCode'].find(
       { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
     ).to_a.map {|fs| fs['fs_code'] }
   end
