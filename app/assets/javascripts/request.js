@@ -296,10 +296,12 @@ var mindmapper = {
                     });
                     s.push(newdiv);
 
+                    //add hover event to every field node
+                    $(newdiv).hoverIntent(function (){
+                        toggleHighlightContainer('field');
+                    },null);
                 }
-                $(newdiv).hoverIntent(function (){
-                    toggleHighlightContainer('field');
-                },null);
+
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
