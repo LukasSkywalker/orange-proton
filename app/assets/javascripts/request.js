@@ -38,7 +38,18 @@ $(document).ready(function () {
 
     // add event handler for catlog change
     $catalog.change(function () {
-        $(document).trigger('paramChange');
+        var catalog = $(this).val();
+        var prevCatalog = mindmapper.prevCatalog;
+        if( mindmapper.prevCatalog ) {
+            if( prevCatalog.indexOf('icd') > -1 && catalog.indexOf('icd') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+            if( prevCatalog.indexOf('chop') > -1 && catalog.indexOf('chop') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+        } else {
+            $(document).trigger('paramChange');
+        }
     });
 
     // add event handler for mode change on UI element
