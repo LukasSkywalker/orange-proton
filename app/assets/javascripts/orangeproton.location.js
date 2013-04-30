@@ -179,7 +179,9 @@ orangeproton.location = {
     var map = new GMaps({
       div: '#location-map',
       lat: location.lat,
-      lng: location.lng
+      lng: location.lng,
+      width: '650',
+      height: '250'
     });
     map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
 
