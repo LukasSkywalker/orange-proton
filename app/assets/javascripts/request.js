@@ -38,7 +38,18 @@ $(document).ready(function () {
 
     // add event handler for catlog change
     $catalog.change(function () {
-        $(document).trigger('paramChange');
+        var catalog = $(this).val();
+        var prevCatalog = mindmapper.prevCatalog;
+        if( mindmapper.prevCatalog ) {
+            if( prevCatalog.indexOf('icd') > -1 && catalog.indexOf('icd') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+            if( prevCatalog.indexOf('chop') > -1 && catalog.indexOf('chop') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+        } else {
+            $(document).trigger('paramChange');
+        }
     });
 
     // add event handler for mode change on UI element
@@ -277,7 +288,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field clickable" "><div class="content">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
                         '</div></div>' +
