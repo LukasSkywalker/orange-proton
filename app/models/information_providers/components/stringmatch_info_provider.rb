@@ -37,6 +37,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
       end
     end
 
+    Rails.logger.info code_text
     # Search for keywords in synonym string
     keywords.each do |keyword_entry|
       fs.concat(get_fs(code_text, keyword_entry,

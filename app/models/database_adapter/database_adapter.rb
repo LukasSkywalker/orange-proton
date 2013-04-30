@@ -37,6 +37,7 @@ class DatabaseAdapter
       }
     }
 
+
     @fs          = 
       @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
 

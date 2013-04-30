@@ -4,6 +4,39 @@ defaults: &defaults
   database: admin
   username: pse4_read
   password: plokij
+  write_username: pse4_write
+  collections: {
+  chop_ranges: [CHOPRangeFSH, mappings],
+  icd_ranges: [ICDRangeFSH, mappings],
+  catalogs: {
+    icd_2010_ch: {
+    de: [icd_2010_ch,de],
+    fr: [icd_2010_ch,fr],
+    },
+    icd_2012_ch: {
+    de: [icd_2012_ch,de],
+    fr: [icd_2012_ch,fr],
+    it: [icd_2012_ch,it],
+    en: [icd_2012_ch,en]
+    },
+    chop_2012_ch: {
+    de: [chop_2012_ch,de],
+    fr: [chop_2012_ch,fr],
+    },
+    chop_2013_ch: {
+    de: [chop_2013_ch,de],
+    fr: [chop_2013_ch,fr],
+    it: [chop_2013_ch,it],
+    }
+  },
+  compounds: [compounds,compounds],
+  doctors: [doctors,doctors],
+  docfield_to_FMH_code: [doctors,docfieldToFSCode],
+  icd_keywords: [fachgebieteKeywords,fachgebieteKeywords],
+  fmh_codes: [fachgebieteUndSpezialisierungen,fachgebiete],
+  mdc_to_fmh: [mdc,mdcCodeToFSCode]
+  thesauri : [thesauren]
+  }
 
 development:
   <<: *defaults
