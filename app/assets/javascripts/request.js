@@ -177,7 +177,7 @@ var mindmapper = {
     prevLang: null,
     prevCode: null,
     prevMode: null,
-    
+
     requestQueue: [],
 
     /**
@@ -255,13 +255,13 @@ var mindmapper = {
                 c.addNodes(superclasses);
 
                 var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-                var c = $mm.megamind('addCanvas', ['right'], 'sub');
+                var c = $mm.megamind('addCanvas', ['right'], 'sub', {shuffle: false});
                 c.addNodes(subclasses);
 
                 //mode setting
                 if(mode == 'ad'){
                     var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                    var c = $mm.megamind('addCanvas', ['top'], 'drg');
+                    var c = $mm.megamind('addCanvas', ['top'], 'drg', {shuffle: false});
                     c.addNodes(drgs);
 
                     var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
