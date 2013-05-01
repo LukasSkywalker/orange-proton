@@ -257,6 +257,10 @@ input[type=button] {
     @include clickable;
   }
 
+  #center-button{
+    float: right;
+    @include clickable;
+  }
   /* TODO rename, this is only used for the language selection */
   .hide-arrow {
     border: 1px solid $grey;
@@ -554,7 +558,7 @@ div.container {
     .container-inner {
       p {
         display: inline;
-          @include opacity(1);
+        @include opacity(1);
       }
     }
   }
@@ -661,6 +665,15 @@ div.container {
     }
   }
 
+  #docHeader {
+    height: 10%;
+  }
+
+  #docTitle {
+    font-size: 1.8em;
+    font-weight: bold;
+    display: inline;
+  }
   #docList {
     float: left;
     display: inline;
