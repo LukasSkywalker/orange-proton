@@ -50,7 +50,7 @@ $dark-purple: #9933CC;
 
 #mindmap {
   position: absolute;
-  top: 51px;
+  top: 81px;
 
   svg {
     z-index: 3;
@@ -384,6 +384,15 @@ input[type=button] {
     -webkit-appearance: none;
   }
 
+}
+
+#breadcrumb{
+  position: fixed;
+  top:50px;
+  height:30px;
+  width:100%;
+  background: $light-grey;
+  left:0;
 }
 
 /***********Nodes and Containers************/
