@@ -333,7 +333,7 @@ var mindmapper = {
                 $trail.xBreadcrumbs({showSpeed: 'fast'});
 
 				if(response.result.is_fallback){
-                    $.notify.alert("Fallback language", { occupySpace : true ,close : true}); //TODO I18n this shit
+                    $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this shit
                 }
 
             },
