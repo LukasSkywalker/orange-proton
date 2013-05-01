@@ -13,17 +13,8 @@
  * Built for jQuery library
  * http://jquery.com
  *
- * jQuery.support.transition
- *to verify that CSS3 transition is supported (or any of its browser-specific implementations)
  */
 
-$.support.transition = (function () {
-    var thisBody = document.body || document.documentElement,
-        thisStyle = thisBody.style,
-        support = thisStyle.transition !== undefined || thisStyle.WebkitTransition !== undefined || thisStyle.MozTransition !== undefined || thisStyle.MsTransition !== undefined || thisStyle.OTransition !== undefined;
-
-    return support;
-}());
 
 //Start of actual extension
 
@@ -31,29 +22,15 @@ $.support.transition = (function () {
 
 
     var ele, space, timer,
-        modTest = $.support.transition,
     //Show animation + classes toggle/reset
-        show = (modTest) ?
-            function (element, extClass, txt) {
-                element
-                    .attr('class', 'notify-' + extClass + ' notify-visible')
-                    .html(txt);
-            } :
-            function (element, extClass, txt) {
+        show = function (element, extClass, txt) {
                 element
                     .attr('class', 'notify-' + extClass + ' notify-visible')
                     .html(txt)
-                    .animate({height: '30px'}, 400);
+                    .animate({height: '50px'}, 400);
             },
     //Hide animation + classes toggle
-        hide = (modTest) ?
-            function (element) {
-                element
-                    .removeClass('notify-visible')
-                    .addClass('notify-hidden')
-                    .empty();
-            } :
-            function (element) {
+        hide = function (element) {
                 element
                     .removeClass('notify-visible')
                     .addClass('notify-hidden')
