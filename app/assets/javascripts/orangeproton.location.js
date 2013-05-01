@@ -188,7 +188,6 @@ orangeproton.location = {
     $('#location-map').data('map', map);
 
     $.fancybox($popup, {
-      closeBtn: false,
       afterShow: function () {
         $.fancybox.update();
         $(document).trigger('locationChange');
