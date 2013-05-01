@@ -53,12 +53,23 @@ orangeproton.doctor = {
                 lat: orangeproton.location.getLocation().lat,
                 lng: orangeproton.location.getLocation().lng
             });
+
+            var shadow = new google.maps.MarkerImage(
+                'http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png',
+                new google.maps.Size(59, 32),	// size
+                new google.maps.Point(0,0),	// origin
+                new google.maps.Point(16, 32)	// anchor
+            );
+
             map.addMarker({
                 lat: orangeproton.location.getLocation().lat,
                 lng: orangeproton.location.getLocation().lng,
                 icon: 'http://maps.google.com/mapfiles/ms/micons/green-dot.png',
+                shadow: shadow,
                 infoWindow: { content: 'Ihr Standort' }
             });
+
+
             $('#map').data('map', map);
             
             var userPos = new google.maps.LatLng( orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng );
