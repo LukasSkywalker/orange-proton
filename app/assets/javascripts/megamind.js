@@ -225,6 +225,8 @@ var megamind = {
         if(className==="inclusiva-exclusiva"){
            var part = className.split("-");
             return I18n.t(part[0]) + " & " + I18n.t(part[1])
+        } else if(className==="field"){
+            return I18n.t(className) + ' & ' + 'Ärzte'; //TODO I18n this shit
         } else {
            return I18n.t(className);
         }
