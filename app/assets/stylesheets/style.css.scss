@@ -471,7 +471,7 @@ div.node, div.legend {
 
 div.node{
   &.syn{
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 
