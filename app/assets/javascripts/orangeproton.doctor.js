@@ -44,7 +44,11 @@ orangeproton.doctor = {
             var $overlay = $('.docOverlay');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
-            var $help = $('<div id="map-help"><h2>'+ I18n.t('doc_help')+'</h2></div> ');
+            //TODO translate
+            var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
+                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Zentrieren sie die Karte nach ihrem Standort"></div>' +
+                        '</div> ');
+
             $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
@@ -69,6 +73,10 @@ orangeproton.doctor = {
                 infoWindow: { content: 'Ihr Standort' }
             });
 
+            //register center button
+            $('#center-button').on('click', null, function () {
+                 map.setCenter(orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng);
+            });
 
             $('#map').data('map', map);
             
