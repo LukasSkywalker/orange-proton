@@ -8,8 +8,12 @@ $(document).ready(function () {
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
     var $searchBar = $('#search-bar');
+    var $trail = $('#bread-crumbs');
 
     orangeproton.generic.injectConsoleLog();
+
+    $trail.append(orangeproton.trail.getList());
+    $trail.jBreadCrumb({easing:'swing'});
 
     /* TOP-BAR */
     // start search on enter key press

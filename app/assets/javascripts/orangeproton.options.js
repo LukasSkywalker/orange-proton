@@ -48,5 +48,9 @@ orangeproton.options = {
     max_exclusiva: 6,
     max_docs: 5,
     as_list: true
+  },
+
+  crumbs: {
+      maxCrumbs: 6
   }
 };
