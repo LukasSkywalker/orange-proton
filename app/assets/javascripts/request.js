@@ -78,6 +78,8 @@ $(document).ready(function () {
 
     // add event handler for param changes (starts a search)
     $(document).on('paramChange', function (e, code, lang, force, mode, catalog) {
+        $.notify.close();
+
         var $code    = $('#code-name');
         var $lang    = $('#lang');
         var $catalog = $('#catalog');
@@ -317,6 +319,10 @@ var mindmapper = {
                 $(".icon-user-md").each(function(){
                       $(this).css({"line-height": $(this).parent().height()+'px'});
                 });
+
+                if(response.result.is_fallback){
+                    $.notify.alert("Fallback language", { occupySpace : true ,close : true}); //TODO I18n this shit
+                }
 
             },
 
