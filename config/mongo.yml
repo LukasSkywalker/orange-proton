@@ -33,10 +33,10 @@ defaults: &defaults
   doctors : [doctors,doctors],
   docfield_to_FMH_code : [doctors,docfieldToFSCode],
   icd_keywords : [fachgebieteKeywords,fachgebieteKeywords],
-  fmh_codes : [fachgebieteUndSpezialisierungen,fachgebiete],
+  fmh_codes : [fachgebieteUndSpezialisierungen,fachgebieteUndSpezialisierungen],
   mdc_to_fmh : [mdc,mdcCodeToFSCode],
   thesauri : [thesauren],
-  thesaur_to_fs : [thesauren,thesaurenToFSCode],
+  thesaur_to_fs : [thesauren,thesaurusToFSCode],
   mdcs : [mdc,mdcNames]
   }
 

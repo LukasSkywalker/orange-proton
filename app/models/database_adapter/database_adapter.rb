@@ -27,7 +27,7 @@ class DatabaseAdapter
 
 
     @fs          =
-      @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
+      @client[@collections_config['fmh_codes'][0]][@collections_config['fmh_codes'][1]]
 
     # TODO make catalog specific?
     @mdc_to_fs   = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
@@ -37,6 +37,7 @@ class DatabaseAdapter
     @compounds   = @client[@collections_config['compounds'][0]][@collections_config['compounds'][1]]
     @icd_ranges  = @client[@collections_config['icd_ranges'][0]][@collections_config['icd_ranges'][1]]
     @chop_ranges = @client[@collections_config['chop_ranges'][0]][@collections_config['chop_ranges'][1]]
+    @docfield_to_fmh = @client[@collections_config['docfield_to_FMH_code'][0]][@collections_config['docfield_to_FMH_code'][1]]
 
     @thesaur_to_fs = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
     @thesaur_db = @client.db(@collections_config['thesaur_to_fs'][0])
@@ -47,9 +48,10 @@ class DatabaseAdapter
   def authenticate(client, config)
     return if client.nil? or config.nil?
 
+    admin = config[Rails.env]['database']
     user = config[Rails.env]['username']
     pw = config[Rails.env]['password']
-    @client.db('admin').authenticate(user, pw)
+    @client.db(admin).authenticate(user, pw)
 
   end
 
@@ -104,21 +106,21 @@ class DatabaseAdapter
     fmhs
   end
 
-  private
-  def get_manually_mapped_fs_codes(searchhash)
-    documents = @client['manualMappings']['manualMappings'].find(searchhash)
-    fs = []
-    documents.each do |document|
-      fs << document['fs_code']
-    end
-
-    fs
-  end
+  #private      #We don't need this anymore, do we?
+  #def get_manually_mapped_fs_codes(searchhash)
+  #  documents = @client['manualMappings']['manualMappings'].find(searchhash)
+  #  fs = []
+  #  documents.each do |document|
+  #    fs << document['fs_code']
+  #  end
+  #
+  #  fs
+  #end
   public
-  
+
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
-    a = @client['thesauren'].collection_names
+    a = @thesaur_db.collection_names
     a.delete('thesaurusToFSCode')
     #a.delete(@thesaur_to_fs.name)
     a.delete('system.indexes')
@@ -149,7 +151,7 @@ class DatabaseAdapter
   # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
-    @client['thesauren']['thesaurusToFSCode'].find(
+    @thesaur_to_fs.find(
       { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
     ).to_a.map {|fs| fs['fs_code'] }
   end
@@ -157,7 +159,7 @@ class DatabaseAdapter
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z). 
   # nil if there is none or this is an invalid prefix.
   def get_mdc_code(drg_prefix)
-    document=@client['mdc']['mdcNames'].find_one({drgprefix: drg_prefix})
+    document=@mdc.find_one({drgprefix: drg_prefix})
     document.nil? ? nil : document['code']
   end
 
@@ -179,7 +181,7 @@ class DatabaseAdapter
   # This is used by get_doctors_by_fs.
   def get_specialities_from_fs(fs_code)
     assert_field_code(fs_code)
-    @client['doctors']['docfieldToFSCode'].find(
+    @docfield_to_fmh.find(
       {fs_code: fs_code}
     ).to_a.map { |spec| spec['docfield'] }
   end
