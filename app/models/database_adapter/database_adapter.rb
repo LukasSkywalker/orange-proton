@@ -121,8 +121,7 @@ class DatabaseAdapter
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
     a = @thesaur_db.collection_names
-    a.delete('thesaurusToFSCode')
-    #a.delete(@thesaur_to_fs.name)
+    a.delete(@thesaur_to_fs.name)
     a.delete('system.indexes')
     a
   end
