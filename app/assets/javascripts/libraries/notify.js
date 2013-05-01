@@ -27,7 +27,7 @@
                 element
                     .attr('class', 'notify-' + extClass + ' notify-visible')
                     .html(txt)
-                    .animate({height: '50px'}, 400);
+                    .stop().animate({height: '50px'}, 400);
             },
     //Hide animation + classes toggle
         hide = function (element) {
@@ -35,7 +35,7 @@
                     .removeClass('notify-visible')
                     .addClass('notify-hidden')
                     .empty()
-                    .animate({height: '0px'}, 400);
+                    .stop().animate({height: '0px'}, 400);
 
             },
     //Events object
