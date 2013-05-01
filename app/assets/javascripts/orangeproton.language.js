@@ -36,9 +36,9 @@ orangeproton.language = {
         //Tooltips
         // TODO Translate this stuff
         $('#code-name').attr('title', 'Geben sie hier einen ICD- oder CHOP- Code ein');
-        $('#catalog').attr('title', 'Wählen sie einen Katalog');
-        $('#mode').attr('title', 'Wählen sie den Modus');
-        $('#lang').attr('title', 'Wählen sie die Sprache');
+        $('.catalog-arrow').attr('title', 'Wählen sie einen Katalog');
+        $('.mode-arrow').attr('title', 'Wählen sie den Modus');
+        $('.lang-arrow').attr('title', 'Wählen sie die Sprache');
         $('#location-container').attr('title', 'Klicken sie hier um ihren Standort zu ändern');
 
         $('#search-bar [title]').tipsy({
