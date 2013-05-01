@@ -50,7 +50,7 @@ $dark-purple: #9933CC;
 
 #mindmap {
   position: absolute;
-  top: 51px;
+  top: 81px;
 
   svg {
     z-index: 3;
@@ -386,6 +386,15 @@ input[type=button] {
 
 }
 
+#breadcrumb{
+  position: fixed;
+  top:50px;
+  height:30px;
+  width:100%;
+  background: $light-grey;
+  left:0;
+}
+
 /***********Nodes and Containers************/
 
 /* nodes and legend items */
@@ -462,7 +471,7 @@ div.node, div.legend {
 
 div.node{
   &.syn{
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 }
 

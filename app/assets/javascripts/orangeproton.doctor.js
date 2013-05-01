@@ -44,7 +44,11 @@ orangeproton.doctor = {
             var $overlay = $('.docOverlay');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
-            var $help = $('<div id="map-help"><h2>'+ I18n.t('doc_help')+'</h2></div> ');
+            //TODO translate
+            var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
+                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Zentrieren sie die Karte nach ihrem Standort"></div>' +
+                        '</div> ');
+
             $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
@@ -56,9 +60,9 @@ orangeproton.doctor = {
 
             var shadow = new google.maps.MarkerImage(
                 'http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png',
-                new google.maps.Size(59, 32),	// size
-                new google.maps.Point(0,0),	// origin
-                new google.maps.Point(16, 32)	// anchor
+                new google.maps.Size(59, 32),
+                new google.maps.Point(0,0),
+                new google.maps.Point(16, 32)
             );
 
             map.addMarker({
@@ -69,6 +73,10 @@ orangeproton.doctor = {
                 infoWindow: { content: 'Ihr Standort' }
             });
 
+            //register center button
+            $('#center-button').on('click', null, function () {
+                 map.setCenter(orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng);
+            });
 
             $('#map').data('map', map);
             
@@ -83,16 +91,20 @@ orangeproton.doctor = {
                 var lat = doc.lat;
                 var lng = doc.long;
                 var address = doc.address.replace(/,\s*/gi, "<br />");
+                var number = i+1;
                 var element =
                     '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
                         + '<label class="docLabel clickable" for="docItem-{0}" >'
-                        + '  <p class="doc doc-title">{1}</p>'
+                        + '  <p class="doc doc-title">'+number+') '+'{1}</p>'
                         + '  <p class="doc address">{2}<br />{3}</p>'
                         + '</label>'
                         + '</input>';
+                //Icon api is slow, change to standard for speed
                 map.addMarker({
                     lat: lat,
                     lng: lng,
+                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+number+'|FF6363|000000',
+                    shadow: shadow,
                     infoWindow: {
                         content: '<div style="max-width: 200px;">' + title + '<br />' + name + '<br />' + address + '</div>'
                     }
