@@ -11,6 +11,9 @@ $(document).ready(function () {
 
     orangeproton.generic.injectConsoleLog();
 
+    orangeproton.trail.clear();
+    orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
+
     /* TOP-BAR */
     // start search on enter key press
     $searchBar.enterHandler(function () {
