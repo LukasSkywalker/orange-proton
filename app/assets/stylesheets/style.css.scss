@@ -629,7 +629,6 @@ div.container {
 .docOverlay, #location-popup {
   height: 100%;
   width: 100%;
-  position: relative;
 
   .location p {
     position: relative;
@@ -656,14 +655,6 @@ div.container {
     display: inline;
     width: 700px;
     height: 500px;
-    z-index: 1000 !important;
-    position: relative !important;
-    padding: 0 15px !important;
-
-    div {
-      z-index: 500 !important;
-      position: absolute !important;
-    }
   }
 
   #docHeader {
