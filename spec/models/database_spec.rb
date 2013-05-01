@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 # this class is testing the number of codes and no functionality
+# all these tests DO NOT WORK with the new database structure
 describe DatabaseAdapter do
   before do
     @db = DatabaseAdapter.new
@@ -36,7 +37,7 @@ describe DatabaseAdapter do
     @doc_fs = client['doctors']['docfieldToFSCode']
     @docs = client['doctors']['doctors']
 
-    @keywords = client['fachgebieteKeywords']['fachgebieteKeywords']
+    @icd_keywords = client['fachgebieteKeywords']['fachgebieteKeywords']
   end
 
 =begin

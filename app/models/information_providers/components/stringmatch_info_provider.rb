@@ -12,7 +12,11 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     Rails.logger.info entry
     return [] if entry.nil? # cannot work unless there is a german entry
 
-    keywords = @db.get_fachgebiete_keywords()
+    keywords= @db.get_icd_keywords()
+    keywords_chop = @db.get_chop_keywords()
+
+    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop' #this is a hack because we removed the method to check for code-type
+
     get_fs_for_entry(keywords, entry, max_count)
   end
 
