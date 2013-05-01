@@ -15,54 +15,50 @@ class DatabaseAdapter
 
     # Store some of the databases in variables so we don't need to redo this 
     # over and over.
-    @catalogs = {
-      'icd_2010_ch' =>  {
-        'de' => @client['icd_2010_ch']['de'],
-        'fr' => @client['icd_2010_ch']['fr'],
-      },
-      'icd_2012_ch' =>  {
-        'de' => @client['icd_2012_ch']['de'],
-        'fr' => @client['icd_2012_ch']['fr'],
-        'it' => @client['icd_2012_ch']['it'],
-        'en' => @client['icd_2012_ch']['en']
-      },
-      'chop_2012_ch' => {
-        'de' => @client['chop_2012_ch']['de'],
-        'fr' => @client['chop_2012_ch']['fr'],
-      },
-      'chop_2013_ch' => {
-        'de' => @client['chop_2013_ch']['de'],
-        'fr' => @client['chop_2013_ch']['fr'],
-        'it' => @client['chop_2013_ch']['it'],
-      }
-    }
+    @collections_config = db_config[Rails.env]['collections']
 
-    @fs          = 
-      @client['fachgebieteUndSpezialisierungen']['fachgebieteUndSpezialisierungen']
+    @catalogs = @collections_config['catalogs']
+    #creating the mongo objects which will be necessary later on
+    @catalogs.keys.each do |catalog|
+      @catalogs[catalog].keys.each do |key|
+        @catalogs[catalog][key] = @client[@catalogs[catalog][key][0]][@catalogs[catalog][key][1]]
+      end
+    end
+
+
+    @fs          =
+      @client[@collections_config['fmh_codes'][0]][@collections_config['fmh_codes'][1]]
 
     # TODO make catalog specific?
-    @r_mdc_fs    = @client['mdc']['mdcCodeToFSCode']
-    @keywords    = @client['fachgebieteKeywords']['fachgebieteKeywords']
-    @doctors     = @client['doctors']['doctors']
-    @compounds   = @client['compounds']['compounds']
-    @icd_ranges  = @client['ICDRangeFSH']['mappings']
-    @chop_ranges = @client['CHOPRangeFSH']['mappings']
+    @mdc_to_fs   = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
+    @mdc         = @client[@collections_config['mdcs'][0]][@collections_config['mdcs'][1]]
+    @keywords    = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
+    @doctors     = @client[@collections_config['doctors'][0]][@collections_config['doctors'][1]]
+    @compounds   = @client[@collections_config['compounds'][0]][@collections_config['compounds'][1]]
+    @icd_ranges  = @client[@collections_config['icd_ranges'][0]][@collections_config['icd_ranges'][1]]
+    @chop_ranges = @client[@collections_config['chop_ranges'][0]][@collections_config['chop_ranges'][1]]
+    @docfield_to_fmh = @client[@collections_config['docfield_to_FMH_code'][0]][@collections_config['docfield_to_FMH_code'][1]]
 
-    @thesaur_to_fs_code = 'thesaurusToFSCode'
+    @thesaur_to_fs = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
+    @thesaur_db = @client.db(@collections_config['thesaur_to_fs'][0])
+
+
   end
 
   def authenticate(client, config)
     return if client.nil? or config.nil?
 
+    admin = config[Rails.env]['database']
     user = config[Rails.env]['username']
     pw = config[Rails.env]['password']
-    @client.db('admin').authenticate(user, pw)
+    @client.db(admin).authenticate(user, pw)
+
   end
 
   def assert_catalog(catalog)
     raise "catalog #{catalog} does not exist " unless (@catalogs.has_key?(catalog))
   end
-  
+
   # True if the <catalog> database (must exist in some language) exists in <language>.
   def has_data_for_language_and_catalog?(language, catalog)
     assert_catalog(catalog)
@@ -102,7 +98,7 @@ class DatabaseAdapter
   # An empty array if there are none or this is not an mdc_code. 
   # This is based on a manually set up table.
   def get_fs_code_by_mdc(mdc_code)
-    documents = @r_mdc_fs.find({mdc_code: mdc_code.to_s})
+    documents = @mdc_to_fs.find({mdc_code: mdc_code.to_s})
     fmhs = []
     documents.each do |document|
       fmhs << document['fs_code']
@@ -110,22 +106,22 @@ class DatabaseAdapter
     fmhs
   end
 
-  private 
-  def get_manually_mapped_fs_codes(searchhash) 
-    documents = @client['manualMappings']['manualMappings'].find(searchhash)
-    fs = []
-    documents.each do |document|
-      fs << document['fs_code']
-    end
-
-    fs
-  end
+  #private      #We don't need this anymore, do we?
+  #def get_manually_mapped_fs_codes(searchhash)
+  #  documents = @client['manualMappings']['manualMappings'].find(searchhash)
+  #  fs = []
+  #  documents.each do |document|
+  #    fs << document['fs_code']
+  #  end
+  #
+  #  fs
+  #end
   public
-  
+
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
-    a = @client['thesauren'].collection_names
-    a.delete(@thesaur_to_fs_code)
+    a = @thesaur_db.collection_names
+    a.delete(@thesaur_to_fs.name)
     a.delete('system.indexes')
     a
   end
@@ -147,14 +143,14 @@ class DatabaseAdapter
   def is_icd_code_in_thesaur_named?(icd_code, thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
     assert_icd_code(icd_code)
-    @client['thesauren'][thesaur_name].find_one({icd_code: icd_code}) != nil
+    @thesaur_db[thesaur_name].find_one({icd_code: icd_code}) != nil
   end
 
   # @return An array of all fs codes associated to the given thesaur. 
   # @param thesaur_name one of get_available_thesaur_names.
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
-    @client['thesauren'][@thesaur_to_fs_code].find(
+    @thesaur_to_fs.find(
       { thesaurName: thesaur_name}, fields: {:fs_code => 1, :_id => 0}
     ).to_a.map {|fs| fs['fs_code'] }
   end
@@ -162,7 +158,7 @@ class DatabaseAdapter
   # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z). 
   # nil if there is none or this is an invalid prefix.
   def get_mdc_code(drg_prefix)
-    document=@client['mdc']['mdcNames'].find_one({drgprefix: drg_prefix})
+    document=@mdc.find_one({drgprefix: drg_prefix})
     document.nil? ? nil : document['code']
   end
 
@@ -184,7 +180,7 @@ class DatabaseAdapter
   # This is used by get_doctors_by_fs.
   def get_specialities_from_fs(fs_code)
     assert_field_code(fs_code)
-    @client['doctors']['docfieldToFSCode'].find(
+    @docfield_to_fmh.find(
       {fs_code: fs_code}
     ).to_a.map { |spec| spec['docfield'] }
   end

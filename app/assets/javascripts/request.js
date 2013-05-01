@@ -8,12 +8,9 @@ $(document).ready(function () {
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
     var $searchBar = $('#search-bar');
-    var $trail = $('#bread-crumbs');
+
 
     orangeproton.generic.injectConsoleLog();
-
-    $trail.append(orangeproton.trail.getList());
-    $trail.jBreadCrumb({easing:'swing'});
 
     /* TOP-BAR */
     // start search on enter key press
@@ -42,7 +39,18 @@ $(document).ready(function () {
 
     // add event handler for catlog change
     $catalog.change(function () {
-        $(document).trigger('paramChange');
+        var catalog = $(this).val();
+        var prevCatalog = mindmapper.prevCatalog;
+        if( mindmapper.prevCatalog ) {
+            if( prevCatalog.indexOf('icd') > -1 && catalog.indexOf('icd') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+            if( prevCatalog.indexOf('chop') > -1 && catalog.indexOf('chop') > -1 ) {
+                $(document).trigger('paramChange');
+            }
+        } else {
+            $(document).trigger('paramChange');
+        }
     });
 
     // add event handler for mode change on UI element
@@ -75,6 +83,9 @@ $(document).ready(function () {
         var $lang    = $('#lang');
         var $catalog = $('#catalog');
         var $mode    = $('#mode');
+        var $trail = $('#bread-crumbs');
+        $trail.append(orangeproton.trail.getList());
+        $trail.jBreadCrumb({easing:'swing'});
 
         code = code || $code.val();
         catalog = catalog || $catalog.val();
@@ -117,11 +128,6 @@ $(document).ready(function () {
     /* ADMIN-PANELS */
     // load the panel
     orangeproton.admin.loadPanel();
-
-    // event handler for hiding the individual panels
-    $('.title').click(function () {
-        $(this).next().toggle('blind');
-    });
 
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
@@ -181,7 +187,7 @@ var mindmapper = {
     prevLang: null,
     prevCode: null,
     prevMode: null,
-    
+
     requestQueue: [],
 
     /**
@@ -259,13 +265,13 @@ var mindmapper = {
                 c.addNodes(superclasses);
 
                 var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-                var c = $mm.megamind('addCanvas', ['right'], 'sub');
+                var c = $mm.megamind('addCanvas', ['right'], 'sub', {shuffle: false});
                 c.addNodes(subclasses);
 
                 //mode setting
                 if(mode == 'ad'){
                     var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                    var c = $mm.megamind('addCanvas', ['top'], 'drg');
+                    var c = $mm.megamind('addCanvas', ['top'], 'drg', {shuffle: false});
                     c.addNodes(drgs);
 
                     var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
@@ -286,7 +292,7 @@ var mindmapper = {
                     var f = fields[i].field;
                     var n = fields[i].name;
                     var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field clickable" "><div class="content">' + f + ':' + n + '</i>' +
+                    var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
                         '<div class="relatedness-container">' +
                         '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
                         '</div></div>' +
@@ -300,10 +306,12 @@ var mindmapper = {
                     });
                     s.push(newdiv);
 
+                    //add hover event to every field node
+                    $(newdiv).hoverIntent(function (){
+                        toggleHighlightContainer('field');
+                    },null);
                 }
-                $(newdiv).hoverIntent(function (){
-                    toggleHighlightContainer('field');
-                },null);
+
 
                 var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
                 c.addNodes(s);
