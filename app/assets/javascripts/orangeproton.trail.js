@@ -17,6 +17,10 @@ Trail.prototype.pop = function() {
     this.crumbs.pop();
 };
 
+Trail.prototype.trimTo = function(index) {
+    this.crumbs.splice(index + 1, this.crumbs.length);
+};
+
 Trail.prototype.clear = function() {
     this.crumbs.clear();
 };
@@ -36,15 +40,15 @@ Trail.prototype.getList = function() {
         //TODO localize this madafaka
         var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
 
-        out += '<li title="' + contextString + '"><span onclick="codeLink(\'' + code + '\');">' + code + '</span>';
+        out += '<li onclick="codeLink(\'' + code + '\', ' + i + ');" title="' + contextString + '"><span>' + code + '</span>';
         out += '</li>';
     }
     return out;
 };
 
-function codeLink(code){
+function codeLink(code, idx){
     $('#code-name').val(code);
-    orangeproton.trail.push("ref", code);
+    orangeproton.trail.trimTo(idx);
     $(document).trigger('paramChange');
 }
 

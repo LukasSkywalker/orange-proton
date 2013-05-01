@@ -333,11 +333,12 @@ var mindmapper = {
 
                 var $trail = $('#bread-crumbs');
                 $trail.html(orangeproton.trail.getList());
+                $(".tipsy").remove();
                 $('#bread-crumbs [title]').tipsy({
                     trigger: 'hover',
                     gravity: 's',
                     delayIn: '100',
-                    delayOut: '100',
+                    delayOut: '0',
                     fade: 'true'
                 });
 
