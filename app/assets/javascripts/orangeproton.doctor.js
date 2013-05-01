@@ -56,9 +56,9 @@ orangeproton.doctor = {
 
             var shadow = new google.maps.MarkerImage(
                 'http://maps.google.com/mapfiles/ms/micons/msmarker.shadow.png',
-                new google.maps.Size(59, 32),	// size
-                new google.maps.Point(0,0),	// origin
-                new google.maps.Point(16, 32)	// anchor
+                new google.maps.Size(59, 32),
+                new google.maps.Point(0,0),
+                new google.maps.Point(16, 32)
             );
 
             map.addMarker({
@@ -83,16 +83,20 @@ orangeproton.doctor = {
                 var lat = doc.lat;
                 var lng = doc.long;
                 var address = doc.address.replace(/,\s*/gi, "<br />");
+                var number = i+1;
                 var element =
                     '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
                         + '<label class="docLabel clickable" for="docItem-{0}" >'
-                        + '  <p class="doc doc-title">{1}</p>'
+                        + '  <p class="doc doc-title">'+number+') '+'{1}</p>'
                         + '  <p class="doc address">{2}<br />{3}</p>'
                         + '</label>'
                         + '</input>';
+                //Icon api is slow, change to standard for speed
                 map.addMarker({
                     lat: lat,
                     lng: lng,
+                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+number+'|FF6363|000000',
+                    shadow: shadow,
                     infoWindow: {
                         content: '<div style="max-width: 200px;">' + title + '<br />' + name + '<br />' + address + '</div>'
                     }
