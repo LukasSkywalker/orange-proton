@@ -130,7 +130,7 @@ input[type=button] {
 #panels-container {
   max-width: 250px;
   position: absolute;
-  top: 50px;
+  top: 80px;
   right: 0;
   width: 200px;
   z-index: 10;
@@ -207,7 +207,7 @@ input[type=button] {
 #hide-panels {
   display: inline-table;
   position: absolute;
-  top: 80px;
+  top: 95px;
   right: 0px;
   background: $light-grey;
   width: 30px;
@@ -397,6 +397,7 @@ input[type=button] {
   width:100%;
   background: $light-grey;
   left:0;
+  border-bottom: 1px solid $grey;
 }
 
 /***********Nodes and Containers************/

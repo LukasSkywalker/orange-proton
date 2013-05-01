@@ -48,5 +48,10 @@ orangeproton.options = {
     max_exclusiva: 6,
     max_docs: 5,
     as_list: true
+  },
+
+  message: {
+      messageTimeOut: 3000
   }
+
 };

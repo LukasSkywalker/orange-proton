@@ -65,7 +65,7 @@ $(document).ready(function () {
         });
     });
 
-    $('#search-bar').hoverIntent(function(){
+    $searchBar.hoverIntent(function(){
         clearHighlight();
     }, null);
 
@@ -132,8 +132,6 @@ $(document).ready(function () {
 
     // start geolocation
     orangeproton.location.startGeoLocation();
-
-    orangeproton.generic.overwriteAlert();
 
     // Watch for changes in the history and start new search
     History.Adapter.bind(window, 'statechange', function () { // Note: We are using statechange instead of popstate
@@ -218,7 +216,7 @@ var mindmapper = {
                 var status = response.status;
                 if (status === 'error') {
                     var message = response.message;
-                    alert(message);
+                    $.notify.error(message, { occupySpace : true ,close : true});
                     return;
                 }
 
@@ -341,9 +339,9 @@ var mindmapper = {
     handleApiError: function (xhr, httpStatus, error) {
         try {
             var message = jQuery.parseJSON(xhr.responseText).error;
-            alert(message);
+            $.notify.error(message, { occupySpace : true ,close : true});
         } catch (e) {
-            if (error && error != '' && error != 'abort') alert(error);
+            if (error && error != '' && error != 'abort') $.notify.error(error, { occupySpace : true ,close : true});;
         }
         if( error != 'abort')
             mindmapper.hideSpinner();
