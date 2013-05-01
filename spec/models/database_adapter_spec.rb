@@ -42,8 +42,8 @@ describe DatabaseAdapter do
   end
 
   it 'should return all fachgebiete keywords' do
-    @adapter.instance_variable_get(:@keywords).stub(:find).and_return(['säugling', 'schilddrüse'])
-    @adapter.get_fachgebiete_keywords.should eq(['säugling', 'schilddrüse'])
+    @adapter.instance_variable_get(:@icd_keywords).stub(:find).and_return(['säugling', 'schilddrüse'])
+    @adapter.get_icd_keywords.should eq(['säugling', 'schilddrüse'])
   end
 
   it 'should find the fs code by mdc' do

@@ -33,6 +33,7 @@ defaults: &defaults
   doctors : [doctors,doctors],
   docfield_to_FMH_code : [doctors,docfield_to_fmh],
   icd_keywords : [dictionaries,icd_dictionary],
+  chop_keywords : [dictionaries,chop_dictionary],
   fmh_codes : [fmh,fmh_names],
   mdc_to_fmh : [mdc,mdc_to_fmh],
   mdcs : [mdc,mdc_names],
