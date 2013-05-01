@@ -50,7 +50,13 @@ orangeproton.options = {
     as_list: true
   },
 
+<<<<<<< HEAD
+  message: {
+      messageTimeOut: 3000
+=======
   crumbs: {
       maxCrumbs: 10
+>>>>>>> breadCrumbs
   }
+
 };

@@ -50,6 +50,7 @@ orangeproton.mindmap = {
               code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
               $(document).trigger('paramChange', [code, null]);
               $('#mindmap').megamind('setRoot', this, true);
+              orangeproton.trail.push(className, code);
             });
           }
           $element.addClass('clickable');

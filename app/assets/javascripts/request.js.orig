@@ -324,15 +324,17 @@ var mindmapper = {
                       $(this).css({"line-height": $(this).parent().height()+'px'});
                 });
 
+<<<<<<< HEAD
+                if(response.result.is_fallback){
+                    $.notify.alert("Fallback language", { occupySpace : true ,close : true}); //TODO I18n this shit
+                }
+
+=======
                 var $trail = $('#bread-crumbs');
 
                 $trail.html(orangeproton.trail.getList());
                 $trail.xBreadcrumbs({showSpeed: 'fast'});
-
-				if(response.result.is_fallback){
-                    $.notify.alert("Fallback language", { occupySpace : true ,close : true}); //TODO I18n this shit
-                }
-
+>>>>>>> breadCrumbs
             },
 
             error: mindmapper.handleApiError,
