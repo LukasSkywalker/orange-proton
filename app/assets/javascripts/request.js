@@ -328,9 +328,14 @@ var mindmapper = {
                 });
 
                 var $trail = $('#bread-crumbs');
-
                 $trail.html(orangeproton.trail.getList());
-                $trail.xBreadcrumbs({showSpeed: 'fast'});
+                $('#bread-crumbs [title]').tipsy({
+                    trigger: 'hover',
+                    gravity: 'n',
+                    delayIn: '300',
+                    delayOut: '100',
+                    fade: 'true'
+                });
 
 				if(response.result.is_fallback){
                     $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this shit

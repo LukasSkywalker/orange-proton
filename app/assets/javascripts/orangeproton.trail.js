@@ -22,7 +22,7 @@ Trail.prototype.clear = function() {
 };
 
 Trail.prototype.getList = function() {
-    var out = "";
+    var out = '<li><a href="/" class="icon-home" style="font-size: 16px"></a></li>';
     var length = this.crumbs.length;
 
     var start = length - this.maxCrumbs;
@@ -33,8 +33,10 @@ Trail.prototype.getList = function() {
     for (var i = start; i < end; i++) {
         var context = this.crumbs[i].context;
         var code = this.crumbs[i].code;
-        out += '<li><a href="#" onclick="codeLink(\'' + code + '\');">' + code + '</a>';
-        out += '<ul><li><a href="#">' + context + '</a></li></ul>';
+        //TODO localize this madafaka
+        var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
+
+        out += '<li><span title="' + contextString + '" onclick="codeLink(\'' + code + '\');">' + code + '</span>';
         out += '</li>';
     }
     return out;
