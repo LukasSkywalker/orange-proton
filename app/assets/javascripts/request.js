@@ -331,8 +331,8 @@ var mindmapper = {
                 $trail.html(orangeproton.trail.getList());
                 $('#bread-crumbs [title]').tipsy({
                     trigger: 'hover',
-                    gravity: 'n',
-                    delayIn: '300',
+                    gravity: 's',
+                    delayIn: '100',
                     delayOut: '100',
                     fade: 'true'
                 });
