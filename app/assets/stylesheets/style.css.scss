@@ -261,8 +261,8 @@ input[type=button] {
     float: right;
     @include clickable;
   }
-  /* TODO rename, this is only used for the language selection */
-  .hide-arrow {
+
+  .lang-arrow {
     border: 1px solid $grey;
     width: 100px;
     padding-top: 3px;
