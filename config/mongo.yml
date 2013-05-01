@@ -6,8 +6,8 @@ defaults: &defaults
   password: plokij
   write_username: pse4_write
   collections: {
-    chop_ranges: [CHOPRangeFSH, mappings],
-    icd_ranges: [ICDRangeFSH, mappings],
+    chop_ranges: [chop_ranges_to_fmh, ranges],
+    icd_ranges: [icd_ranges_to_fmh, ranges],
     catalogs: {
       icd_2010_ch: {
       de: [icd_2010_ch,de],
@@ -29,15 +29,16 @@ defaults: &defaults
       it: [chop_2013_ch,it],
     }
   },
-  compounds : [compounds,compounds],
+  compounds : [fmh_compounds,compounds],
   doctors : [doctors,doctors],
-  docfield_to_FMH_code : [doctors,docfieldToFSCode],
-  icd_keywords : [fachgebieteKeywords,fachgebieteKeywords],
-  fmh_codes : [fachgebieteUndSpezialisierungen,fachgebieteUndSpezialisierungen],
-  mdc_to_fmh : [mdc,mdcCodeToFSCode],
+  docfield_to_FMH_code : [doctors,docfield_to_fmh],
+  icd_keywords : [dictionaries,icd_dictionary],
+  fmh_codes : [fmh,fmh_names],
+  mdc_to_fmh : [mdc,mdc_to_fmh],
+  mdcs : [mdc,mdc_names],
   thesauri : [thesauren],
-  thesaur_to_fs : [thesauren,thesaurusToFSCode],
-  mdcs : [mdc,mdcNames]
+  thesaur_to_fs : [thesaur,thesaur_to_fmh],
+  thesaur_to_icd : [thesaur, thesaur_to_icd]
   }
 
 development:

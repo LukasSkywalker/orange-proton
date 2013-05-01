@@ -53,7 +53,12 @@ describe DatabaseAdapter do
 
   it 'should return all thesaur collections' do
     names = @adapter.get_available_thesaur_names
-    names.should include('Orthopdie', 'Gynaekologie', 'Hausarzt', 'Paediatrie', 'Chirurgie', 'Psycho')
+    names.should include('Orthopdie')
+    names.should include('Gynaekologie')
+    names.should include('Hausarzt')
+    names.should include('Paediatrie')
+    names.should include('Chirurgie')
+    names.should include('Psycho')
   end
 
   it 'should return all fs names for a language' do
@@ -132,10 +137,10 @@ describe DatabaseAdapter do
 
   it 'should find the icd ranges' do
     range = @adapter.get_icd_ranges('G55')
-    range[0]['beginning'].should eq('G50')
-    range[0]['ending'].should eq('G59')
-    range[1]['beginning'].should eq('G00')
-    range[1]['ending'].should eq('G99')
+    range[1]['beginning'].should eq('G50')
+    range[1]['ending'].should eq('G59')
+    range[0]['beginning'].should eq('G00')
+    range[0]['ending'].should eq('G99')
   end
 
   it 'should find the chop ranges' do

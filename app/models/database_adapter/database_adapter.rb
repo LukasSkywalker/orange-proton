@@ -40,7 +40,7 @@ class DatabaseAdapter
     @docfield_to_fmh = @client[@collections_config['docfield_to_FMH_code'][0]][@collections_config['docfield_to_FMH_code'][1]]
 
     @thesaur_to_fs = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
-    @thesaur_db = @client.db(@collections_config['thesaur_to_fs'][0])
+    @thesaur_to_icd = @client[@collections_config['thesaur_to_icd'][0]][@collections_config['thesaur_to_icd'][1]]
 
 
   end
@@ -120,10 +120,12 @@ class DatabaseAdapter
 
   # @return An array of available thesaur_name s
   def get_available_thesaur_names
-    a = @thesaur_db.collection_names
-    a.delete(@thesaur_to_fs.name)
-    a.delete('system.indexes')
-    a
+    names = []
+    entries = @thesaur_to_icd.find()
+    entries.each() do |entry|
+      names<<entry['thesaur']
+    end
+    names
   end
 
   # @return A hash fs_code (Integer) to fs_name (localised to lang)
@@ -143,7 +145,7 @@ class DatabaseAdapter
   def is_icd_code_in_thesaur_named?(icd_code, thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
     assert_icd_code(icd_code)
-    @thesaur_db[thesaur_name].find_one({icd_code: icd_code}) != nil
+    @thesaur_to_icd.find_one({thesaur: thesaur_name})['icds'].include? icd_code
   end
 
   # @return An array of all fs codes associated to the given thesaur. 
