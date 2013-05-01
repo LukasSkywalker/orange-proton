@@ -9,18 +9,20 @@ $(document).ready(function () {
     var $panelToggler = $('#hide-panels');
     var $searchBar = $('#search-bar');
 
-
     orangeproton.generic.injectConsoleLog();
 
     /* TOP-BAR */
     // start search on enter key press
     $searchBar.enterHandler(function () {
         $(document).trigger('paramChange', [null, null, true]);
-        orangeproton.trail.addCrumb('newSearch', $codeInput.val());
+        orangeproton.trail.clear();
+        orangeproton.trail.push('root', $codeInput.val())
     });
     // start search on button click
     $searchButton.on('click', null, function () {
         $(document).trigger('paramChange', [null, null, true]);
+        orangeproton.trail.clear();
+        orangeproton.trail.push('root', $codeInput.val())
     });
     // focus search field
     $codeInput.focus();
@@ -326,7 +328,6 @@ var mindmapper = {
 
                 $trail.html(orangeproton.trail.getList());
                 $trail.xBreadcrumbs({showSpeed: 'fast'});
-
             },
 
             error: mindmapper.handleApiError,

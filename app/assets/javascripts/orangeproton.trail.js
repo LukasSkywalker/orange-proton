@@ -2,29 +2,35 @@ var orangeproton = orangeproton || {};
 orangeproton.trail = new Trail(orangeproton.options.crumbs.maxCrumbs);
 
 function Trail (maxCrumbs) {
-    this.capacity = maxCrumbs;
+    this.maxCrumbs = maxCrumbs;
     this.crumbs = [];
-    this.size = 0;
 }
 
-Trail.prototype.addCrumb = function(context, code) {
-    if (this.size === this.capacity) {
-        this.trim();
-    }
-    this.crumbs[this.size] = {"context": context, "code": code};
-    this.size++;
+Trail.prototype.push = function(context, code) {
+    if (this.crumbs.length > 0 && code === this.crumbs.last().code && context === this.crumbs.last().context)
+        return;
+
+    this.crumbs.push({"context": context, "code": code});
 };
 
-Trail.prototype.trim = function() {
-    for (var i = 0; i < this.size; i++) {
-        this.crumbs[i] = this.crumbs[i+1];
-    }
-    this.size--;
+Trail.prototype.pop = function() {
+    this.crumbs.pop();
+};
+
+Trail.prototype.clear = function() {
+    this.crumbs.clear();
 };
 
 Trail.prototype.getList = function() {
     var out = "";
-    for (var i = 0; i < this.crumbs.length; i++) {
+    var length = this.crumbs.length;
+
+    var start = length - this.maxCrumbs;
+    if (start < 0) start = 0;
+
+    var end = this.crumbs.length;
+
+    for (var i = start; i < end; i++) {
         var context = this.crumbs[i].context;
         var code = this.crumbs[i].code;
         out += '<li><a href="#" onclick="codeLink(\'' + code + '\');">' + code + '</a>';
@@ -36,7 +42,7 @@ Trail.prototype.getList = function() {
 
 function codeLink(code){
     $('#code-name').val(code);
-    orangeproton.trail.addCrumb("ref", code);
+    orangeproton.trail.push("ref", code);
     $(document).trigger('paramChange');
 }
 

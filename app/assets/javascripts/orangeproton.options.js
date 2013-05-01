@@ -51,6 +51,6 @@ orangeproton.options = {
   },
 
   crumbs: {
-      maxCrumbs: 6
+      maxCrumbs: 10
   }
 };
