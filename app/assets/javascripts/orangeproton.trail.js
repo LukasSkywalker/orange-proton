@@ -23,26 +23,28 @@ Trail.prototype.trim = function() {
 };
 
 Trail.prototype.getList = function() {
-    var out = "<ul>";
+    var out = "";
     for (var i = 0; i < this.crumbs.length; i++) {
         var context = this.crumbs[i].context;
         var code = this.crumbs[i].code;
-        out += '<li><span onclick="codeLink(\'' + code + '\');" class="clickable">' + code + '(' + context + ')</span></li>';
+        out += '<li><a href="#" onclick="codeLink(\'' + code + '\');">' + code + '</a>';
+        out += '<ul><li><a href="#">' + context + '</a></li></ul>';
+        out += '</li>';
     }
-    out += "</ul>";
     return out;
 };
 
 function codeLink(code){
     $('#code-name').val(code);
+    orangeproton.trail.addCrumb("ref", code);
     $(document).trigger('paramChange');
 }
 
-orangeproton.trail.addCrumb("sub", "B26.0");
+/*orangeproton.trail.addCrumb("sub", "B26.0");
 orangeproton.trail.addCrumb("sup", "B26.1");
 orangeproton.trail.addCrumb("sub", "B26.2");
 orangeproton.trail.addCrumb("sup", "B26.3");
 orangeproton.trail.addCrumb("sub", "B26.4");
 orangeproton.trail.addCrumb("sup", "B26.5");
 orangeproton.trail.addCrumb("sub", "B26.6");
-orangeproton.trail.addCrumb("sup", "B26.7");
+orangeproton.trail.addCrumb("sup", "B26.7");*/

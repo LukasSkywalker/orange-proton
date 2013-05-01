@@ -16,6 +16,7 @@ $(document).ready(function () {
     // start search on enter key press
     $searchBar.enterHandler(function () {
         $(document).trigger('paramChange', [null, null, true]);
+        orangeproton.trail.addCrumb('newSearch', $codeInput.val());
     });
     // start search on button click
     $searchButton.on('click', null, function () {
@@ -83,9 +84,6 @@ $(document).ready(function () {
         var $lang    = $('#lang');
         var $catalog = $('#catalog');
         var $mode    = $('#mode');
-        var $trail = $('#bread-crumbs');
-        $trail.append(orangeproton.trail.getList());
-        $trail.jBreadCrumb({easing:'swing'});
 
         code = code || $code.val();
         catalog = catalog || $catalog.val();
@@ -323,6 +321,11 @@ var mindmapper = {
                 $(".icon-user-md").each(function(){
                       $(this).css({"line-height": $(this).parent().height()+'px'});
                 });
+
+                var $trail = $('#bread-crumbs');
+
+                $trail.html(orangeproton.trail.getList());
+                $trail.xBreadcrumbs({showSpeed: 'fast'});
 
             },
 
