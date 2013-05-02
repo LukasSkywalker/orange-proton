@@ -628,13 +628,17 @@ var megamind = {
 
   jQuery.fn.center = function (parent, animate) {
     this.css("position", "absolute");
+    $(this).addClass('centering');
     var duration = animate ? 600 : 0;
     this.animate({
       top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) +
           $(parent).scrollTop()),
       left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
           $(parent).scrollLeft())
-    }, {duration: duration, easing: 'linear'});
+    }, {duration: duration, easing: 'linear', complete: function() {
+      $(this).removeClass('centering');
+      $(this).trigger('centerComplete');
+    }});
     return this;
   };
 

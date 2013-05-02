@@ -222,130 +222,16 @@ var mindmapper = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function (response) {
-                var $mm = $('#mindmap');
-                var options = orangeproton.options.display;
-                $mm.megamind('cleanUp');
-
-                var status = response.status;
-                if (status === 'error') {
-                    var message = response.message;
-                    $.notify.error(message, { occupySpace : true ,close : true});
-                    return;
-                }
-
-                var data = response.result.data; // text is already parsed by JQuery
-
-                var name = data.text;
-                var container = $mm.megamind();      //initialize
-                name = name.replace(/\{(.*?)\}/gi, '{<a href="#" onclick="event.preventDefault(); $(document).trigger(\'paramChange\', [\'$1\']);">$1</a>}');
-                var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hoverIntent(function(){
-                    clearHighlight();
-                }, null);
-
-                //Add handler to clear Highlight
-
-                var root = $mm.megamind('setRoot', rootNode);
-
-                var synonyms = [];
-                if (orangeproton.options.display.as_list) {
-                    var syn = data.synonyms.slice(0, options.max_syn);
-                    var newdiv = $.map(syn,function (el) {
-                        return '<li>{0}</li>'.format(el);
-                    }).join('');
-
-                    if (newdiv != '')
-                        synonyms.push($('<div class="syn"><ul>{0}</ul></div>'.format(newdiv)));
-                }
-                else {
-                    synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
-                }
-                var c = $mm.megamind('addCanvas', ['bottomRight'], 'syn');
-                c.addNodes(synonyms);
-
-                var superclasses = [];
-                if (data.superclass) {
-                    var patternNoDash = /^(.[0-9]{2}(\.[0-9]{1,2})?)</gi;  //matches a single ICD before a HTML-tag start
-                    var content = '{0}<br />{1}'.format(data.superclass, data.superclass_text || '');
-                    superclasses = orangeproton.mindmap.generateBubbles([content], 1, 'super', patternNoDash);
-                }
-                var c = $mm.megamind('addCanvas', ['topRight'], 'super');
-                c.addNodes(superclasses);
-
-                var subclasses = orangeproton.mindmap.generateBubbles(data.subclasses, options.max_sub, 'sub', /(.*)/gi);
-                var c = $mm.megamind('addCanvas', ['right'], 'sub', {shuffle: false});
-                c.addNodes(subclasses);
-
-                //mode setting
-                if(mode == 'ad'){
-                    var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-                    var c = $mm.megamind('addCanvas', ['top'], 'drg', {shuffle: false});
-                    c.addNodes(drgs);
-
-                    var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
-                    var icdPattern = /\{(.[0-9]{2}(\.[0-9]{1,2})?)\}$/gi;
-                    var exclusiva = orangeproton.mindmap.generateBubbles(exc, 10, 'exclusiva', icdPattern);
-
-                    var inc = orangeproton.mindmap.preprocessNodes(data.inclusiva);
-                    var inclusiva = orangeproton.mindmap.generateBubbles(inc, options.max_inclusiva, 'inclusiva', icdPattern);
-                    var c = $mm.megamind('addCanvas', ['bottom'], 'inclusiva-exclusiva');
-                    c.addNodes(exclusiva.concat(inclusiva));
-                }
-
-                var s = [];
-                var fields = response.result.fields;
-                fields.sortBy('relatedness');
-                fields.reverse();
-                for (var i = 0; i < Math.min(options.max_fields, fields.length); i++) {
-                    var f = fields[i].field;
-                    var n = fields[i].name;
-                    var r = fields[i].relatedness;
-                    var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
-                        '<div class="relatedness-container">' +
-                        '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
-                        '</div></div>' +
-                        '<p class="icon-user-md"></p>' +
-                        '</div>');
-                    newdiv.on('click', { field: f }, function (e) {
-                        $(this).spin(orangeproton.options.libraries.spinner);
-                        var lat = orangeproton.location.getLocation().lat;
-                        var lng = orangeproton.location.getLocation().lng;
-                        orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
+                var animatedNode = $('.centering');
+                if( animatedNode.length > 0 ) {
+                    console.log('node is moving, adding complete handler')
+                    animatedNode.on('centerComplete', function() {
+                        console.log('node movement complete, drawing');
+                        orangeproton.mindmap.draw(response, input, mode);
                     });
-                    s.push(newdiv);
-
-                    //add hover event to every field node
-                    $(newdiv).hoverIntent(function (){
-                        toggleHighlightContainer('field');
-                    },null);
+                } else {
+                    orangeproton.mindmap.draw(response, input, mode);
                 }
-
-
-                var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
-                c.addNodes(s);
-                mindmapper.hideSpinner();
-                $('.syn.node').hoverIntent(function (){
-                    toggleHighlightContainer('syn');
-                }, null);
-
-                $(".icon-user-md").each(function(){
-                      $(this).css({"line-height": $(this).parent().height()+'px'});
-                });
-
-                var $trail = $('#bread-crumbs');
-                $trail.html(orangeproton.trail.getList());
-                $(".tipsy").remove();
-                $('#bread-crumbs [title]').tipsy({
-                    trigger: 'hover',
-                    gravity: 's',
-                    delayIn: '100',
-                    delayOut: '0',
-                    fade: 'true'
-                });
-
-				if(response.result.is_fallback){
-                    $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this shit
-                }
-
             },
 
             error: mindmapper.handleApiError,
