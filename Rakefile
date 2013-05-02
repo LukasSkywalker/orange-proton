@@ -10,7 +10,7 @@ require_relative 'db/seed'
 namespace :db do
   task :seed do
     env = ENV['ENV'] || "defaults"
-    seeder = Seed.new(env)
+    seeder = Seed.run(env)
   end
 end
 
