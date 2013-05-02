@@ -530,8 +530,17 @@ div.container {
 
   //orange
   &.inclusiva-exclusiva {
-    @include opacity(0.5);
+    @include opacity(0.8);
     background: lighten($orange, 30%);
+
+    .incl{
+      color:  $orange;
+    }
+
+    .excl{
+      color: $green;
+    }
+
     &.active {
       @include opacity(1);
     }
