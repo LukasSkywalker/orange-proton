@@ -5,21 +5,19 @@ include Mongo
 class ScriptDBAdapter
   attr_accessor :mongo_client, :db, :coll, :write
   def initialize (db , collection ,host, port, admin_db, write, write_user = '', write_pw = '')
-    mongo_client = MongoClient.new(host, port)
+    self.mongo_client = MongoClient.new(host, port)
     self.write = write
     if write
-      puts "Enter your PW for the account #{write_user}: "
       mongo_client.db(admin_db).authenticate(write_user,write_pw)
     else
       mongo_client.db(admin_db).authenticate('pse4_read','plokij')
     end
-    db = mongo_client.db(db)
-    self.coll = db.collection(collection)
+    self.coll = mongo_client[db][collection]
+
   end
 
   def set_collection (db_name, coll_name)
-    self.db = mongo_client.db(db_name)
-    self.coll = db.collection(coll_name)
+    self.coll = self.mongo_client[db_name][coll_name]
   end
 
   def drop_collection
@@ -38,7 +36,7 @@ class ScriptDBAdapter
 
   def update_doc(old, new)
     return :no_permission unless self.write
-    self.coll.update(old, new , { upsert: true })
+    self.coll.update(old, new, upsert: true )
   end
 
 end
