@@ -73,7 +73,7 @@ $(document).ready(function () {
             $('.location').html('<p class="icon-globe globe"></p><p id="loc">'+ I18n.t('location') +': </p><p>' + address.ellipses(100) + '</p>');
         });
     });
-    
+
     $(document).trigger('locationChange');
 
     $searchBar.hoverIntent(function(){

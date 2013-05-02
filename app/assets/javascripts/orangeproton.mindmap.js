@@ -73,7 +73,6 @@ orangeproton.mindmap = {
     if( collection === undefined ) return [];
     var icdPattern = /(.[0-9]{2}(\.[0-9]{1,2})?)/;
     var contentPattern = /^(.*?)\s\{/;    // match 'Bla' of 'Bla {B20}'
-    var rangePattern = new RegExp('\{'+icdPattern.source+'-'+icdPattern.source+'\}', 'gi'); // match 'B20' and 'B21' of '{B20-B21}'
     var subRangePattern = new RegExp('\{'+icdPattern.source+'\.-\}', 'ig'); // match 'B20' of '{B20.-}'
     var multiNodePattern = new RegExp('\{'+icdPattern.source+'\}', 'ig');
     var additionalNodes = [];
@@ -82,26 +81,21 @@ orangeproton.mindmap = {
       var text;
       if(content) text = content[1];
       else text = e;
-      var rangeMatch;
-      while( rangeMatch = rangePattern.exec(e)) {
-        var num1 = rangeMatch[1].substr(1);
-        var num2 = rangeMatch[3].substr(1);
-        var letter = rangeMatch[1].substr(0,1);
-        for(var i = num1; i <= num2; i++) {
-          var node = text + ' {' + letter + i + '}';
-          additionalNodes.push(node);
-        }
-      }
       var subRangeMatch;
+      var matchCount = 0;
       while( subRangeMatch = subRangePattern.exec(e)) {
         var node = text + ' {' + subRangeMatch[1] + '}';
         additionalNodes.push(node);
+        matchCount++;
       }
       var multiNodeMatch;
       while( multiNodeMatch = multiNodePattern.exec(e)) {
         var node = text + ' {' + multiNodeMatch[1] + '}';
         additionalNodes.push(node);
+        matchCount++;
       }
+      if(matchCount === 0)
+        additionalNodes.push(e);
     });
     return additionalNodes;
   },
