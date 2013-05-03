@@ -195,7 +195,6 @@ orangeproton.location = {
     $popup.append('<h3>'+ I18n.t('position') +'</h3>').append($search).append($searchButton).append($resetButton).append($setButton)
         .append($autoButton).append($currentLocation).append($map).appendTo('body');
 
-    //$map.css({width: '100%', height: '100%', position: 'relative'});
 
     var location = orangeproton.location.getLocation();
     var map = new GMaps({

@@ -150,8 +150,6 @@ orangeproton.doctor = {
         $.fancybox('<div class="docOverlay"></div>', $.extend({}, opts, {
             afterShow: function () {
                 drawContent();
-                //$('#map').css({height: '100%'});
-                //google.maps.event.trigger($('#map').data('map'), 'resize');
             },
             beforeClose: function () {
                 $('.docOverlay').remove();
