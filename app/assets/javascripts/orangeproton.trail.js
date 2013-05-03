@@ -51,12 +51,3 @@ function codeLink(code, idx){
     orangeproton.trail.trimTo(idx);
     $(document).trigger('paramChange');
 }
-
-/*orangeproton.trail.addCrumb("sub", "B26.0");
-orangeproton.trail.addCrumb("sup", "B26.1");
-orangeproton.trail.addCrumb("sub", "B26.2");
-orangeproton.trail.addCrumb("sup", "B26.3");
-orangeproton.trail.addCrumb("sub", "B26.4");
-orangeproton.trail.addCrumb("sup", "B26.5");
-orangeproton.trail.addCrumb("sub", "B26.6");
-orangeproton.trail.addCrumb("sup", "B26.7");*/
