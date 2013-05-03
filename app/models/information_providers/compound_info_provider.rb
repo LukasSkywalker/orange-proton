@@ -9,7 +9,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     # TODO This can still be manually changed to a non-relatedness...
     attr_accessor :weight # not attr_accesor weight, this needs to be an identifier
 
-    def initialize provider_instance, weight
+    def initialize (provider_instance, weight)
       assert_relatedness(weight)
       @provider_instance = provider_instance
       @weight = @default_weight = weight
@@ -60,7 +60,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     fields = fold_duplicate_fields fields # we want generate compounds to operate on single copies of everything
 
-    fields = generate_compound_fields(fields, catalog) # implements #171
+    fields = generate_compound_fields(fields) # implements #171
 
     fields = fold_duplicate_fields fields # the above might have created more duplicated
 
@@ -87,7 +87,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
   # @return The same list of fields plus all compounds that can be generated from it.
   # Implements #
-  def generate_compound_fields(fields, catalog)
+  def generate_compound_fields(fields)
     assert_fields_array(fields)
 
     # Confirmed working with chop code 00.01  (combines 27 and 101 to 108 (nerven + radio => neuroradio))
