@@ -25,6 +25,11 @@ class ScriptDBAdapter
     self.coll.remove()
   end
 
+  def delete (doc)
+    return :no_permission unless self.write
+    self.coll.remove(doc)
+  end
+
   def get_docs(doc = {})
     self.coll.find(doc).to_a
   end
@@ -37,6 +42,17 @@ class ScriptDBAdapter
   def update_doc(old, new)
     return :no_permission unless self.write
     self.coll.update(old, new, upsert: true )
+  end
+
+  def check_deletions
+    self.coll.find({updated: nil})
+  end
+
+  def remove_updated
+    self.coll.find().each do |doc|
+      doc.delete('updated')
+      self.coll.update(doc,doc)
+    end
   end
 
 end
