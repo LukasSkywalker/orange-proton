@@ -306,8 +306,6 @@ function toggleHighlightContainer(className){
     if(last!==className){
         clearHighlight();
         var $container = $('.container.' + className);
-        var $text = $container.find('p:first');
-        var $front =$('.front-container.' + className);
         $container.clearQueue().toggleClass('active', 400);
 
         last = className;

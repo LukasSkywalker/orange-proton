@@ -530,15 +530,15 @@ div.container {
 
   //orange
   &.inclusiva-exclusiva {
-    @include opacity(0.8);
+    @include opacity(0.5);
     background: lighten($orange, 30%);
 
     .incl{
-      color:  $orange;
+      color:  darken($orange, 20%);
     }
 
     .excl{
-      color: $green;
+      color: darken($green, 0%);
     }
 
     &.active {
@@ -561,15 +561,6 @@ div.container {
     background: lighten($purple, 30%);
     &.active {
       @include opacity(1);
-    }
-  }
-
-  &.active {
-    .container-inner {
-      p {
-        display: inline;
-        @include opacity(1);
-      }
     }
   }
 
