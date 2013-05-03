@@ -52,6 +52,15 @@ orangeproton.doctor = {
             $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
+            $('#docHeader [title]').tipsy({
+                trigger: 'hover',
+                gravity: 'n',
+                delayIn: '300',
+                delayOut: '100',
+                fade: 'true',
+                opacity: 1
+            });
+
             var map = new GMaps({
                 div: '#map',
                 lat: orangeproton.location.getLocation().lat,
@@ -95,7 +104,8 @@ orangeproton.doctor = {
                 var element =
                     '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
                         + '<label class="docLabel clickable" for="docItem-{0}" >'
-                        + '  <p class="doc doc-title">'+number+') '+'{1}</p>'
+                        + '  <p class="doc-number">'+ number +'</p>'
+                        + '  <p class="doc doc-title">{1}</p>'
                         + '  <p class="doc address">{2}<br />{3}</p>'
                         + '</label>'
                         + '</input>';

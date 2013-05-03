@@ -19,7 +19,6 @@ $dark-purple: #9933CC;
 /* Sizes */
 $border-radius: 7px;
 
-
 /************************************/
 /**************MIXINS****************/
 /************************************/
@@ -45,9 +44,9 @@ $border-radius: 7px;
   }
 }
 
-@mixin opacity($ammount){
+@mixin opacity($ammount) {
   opacity: $ammount;
-  filter: alpha(opacity = $ammount*100);
+  filter: alpha(opacity=$ammount*100);
 }
 
 /************************************/
@@ -69,7 +68,7 @@ body {
   font-size: 12px;
 }
 
-ul{
+ul {
   padding-left: 10px;
 }
 
@@ -117,7 +116,6 @@ input[type=button] {
 .hidden {
   display: none;
 }
-
 
 /************************************/
 /*************Side panel*************/
@@ -219,6 +217,7 @@ input[type=button] {
   vertical-align: middle;
   border-right: none;
 }
+
 /************************************/
 /***************Top bar**************/
 /************************************/
@@ -251,13 +250,7 @@ input[type=button] {
     @include clickable;
   }
 
-  #center-button{
-    float: right;
-    @include clickable;
-  }
-
-
-  @mixin hide-arrow($width){
+  @mixin hide-arrow($width) {
     border: 1px solid $grey;
     padding-top: 3px;
     overflow: hidden;
@@ -290,7 +283,7 @@ input[type=button] {
     @include hide-arrow(140px);
   }
 
-  @mixin select($width){
+  @mixin select($width) {
     background: transparent;
     line-height: 1;
     border: 0;
@@ -352,7 +345,6 @@ input[type=button] {
 
 }
 
-
 /********************************************/
 /***********Nodes and Containers************/
 /*******************************************/
@@ -361,7 +353,7 @@ input[type=button] {
 div.node, div.legend {
   background: $light-grey;
   padding-left: 15px;
-  padding-right: 5px;
+  padding-right: 15px;
   max-width: 250px;
   word-wrap: break-word;
   position: absolute;
@@ -377,7 +369,7 @@ div.node, div.legend {
   &.field {
     @include node-border($blue);
 
-    .icon-user-md{
+    .icon-user-md {
       font-size: 28px;
       margin: 0;
       background: transparent;
@@ -388,7 +380,7 @@ div.node, div.legend {
       padding-left: 5px;
     }
 
-    .content{
+    .content {
       float: left;
       max-width: 160px;
     }
@@ -429,8 +421,8 @@ div.node, div.legend {
   }
 }
 
-div.node{
-  &.syn{
+div.node {
+  &.syn {
     overflow-y: auto;
   }
 }
@@ -456,7 +448,7 @@ div.container {
   z-index: 2;
   @include border-radius($border-radius);
 
-  //black
+
   &.syn {
     @include opacity(0.3);
     background: lighten($dark-blue, 30%);
@@ -465,7 +457,6 @@ div.container {
     }
   }
 
-  //blue
   &.field {
     @include opacity(0.3);
     background: lighten($blue, 30%);
@@ -474,7 +465,6 @@ div.container {
     }
   }
 
-  //red
   &.drg {
     @include opacity(0.5);
     background: lighten($red, 30%);
@@ -483,16 +473,15 @@ div.container {
     }
   }
 
-  //orange
   &.inclusiva-exclusiva {
     @include opacity(0.5);
     background: lighten($orange, 30%);
 
-    .incl{
-      color:  darken($orange, 20%);
+    .incl {
+      color: darken($orange, 20%);
     }
 
-    .excl{
+    .excl {
       color: darken($green, 0%);
     }
 
@@ -501,7 +490,6 @@ div.container {
     }
   }
 
-  //grey
   &.super {
     @include opacity(0.3);
     background: lighten($dark-green, 50%);
@@ -510,7 +498,6 @@ div.container {
     }
   }
 
-  //purple
   &.sub {
     @include opacity(0.5);
     background: lighten($purple, 30%);
@@ -528,6 +515,7 @@ div.container {
       padding: 2px;
       position: absolute;
       margin: 0;
+
       //bottom-right
       &.syn {
         bottom: 0;
@@ -569,16 +557,12 @@ div.container {
       }
 
     }
-
   }
-
 }
-
 .front-container {
   z-index: 4;
   position: absolute;
 }
-
 
 /************************************/
 /**************Overlay***************/
@@ -637,11 +621,33 @@ div.container {
       background-color: $light-grey;
       padding: 4px 11px;
       width: 100%;
+      position: relative;
+      min-height: 100px;
+
+      .doc{
+        float: right;
+        width: 90%;
+        display: inline;
+      }
+
+      .doc-number{
+        position: relative;
+        display: inline;
+        border-right: black 1px solid;
+        height: 100%;
+        width: 8%;
+        float: left;
+        line-height: 100px;
+        vertical-align: middle;
+        font-size: 20px;
+      }
+
       &:hover {
         background-color: $dark-grey !important;
         color: white !important;
       }
     }
+
 
     /* the input element behind the doctor list */
     input[type="radio"] {
@@ -662,23 +668,26 @@ div.container {
   }
 }
 
+#center-button {
+  float: right;
+  @include clickable;
+}
+
 #location-input {
   height: 25px;
 }
-
 
 /************************************/
 /***********Bread Crumbs*************/
 /************************************/
 
-
 #breadcrumb {
   position: fixed;
-  top:50px;
-  height:30px;
-  width:100%;
+  top: 50px;
+  height: 30px;
+  width: 100%;
   background: $light-grey;
-  left:0;
+  left: 0;
   border-bottom: 1px solid $grey;
   line-height: 30px;
   vertical-align: middle;
@@ -697,7 +706,6 @@ div.container {
     background: url(separator.gif) no-repeat right center;
     padding-right: 15px;
     padding-left: 10px;
-
 
     &:hover {
       text-decoration: underline;
