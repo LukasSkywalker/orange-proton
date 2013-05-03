@@ -33,7 +33,16 @@ orangeproton.options = {
       trail: 60, // Afterglow percentage
       shadow: false, // Whether to render a shadow
       hwaccel: false // Whether to use hardware acceleration
-    }
+    },
+
+      docSpinner: {
+          lines: 13, // The number of lines to draw
+          width: 4, // The line thickness
+          trail: 60, // Afterglow percentage
+          shadow: false, // Whether to render a shadow
+          hwaccel: false, // Whether to use hardware acceleration
+          left: 150
+      }
   },
 
   /**
@@ -48,5 +57,9 @@ orangeproton.options = {
     max_exclusiva: 6,
     max_docs: 5,
     as_list: true
+  },
+
+  crumbs: {
+      maxCrumbs: 10
   }
 };

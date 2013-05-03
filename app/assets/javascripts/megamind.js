@@ -224,7 +224,9 @@ var megamind = {
     function getText() {
         if(className==="inclusiva-exclusiva"){
            var part = className.split("-");
-            return I18n.t(part[0]) + " & " + I18n.t(part[1])
+            return '<span class="incl">' + I18n.t(part[0]) + '</span>' + " & " + '<span class="excl">' + I18n.t(part[1]) + '</span>'
+        } else if(className==="field"){
+            return I18n.t(className) + ' & ' + 'Ärzte'; //TODO I18n this shit
         } else {
            return I18n.t(className);
         }
@@ -626,13 +628,17 @@ var megamind = {
 
   jQuery.fn.center = function (parent, animate) {
     this.css("position", "absolute");
+    $(this).addClass('centering');
     var duration = animate ? 600 : 0;
     this.animate({
       top: Math.max(0, (($(parent).height() - $(this).outerHeight()) / 2) +
           $(parent).scrollTop()),
       left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
           $(parent).scrollLeft())
-    }, {duration: duration, easing: 'linear'});
+    }, {duration: duration, easing: 'linear', complete: function() {
+      $(this).removeClass('centering');
+      $(this).trigger('centerComplete');
+    }});
     return this;
   };
 

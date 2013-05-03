@@ -32,7 +32,9 @@ class DatabaseAdapter
     # TODO make catalog specific?
     @mdc_to_fs   = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
     @mdc         = @client[@collections_config['mdcs'][0]][@collections_config['mdcs'][1]]
-    @keywords    = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
+    @icd_keywords    = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
+    @chop_keywords    = @client[@collections_config['chop_keywords'][0]][@collections_config['chop_keywords'][1]]
+
     @doctors     = @client[@collections_config['doctors'][0]][@collections_config['doctors'][1]]
     @compounds   = @client[@collections_config['compounds'][0]][@collections_config['compounds'][1]]
     @icd_ranges  = @client[@collections_config['icd_ranges'][0]][@collections_config['icd_ranges'][1]]
@@ -85,10 +87,17 @@ class DatabaseAdapter
     doc.nil? ? [] : doc['drgs']
   end
 
-  # @return The fachgebieteKeywords table as a an array
-  def get_fachgebiete_keywords
+  # @return The icd dictionary as a an array
+  def get_icd_keywords
     # TODO Cache result? Probably not while still in development, but later.
-    documents = @keywords.find()
+    documents = @icd_keywords.find()
+    documents.to_a
+  end
+
+  # @return The chop dictionary as a an array
+  def get_chop_keywords
+    # TODO Cache result? Probably not while still in development, but later.
+    documents = @chop_keywords.find()
     documents.to_a
   end
 

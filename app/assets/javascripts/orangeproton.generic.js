@@ -35,43 +35,6 @@ orangeproton.generic = {  // Read a page's GET URL variables and return them as 
     if ( !window.console ) {
       window.console = { log: function() {} };
     }
-  },
-
-  /**
-   * Overwrite window.alert() with a fancier, styled and customizable message box
-   */
-  overwriteAlert: function () {
-    function betterAlert(msg) {
-      function closeBox() {
-        jQuery.fancybox.close();
-      }
-      orangeproton.generic.messageBox('Info', msg, ['Ok'], [closeBox], 0);
-    }
-    window.alert = betterAlert;
-  },
-
-  /**
-   * Show a styled messagebox.
-   * @param {String} title message title
-   * @param {String} content message content
-   * @param {String[]} buttons labels of the buttons
-   * @param {Function[]} actions the actions for the buttons
-   * @param {Number} [focusIndex=0] the index of the focused button
-   */
-  messageBox: function(title, content, buttons, actions, focusIndex) {
-    var $inputBox = $('<div class="messagebox"><h3>'+title+'</h3><p>'+content+'</p></div>');
-    var $buttonContainer = $('<div class="messagebox-buttons"></div>');
-    $inputBox.append($buttonContainer);
-    focusIndex = focusIndex || 0;
-    for(var i=0; i<buttons.length; i++){
-      var text = buttons[i];
-      var action = actions[i];
-      var button = $('<input type="button" value="'+text+'">');
-      button.on('click', null, action);
-      $inputBox.children('.messagebox-buttons').first().append(button);
-    }
-    jQuery.fancybox({'modal' : true, 'content' : $inputBox});
-    $buttonContainer.children()[focusIndex].focus();
   }
 };
 

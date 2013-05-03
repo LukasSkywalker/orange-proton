@@ -120,4 +120,11 @@ Array.prototype.shuffle = function() {
     this[i] = this[j];
     this[j] = temp;
   }
+};
+
+/* return last element of array*/
+if(!Array.prototype.last) {
+    Array.prototype.last = function() {
+        return this[this.length - 1];
+    }
 }

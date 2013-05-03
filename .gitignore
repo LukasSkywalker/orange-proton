@@ -10,7 +10,7 @@
 # Ignore all logfiles and tempfiles.
 /log
 /tmp
-/db
+/db/csv_files
 
 *.gem
 *.rbc

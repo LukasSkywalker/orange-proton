@@ -6,6 +6,7 @@
 var orangeproton = orangeproton || {};
 orangeproton.location = {
   userLocation: null,
+  tempLocation: null,
   geoLocation: {
     lat: 46.951288,
     lng: 7.438774
@@ -99,6 +100,11 @@ orangeproton.location = {
     $(document).trigger('locationChange', [lat, lng]);
     $.cookie('userLocation', lat + ',' + lng);
   },
+  
+  setTempLocation: function(lat, lng) {
+    orangeproton.location.tempLocation = {lat: lat, lng: lng};
+    $(document).trigger('locationChange', [lat, lng]);
+  },
 
   /**
    * Sets a new auto-calculated location. This will be overwritten by values set
@@ -119,18 +125,19 @@ orangeproton.location = {
       draggable: true,
       dragend: function (e) {
         var position = e.latLng;
-        orangeproton.location.setUserLocation(position.lat(), position.lng());
+        orangeproton.location.setTempLocation(position.lat(), position.lng());
       }
     };
   },
 
   geoCodeAndMark: function( address ) {
     orangeproton.location.geoCode(address, function onGeocodeComplete(lat, lng) {
-      orangeproton.location.setUserLocation(lat, lng);
+      orangeproton.location.setTempLocation(lat, lng);
       var map = $('#location-map').data('map');
       map.removeMarkers();
       map.setCenter(lat, lng);
       map.addMarker(orangeproton.location.markerOptions(lat, lng));
+      $(document).trigger('locationChange', [lat, lng]);
     });
   },
 
@@ -141,8 +148,9 @@ orangeproton.location = {
     var $popup = $('<div id="location-popup"></div>');
     var $search = $('<input type="text" id="location-input"/>');
     var $searchButton = $('<input type="button" value="'+ I18n.t('search') +'"/>');
-    var $resetButton = $('<input type="button" class="right" value="'+ I18n.t('reset') +'"/>');
+    var $resetButton = $('<input type="button" class="right" value="'+ I18n.t('cancel') +'"/>');
     var $setButton = $('<input type="button" class="right" value="'+ I18n.t('save') +'"/>');
+    var $autoButton = $('<input type="button" value="'+ I18n.t('auto') +'"/>');
     var $currentLocation = $('<p></p>').addClass('location');
 
     $search.enterHandler(function() {
@@ -154,34 +162,45 @@ orangeproton.location = {
     });
 
     $resetButton.on('click', null, function onResetButtonClick() {
-      orangeproton.location.userLocation = null;
-      $.removeCookie('userLocation');
-      $(document).trigger('locationChange');
+      orangeproton.location.tempLocation = null;
       var map = $('#location-map').data('map');
       var location = orangeproton.location.getLocation();
       map.removeMarkers();
       map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
       map.setCenter(location.lat, location.lng);
+      $(document).trigger('locationChange', [location.lat, location.lng]);
+      $.fancybox.close();
     });
 
     $setButton.on('click', null, function onSetButtonClick() {
+      var tempLocation = orangeproton.location.tempLocation;
+      if(tempLocation) {
+        orangeproton.location.setUserLocation(tempLocation.lat, tempLocation.lng);
+      }
       $.fancybox.close();
+    });
+    
+    $autoButton.on('click', null, function onAutoButtonClick() {
+      var map = $('#location-map').data('map');
+      var location = orangeproton.location.geoLocation;
+      orangeproton.location.tempLocation = {lat: location.lat, lng: location.lng};
+      map.removeMarkers();
+      map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
+      map.setCenter(location.lat, location.lng);
+      $(document).trigger('locationChange', [location.lat, location.lng]);
     });
 
     var $map = $('<div id="location-map"></div>').width(800).height(500);
 
     $popup.append('<h3>'+ I18n.t('position') +'</h3>').append($search).append($searchButton).append($resetButton).append($setButton)
-        .append($currentLocation).append($map).appendTo('body');
+        .append($autoButton).append($currentLocation).append($map).appendTo('body');
 
-    //$map.css({width: '100%', height: '100%', position: 'relative'});
 
     var location = orangeproton.location.getLocation();
     var map = new GMaps({
       div: '#location-map',
       lat: location.lat,
-      lng: location.lng,
-      width: '650',
-      height: '250'
+      lng: location.lng
     });
     map.addMarker(orangeproton.location.markerOptions(location.lat, location.lng));
 
@@ -192,7 +211,13 @@ orangeproton.location = {
         $.fancybox.update();
         $(document).trigger('locationChange');
       },
-      beforeClose: function() { $('#location-popup').remove(); }
+      beforeClose: function() {
+        var tempLocation = orangeproton.location.tempLocation;
+        if(tempLocation) {
+          orangeproton.location.setUserLocation(tempLocation.lat, tempLocation.lng);
+        }
+        $(document).trigger('locationChange');
+        $('#location-popup').remove(); }
     });
   },
 
