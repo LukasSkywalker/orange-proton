@@ -5,7 +5,7 @@ include Mongo
 class ScriptDBAdapter
   attr_accessor :mongo_client, :db, :coll, :write
   def initialize (db , collection ,host, port, admin_db, write, write_user = '', write_pw = '')
-    self.mongo_client = MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
+    self.mongo_client = MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 30)
     self.write = write
     if write
       mongo_client.db(admin_db).authenticate(write_user,write_pw)
@@ -49,9 +49,18 @@ class ScriptDBAdapter
   end
 
   def remove_updated
+    size = self.coll.find().count()
+    i=0
+    progress = '.'
     self.coll.find().each do |doc|
+      STDOUT.print "                                 \r"
+      progress << '.' if i%10 == 0
+      progress = '.' if progress.length >20
+      STDOUT.print "#{i*100/size}% #{progress}\r"
+
       doc.delete('updated')
       self.coll.update(doc,doc)
+      i+=1
     end
   end
 

@@ -10,7 +10,17 @@ class DictionaryParserRunscript
     write_adapter = adapter
 
     puts "updating the collection..."
+
+    i=0
+    progress = '.'
     docs.each do |doc|
+      #progress output
+      STDOUT.print "                                 \r"
+      progress << '.' if i%10 == 0
+      progress = '.' if progress.length >20
+      STDOUT.print "#{i*100/docs.size}% #{progress} \r"
+      i+=1
+
       old = doc.clone
       old.delete('exklusiva')
       old.delete('fmhcodes')
