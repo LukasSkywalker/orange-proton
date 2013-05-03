@@ -46,7 +46,7 @@ orangeproton.doctor = {
             var $map = $('<div id="map"></div>');
             //TODO translate
             var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
-                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Zentrieren sie die Karte nach ihrem Standort"></div>' +
+                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Karte zentrieren"></div>' +
                         '</div> ');
 
             $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');

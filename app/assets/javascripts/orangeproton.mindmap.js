@@ -198,7 +198,7 @@ orangeproton.mindmap = {
           '<p class="icon-user-md"></p>' +
           '</div>');
       newdiv.on('click', { field: f }, function (e) {
-        $(this).spin(orangeproton.options.libraries.spinner);
+        $(this).spin(orangeproton.options.libraries.docSpinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);

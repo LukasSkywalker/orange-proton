@@ -7,7 +7,7 @@ function Trail (maxCrumbs) {
 }
 
 Trail.prototype.push = function(context, code) {
-    if (this.crumbs.length > 0 && code === this.crumbs.last().code && context === this.crumbs.last().context)
+    if (this.crumbs.length > 0 && !this.isNewCrumb(code))
         return;
 
     this.crumbs.push({"context": context, "code": code});
@@ -15,6 +15,14 @@ Trail.prototype.push = function(context, code) {
 
 Trail.prototype.pop = function() {
     this.crumbs.pop();
+};
+
+Trail.prototype.isNewCrumb = function(code, context) {
+    return this.isNewCode(code) && context !== this.crumbs.last().context;
+};
+
+Trail.prototype.isNewCode = function(code) {
+    return code !== this.crumbs.last().code;
 };
 
 Trail.prototype.trimTo = function(index) {
@@ -49,7 +57,10 @@ Trail.prototype.getList = function() {
 };
 
 function codeLink(code, idx){
+    if (!orangeproton.trail.isNewCode(code)) return;
+
     $('#code-name').val(code);
     orangeproton.trail.trimTo(idx);
     $(document).trigger('paramChange');
 }
+
