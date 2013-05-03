@@ -30,7 +30,24 @@ class Seed
     #DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
 
     #Insert/Update CHOP catalog
-    adapter.set_collection("test","de")
+    adapter.set_collection("test12","de")
     ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_de.csv")
+
+    #Insert/Update CHOP catalog
+    adapter.set_collection("test12","fr")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_fr.csv")
+
+    #Insert/Update CHOP catalog
+    adapter.set_collection("test13","de")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_de.csv")
+
+    #Insert/Update CHOP catalog
+    adapter.set_collection("test13","fr")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_fr.csv")
+
+    #Insert/Update CHOP catalog
+    adapter.set_collection("test13","it")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_it.csv")
+
   end
 end
