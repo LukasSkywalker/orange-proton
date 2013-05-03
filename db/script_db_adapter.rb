@@ -5,7 +5,7 @@ include Mongo
 class ScriptDBAdapter
   attr_accessor :mongo_client, :db, :coll, :write
   def initialize (db , collection ,host, port, admin_db, write, write_user = '', write_pw = '')
-    self.mongo_client = MongoClient.new(host, port)
+    self.mongo_client = MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
     self.write = write
     if write
       mongo_client.db(admin_db).authenticate(write_user,write_pw)

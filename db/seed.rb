@@ -1,5 +1,6 @@
 require_relative 'script_db_adapter'
 require_relative 'dictionary_parser/dictionary_parser_runscript'
+require_relative 'chop_parser/chop_parser_runscript'
 
 
 
@@ -22,10 +23,14 @@ class Seed
 
     #Insert/Update icd dictionary
     adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
+    #DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
 
     #Insert/Update chop dictionary
     adapter.set_collection(db_config['collections']['chop_keywords'][0],db_config['collections']['chop_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+    #DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+
+    #Insert/Update CHOP catalog
+    adapter.set_collection("test","de")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_de.csv")
   end
 end
