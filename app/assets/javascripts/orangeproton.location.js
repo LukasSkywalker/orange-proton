@@ -150,7 +150,7 @@ orangeproton.location = {
     var $searchButton = $('<input type="button" value="'+ I18n.t('search') +'"/>');
     var $resetButton = $('<input type="button" class="right" value="'+ I18n.t('cancel') +'"/>');
     var $setButton = $('<input type="button" class="right" value="'+ I18n.t('save') +'"/>');
-    var $autoButton = $('<input type="button" class="right" value="'+ I18n.t('auto') +'"/>');
+    var $autoButton = $('<input type="button" value="'+ I18n.t('auto') +'"/>');
     var $currentLocation = $('<p></p>').addClass('location');
 
     $search.enterHandler(function() {
