@@ -208,7 +208,7 @@ var mindmapper = {
      * @param {String} lang the search language
      */
     getICD: function (input, lang, mode, catalog) {
-        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog)
+        var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog);
         var count = orangeproton.options.display.max_fields;
         if( mindmapper.requestQueue.length > 0 ) {
             for(var i = 0; i < mindmapper.requestQueue.length; i++) {
@@ -224,7 +224,7 @@ var mindmapper = {
             success: function (response) {
                 var animatedNode = $('.centering');
                 if( animatedNode.length > 0 ) {
-                    console.log('node is moving, adding complete handler')
+                    console.log('node is moving, adding complete handler');
                     animatedNode.on('centerComplete', function() {
                         console.log('node movement complete, drawing');
                         orangeproton.mindmap.draw(response, input, mode);
