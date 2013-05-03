@@ -40,7 +40,9 @@ Trail.prototype.getList = function() {
         //TODO localize this madafaka
         var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
 
-        out += '<li onclick="codeLink(\'' + code + '\', ' + i + ');" title="' + contextString + '"><span>' + code + '</span>';
+        out += '<li ' + ((i == end - 1) ? 'class="last"' : '') +
+            'onclick="codeLink(\'' + code + '\', ' + i + ');" title="' +
+            contextString + '"><span>' + code + '</span>';
         out += '</li>';
     }
     return out;

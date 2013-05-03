@@ -707,6 +707,10 @@ div.container {
     padding-right: 15px;
     padding-left: 10px;
 
+    &.last {
+      background: none;
+    }
+
     &:hover {
       text-decoration: underline;
       cursor: pointer;
