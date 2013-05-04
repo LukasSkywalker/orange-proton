@@ -64,7 +64,9 @@ orangeproton.doctor = {
             var map = new GMaps({
                 div: '#map',
                 lat: orangeproton.location.getLocation().lat,
-                lng: orangeproton.location.getLocation().lng
+                lng: orangeproton.location.getLocation().lng,
+                width: 520,
+                height: 400
             });
 
             var shadow = new google.maps.MarkerImage(
@@ -102,13 +104,13 @@ orangeproton.doctor = {
                 var address = doc.address.replace(/,\s*/gi, "<br />");
                 var number = i+1;
                 var element =
-                    '<input id="docItem-{0}" class="docItem" type="radio" name="doctors">'
-                        + '<label class="docLabel clickable" for="docItem-{0}" >'
+                    '<div id="docItem-{0}" class="docItem" type="radio" name="doctors">'
+                        + '<label class="docLabel clickable" >'
                         + '  <p class="doc-number">'+ number +'</p>'
                         + '  <p class="doc doc-title">{1}</p>'
                         + '  <p class="doc address">{2}<br />{3}</p>'
                         + '</label>'
-                        + '</input>';
+                        + '</div>';
                 //Icon api is slow, change to standard for speed
                 map.addMarker({
                     lat: lat,
@@ -121,10 +123,10 @@ orangeproton.doctor = {
                 });
                 var $menuItem = $(element.format(i, title, name, address));
 
-                $menuItem.on('change', {details: doc}, function doctorClick(e) {
+                $menuItem.on('click', {details: doc}, function doctorClick(e) {
                     var map = $('#map').data('map');
                     map.setCenter(e.data.details.lat, e.data.details.long);
-                    google.maps.event.trigger(map, 'resize');
+                    //google.maps.event.trigger(map, 'resize');
 
                     /*map.removeMarker($('#map').data('greenMarker'));
 
