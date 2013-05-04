@@ -11,8 +11,13 @@ $(document).ready(function () {
 
     orangeproton.generic.injectConsoleLog();
 
+    $(document).on('trailUpdated', function( e, trail ) {
+        $('#bread-crumbs').renderTrail(trail);
+    });
+
     orangeproton.trail.clear();
-    orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
+    if(orangeproton.generic.getUrlVars()["code"])
+        orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
 
     /* TOP-BAR */
     // start search on enter key press
@@ -121,7 +126,7 @@ $(document).ready(function () {
             // when no parameter changed, the statechange event won't be fired after calling pushState(). This is why we allow to 'force' a statechange, for example
             // when the user presses the search button again. To prevent firing manually when pushState() already fired, we check whether parameters changed
             // and if they didn't we fire.
-            if (force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode && mindmapper.prevCatalog === catalog)
+            if (!mindmapper.prevCode || force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode && mindmapper.prevCatalog === catalog)
                 History.Adapter.trigger(window, 'statechange');
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
@@ -170,7 +175,7 @@ $(document).ready(function () {
         var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
         var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
         var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
-        $(document).trigger('paramChange', [code, lang, false, mode, catalog]);
+        $(document).trigger('paramChange', [code, lang, true, mode, catalog]);
     }
 
     // set the locale and load translations

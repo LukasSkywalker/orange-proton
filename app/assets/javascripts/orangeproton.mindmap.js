@@ -223,17 +223,6 @@ orangeproton.mindmap = {
       $(this).css({"line-height": $(this).parent().height()+'px'});
     });
 
-    var $trail = $('#bread-crumbs');
-    $trail.html(orangeproton.trail.getList());
-    $(".tipsy").remove();
-    $('#bread-crumbs [title]').tipsy({
-      trigger: 'hover',
-      gravity: 's',
-      delayIn: '100',
-      delayOut: '0',
-      fade: 'true'
-    });
-
     if(response.result.is_fallback){
       $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this
     }
