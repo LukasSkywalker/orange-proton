@@ -11,12 +11,12 @@ $(document).ready(function () {
 
     orangeproton.generic.injectConsoleLog();
 
-    orangeproton.trail.clear();
-    orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
-    
     $(document).on('trailUpdated', function( e, trail ) {
         $('#bread-crumbs').renderTrail(trail);
     });
+
+    orangeproton.trail.clear();
+    orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
 
     /* TOP-BAR */
     // start search on enter key press
