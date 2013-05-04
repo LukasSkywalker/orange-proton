@@ -134,10 +134,6 @@ $(document).ready(function () {
     // Adjust the size of the mindmap div
     orangeproton.mindmap.resizeMindmap();
 
-    /* ADMIN-PANELS */
-    // load the panel
-    orangeproton.admin.loadPanel();
-
     // click handler for hiding the whole right panel
     $panelToggler.click(function () {
         togglePanels();

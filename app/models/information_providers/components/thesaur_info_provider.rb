@@ -3,6 +3,8 @@
 # This is based on a manually created table.
 class ThesaurInfoProvider < DatabaseInfoProvider
 
+  # @note Returns an empty array if icd_code is not an icd code.
+  # @see DatabaseInfoProvider#get_fields
   def get_fields(icd_code, max_count, catalog)
     @db.assert_catalog(catalog)
     assert_count(max_count)
@@ -15,8 +17,7 @@ class ThesaurInfoProvider < DatabaseInfoProvider
          @db.get_fs_codes_for_thesaur_named(tn).each {|fs_code|
             fields << fs_code_to_field_entry(
               fs_code,
-              1 # full relatedness -- we have no way to judge more precisely
-                # TODO we could weight the fields appearing more often higher!
+              1 # full relatedness -- we have no way to judge more precisely (except maybe weight fields already present higher?)
             )
           }
         end

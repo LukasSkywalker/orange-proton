@@ -4,6 +4,12 @@ class DatabaseInfoProvider
   attr_reader :db   # we need to be able to access this in order to stub it.
 end
 
+class API
+  cattr_accessor :doctor_locator
+  cattr_accessor :provider
+  cattr_accessor :localised_data_provider
+end
+
 RSpec::Matchers.define :be_standard_api_response do
   match do |r|
     r.include?('status' => 'ok')
@@ -95,84 +101,7 @@ describe API do
     end
   end
 
-  describe 'GET /api/v1/admin/weights/get' do
-    it 'should return provider weights' do
-      API.provider.stub(:get_relatedness_weight).and_return([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-      API.provider.should_receive(:get_relatedness_weight).exactly(:once)
-
-      get '/api/v1/admin/weights/get'
-      response.status.should == 200
-      json_response = JSON.parse(response.body)
-
-      json_response.should eq([10, 20, 30, 40, 50, 60])
-    end
-  end
-
-  describe 'POST /api/v1/admin/weights/reset' do
-    it 'should reset weights and return new weights' do
-      API.provider.should_receive(:reset_weights).exactly(:once)
-      API.provider.stub(:get_relatedness_weight).and_return([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-
-      post '/api/v1/admin/weights/reset'
-      response.status.should == 201 #created
-
-      json_response = JSON.parse(response.body)
-
-      json_response.should eq([10, 20, 30, 40, 50, 60])
-    end
-
-
-  end
-
-  describe 'POST /api/v1/admin/weights' do
-    it 'should not accept no parameters' do
-      post '/api/v1/admin/weights/set'
-      response.status.should == 400
-
-      API.provider.should_not_receive(:set_relatedness_weight)
-    end
-
-    it 'should not accept false parameters' do
-      post '/api/v1/admin/weights/set?values=ljasd'
-      response.status.should == 400
-
-      API.provider.should_not_receive(:set_relatedness_weight)
-    end
-
-    it 'should not accept array string with square brackets' do
-      API.provider.should_not_receive(:set_relatedness_weight)
-
-      post '/api/v1/admin/weights/set?values=[10,20,30,40,50]'
-      response.status.should == 400
-    end
-
-    it 'should accept array string and set and return new provider weights' do
-      API.provider.should_receive(:set_relatedness_weight).
-          with([0.1,0.2,0.3,0.4,0.5])
-      API.provider.stub(:get_relatedness_weight).and_return([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-
-      post '/api/v1/admin/weights/set?values=10,20,30,40,50'
-      response.status.should == 201 #created
-
-      json_response = JSON.parse(response.body)
-
-      json_response.should eq([10, 20, 30, 40, 50, 60])
-    end
-
-    it 'should ignore additional parameters and return new weights' do
-      API.provider.should_receive(:set_relatedness_weight).
-          with([0.1,0.2,0.3,0.4,0.5])
-      API.provider.stub(:get_relatedness_weight).and_return([0.1, 0.2, 0.3, 0.4, 0.5, 0.6])
-
-      post '/api/v1/admin/weights/set?values=10,20,30,40,50&bla=bla'
-      response.status.should == 201
-
-      json_response = JSON.parse(response.body)
-
-      json_response.should eq([10, 20, 30, 40, 50, 60])
-    end
-  end
-
+  # Get docs queries tests
   describe 'GET /api/v1/docs/get' do
     it 'should respond with bad request if no parameters are sent' do
       get 'api/v1/docs/get'

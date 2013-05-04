@@ -1,3 +1,4 @@
+# Used in tests.
 class MockDoctorLocator
   def find_doctors(field_code, lat, long, count)
     assert_field_code(field_code)

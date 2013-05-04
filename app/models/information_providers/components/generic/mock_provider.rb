@@ -13,18 +13,4 @@ class MockInfoProvider
     ]
   end
 
-  def get_icd_or_chop_data(code, language)
-    assert_code(code) # we are replying with an icd code here, don't ask for something
-    # else!
-    assert_language(language)
-    {
-        :superclass => 'B26',
-        :text => 'Mumps',
-        :subclasses => %w(B26.3 B26.6),
-        :synonyms => %w(Ziegenpeter Alpoehi Heidi),
-        :drgs => %w(A13F A13C A13D),
-        :superclass_text => 'SomeTextHere'
-    }
-  end
-
 end

@@ -16,7 +16,7 @@ fr:
   position: "Choisir position"
   doc_help: "Médcins près de vous"
   info_title: "Aide"
-  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden." #TODO Translate...
+  info_text:  "Appuyez sur une branche, pour trouver des docteurs y specialisé."
 
 #errors
   no_icd_chop_data: "Someone with French skills please translate :-)"

@@ -3,6 +3,8 @@
 # This is based on a manually created table specifying fields for these ranges.
 class ChopRangeInfoProvider < DatabaseInfoProvider
 
+  # @note Returns an empty array if chop_code is not a chop code.
+  # @see DatabaseInfoProvider#get_fields
   def get_fields(chop_code, max_count, catalog)
     assert_count(max_count)
     @db.assert_catalog(catalog)
@@ -18,7 +20,7 @@ class ChopRangeInfoProvider < DatabaseInfoProvider
         code = code.to_i # some of these are floats in the db unfortunately...
         fields << fs_code_to_field_entry(code, 1.0) # full relatedness, we don't know better
                                                     # MH: adapt chop_range_spec if you change relatedness
-                                 # TODO Consider size/precision of range like in icd range?
+
       end
     end
 

@@ -4,6 +4,13 @@ module HelpersForCodes ; end  #we don't have a class named like that, but descri
 
 describe HelpersForCodes do
 
+  it 'should assert only correct things' do
+    assert(true)
+    assert(1)
+    #expect {assert(0)}.to raise_error # not working???
+    expect {assert(false)}.to raise_error
+    expect {assert(nil)}.to raise_error
+  end
   it 'should find code type of chop' do
     get_code_type('00.4D').should be :chop
     get_code_type('89.d3.5C').should be :chop

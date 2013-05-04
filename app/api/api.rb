@@ -1,29 +1,24 @@
-# This handles the API queries, using the Grape API gem.
+# This handles the queries (/api/v1/...), using the Grape gem.
 class API < Grape::API
+  # Externalised formatting of the response.
   include ApiResponse
 
-  # API specification for grape (url prefixes)
+  # specification for grape (url prefixes)
   prefix 'api'
   version 'v1'
 
   # Return type format. The other possibility is xml.
   format :json
 
-  # The InfoProvider used to return all Query Results
-  # TODO These should really be @@ and not publicly accessible. Only the tests need them.
-  cattr_accessor :doctor_locator
-  cattr_accessor :provider
-  cattr_accessor :localised_data_provider
-  self.provider                = ObjectFactory.get_information_provider
-  self.doctor_locator          = ObjectFactory.get_doctor_locator
-  self.localised_data_provider = ObjectFactory.get_localised_data_provider
+  # The objects used for fetching the results
+  @@provider                = ObjectFactory.get_information_provider
+  @@doctor_locator          = ObjectFactory.get_doctor_locator
+  @@localised_data_provider = ObjectFactory.get_localised_data_provider
 
   # Some handy helpers for the API
   helpers do
     # Some params we always use.
-    def lang
-      params[:lang]
-    end
+    def lang; params[:lang] end
   end
 
   # Always rescue ProviderLookupErrors
@@ -37,6 +32,8 @@ class API < Grape::API
   # /api/v1/fields/get?code=string&count=integer&lang=string&catalog=...
   desc 'Returns data'
   resource :fields do
+    # When these regexes do not match, Grape returns a json object containing an error such as
+    # "error" : "illegal parameter: code" or "error" : "missing parameter: catalog"
     params do
       requires :code, type: String, 
         regexp: /(^[A-Z]\d{2}(?:\.\d{1,2})?[*+!]?$)|(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/,
@@ -50,13 +47,13 @@ class API < Grape::API
         desc: 'The catalog the code is to be searched in'
     end
 
+    # @raise [RuntimeError, ProviderLookupError]
     get 'get' do
       code      = params[:code]
       catalog   = params[:catalog]
       max_count = params[:count]
-      assert_count(max_count) # don't allow excessive queries
-      # TODO This should be handled with an api error returned to the client
-      # instead.
+      assert_count(max_count) # Exceptions raised in these are returned as "Internal Server Error" since it's really
+      # our fault if these fail.
 
       type = get_code_type(code)
       # the regex should not differ from the regex used to check this,
@@ -64,7 +61,7 @@ class API < Grape::API
       assert(type != :unknown) 
 
       # Get data
-      r = API.localised_data_provider.get_icd_or_chop_data(code,
+      r = @@localised_data_provider.get_icd_or_chop_data(code,
                                                            lang,
                                                            catalog)
       data = r[:data]
@@ -75,12 +72,12 @@ class API < Grape::API
       assert_language(data_language)
 
       # Get fields
-      fields = API.provider.get_fields(code, max_count, catalog)
+      fields = @@provider.get_fields(code, max_count, catalog)
       assert_fields_array(fields)
       assert(fields.length <= max_count)
 
       # we can always localise the field names to the requested language
-      API.localised_data_provider.localise_field_entries(fields, lang)
+      @@localised_data_provider.localise_field_entries(fields, lang)
 
       Success.field_response(data,
                              fields, 
@@ -106,72 +103,21 @@ class API < Grape::API
         desc: 'Maximum numbers of doctors returned'
     end
 
+    # @raise [RuntimeError]
     get 'get' do
       field_code = params[:field]
       latitude   = params[:lat]
       longitude  = params[:long]
       max_count  = params[:count]
       assert_count(max_count) # don't allow excessive queries
-      # TODO This should be handled with an api error returned to the client
-      # instead.
 
-      doctors = API.doctor_locator.find_doctors(field_code, latitude, 
+      doctors =  @@doctor_locator.find_doctors(field_code, latitude,
                                                 longitude, max_count)
       assert_kind_of(Array, doctors)
       assert(doctors.length <= max_count)
       assert_kind_of(Hash, doctors[0]) if doctors.length > 0
 
       Success.response(doctors)
-    end
-  end
-
-  # Handles admin queries
-  # /api/v2/admin/setWeight=[val1,val2,...]
-  # TODO This is not needed in the final version...
-  desc 'Handles admin queries, such as setting the relatedness bias'
-  resource :admin do
-    namespace :weights do
-
-      helpers do
-        # Extract integer values from a string array [val1, val2,...]
-        def extract_weight_values(values)
-          vals = values.split(',')
-          vals.map! do |val|
-            val.to_i / 100.0
-          end
-          vals
-        end
-
-        def encode_weight_values
-          weights = API.provider.get_relatedness_weight
-          weights.map! do |val|
-            Integer(val * 100)
-          end
-          weights
-        end
-      end
-
-      desc 'Return provider weights'
-      get 'get' do
-        encode_weight_values
-      end
-
-      desc 'Reset weights to default values'
-      post 'reset' do
-        API.provider.reset_weights
-        encode_weight_values
-      end
-
-      params do
-        requires :values, type: String, desc: 'The weight values the frontend sends',
-          regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
-      end
-
-      post 'set' do
-        values = extract_weight_values(params[:values])
-        API.provider.set_relatedness_weight(values)
-        encode_weight_values
-      end
     end
   end
 end

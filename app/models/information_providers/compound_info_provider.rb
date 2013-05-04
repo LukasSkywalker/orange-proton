@@ -1,23 +1,17 @@
-# rails doesn't want to load this before an instance is created so we need to include it explicitly here...
 require_relative '../assert.rb'
 
 # Combines other information providers and weights the relatedness of
 # the fields the return with globally configurable values.
 class CompoundInfoProvider < DatabaseInfoProvider
-  private # does this work for inner classes?
+  private
   class ProviderInstance
-    # TODO This can still be manually changed to a non-relatedness...
-    attr_accessor :weight # not attr_accesor weight, this needs to be an identifier
+    attr_reader :weight
 
     def initialize provider_instance, weight
       assert_relatedness(weight)
       @provider_instance = provider_instance
-      @weight = @default_weight = weight
+      @weight = weight
     end
-
-    def reset_weight
-      @weight = @default_weight
-    end 
 
     # @return The fields found by this provider for the given code
     def get_results(code, max_count, catalog)
@@ -38,9 +32,6 @@ class CompoundInfoProvider < DatabaseInfoProvider
   def initialize
     super
 
-    # the order of the elements in this array is important, 
-    # only because the admin panel (
-    # TODO: REMOVE) sends the weights expecting this order!
     @providers = [
       ProviderInstance.new(MDCInfoProvider.new,         0.4),
       ProviderInstance.new(IcdRangeInfoProvider.new,    0.6),
@@ -50,6 +41,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     ]
   end
 
+  # @see DatabaseAdapter#get_fields
   def get_fields(code, max_count, catalog)
     assert_code(code)
     assert_count(max_count)
@@ -60,7 +52,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
     fields = fold_duplicate_fields fields # we want generate compounds to operate on single copies of everything
 
-    fields = generate_compound_fields(fields, catalog) # implements #171
+    fields = generate_compound_fields(fields) # implements #171
 
     fields = fold_duplicate_fields fields # the above might have created more duplicated
 
@@ -86,8 +78,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
   # @return The same list of fields plus all compounds that can be generated from it.
-  # Implements #
-  def generate_compound_fields(fields, catalog)
+  def generate_compound_fields(fields)
     assert_fields_array(fields)
 
     # Confirmed working with chop code 00.01  (combines 27 and 101 to 108 (nerven + radio => neuroradio))
@@ -122,25 +113,5 @@ class CompoundInfoProvider < DatabaseInfoProvider
     end
     fields
   end
-  
-  # TODO remove for final version:
-  public
-  # Handle
-  # /api/v1/admin/set??? (values?)
-  # Assign new weights to each info provider. Values is a simple list (?).
-  def set_relatedness_weight(vals)
-    @providers.each_with_index do |provider, index|
-       provider.weight = vals[index] if vals[index]
-    end
-  end
 
-  def get_relatedness_weight
-    @providers.map {|provider| provider.weight}
-  end
-
-  def reset_weights
-    @providers.each do |provider|
-       provider.reset_weight
-    end
-  end
 end

@@ -1,11 +1,12 @@
-# TODO Do we need this to make sure rails loads our stuff before this?
 require_rel '.'
 require_rel '../models/information_providers'
 
+# Module of static methods, returning the Information retrieval objects used by the api.
 module ObjectFactory
-  # all static methods
+
   class << self
 
+    # @raise [RuntimeError]
     def get_information_provider
       case Rails.env
         when 'test'
@@ -17,6 +18,7 @@ module ObjectFactory
       end
     end
 
+    # @raise [RuntimeError]
     def get_doctor_locator
       case Rails.env
         when 'test'
@@ -28,6 +30,7 @@ module ObjectFactory
       end
     end
 
+    # @raise [RuntimeError]
     def get_localised_data_provider
       case Rails.env
         when 'test'

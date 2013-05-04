@@ -1,5 +1,8 @@
 require 'spec_helper'
 
+class DatabaseAdapter
+  attr_reader :client
+end
 # this class is testing the number of codes and no functionality
 # all these tests DO NOT WORK with the new database structure
 describe DatabaseAdapter do

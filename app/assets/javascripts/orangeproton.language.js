@@ -39,6 +39,7 @@ orangeproton.language = {
         $('.catalog-arrow').attr('title', 'Wählen Sie einen Katalog');
         $('.mode-arrow').attr('title', 'Wählen Sie den Modus');
         $('.lang-arrow').attr('title', 'Wählen Sie die Sprache');
+        $('#hide-panels').attr('title', 'Zeigt Hilfe und Legende an');
         $('#location-container').attr('title', 'Klicken Sie hier um Ihren Standort zu ändern');
 
         $('#search-bar [title]').tipsy({

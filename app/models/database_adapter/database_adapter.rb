@@ -1,9 +1,11 @@
 # This class connects to the real database and retrieves requested basic information. 
 # We do not compute compound information here -- the information providers use
 # the data they get from here to do this.
+#
+# Note that we could cache all results indefinitely since the db doesn't change.
 class DatabaseAdapter
-  attr_accessor :client
 
+  # Constructs this DatabaseAdapter by connecting to the db and setting up links to the tables.
   def initialize
     # Create a connection to the db based on the config/mongo.yml login data
     db_config = YAML.load_file(File.join(Rails.root, '/config/mongo.yml'))
@@ -11,57 +13,53 @@ class DatabaseAdapter
     port = db_config[Rails.env]['port']
 
     @client = Mongo::MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 10)
-    authenticate(@client, db_config)
+    # Throws Mongo::AuthenticationError: Failed to authenticate user '...' on db 'admin' on failuse
+    @client.db(db_config[Rails.env]['database']).authenticate(
+        db_config[Rails.env]['username'],
+        db_config[Rails.env]['password']
+    )
 
-    # Store some of the databases in variables so we don't need to redo this 
-    # over and over.
-    @collections_config = db_config[Rails.env]['collections']
+    # Store the databases in variables so we don't need to access them by name
 
-    @catalogs = @collections_config['catalogs']
-    #creating the mongo objects which will be necessary later on
+    # The catalogs
+    @collections_config = db_config[Rails.env]['collections'] # This is defined in config/mongo.yml
+
+    @catalogs = @collections_config['catalogs'] # The config specifies which
     @catalogs.keys.each do |catalog|
       @catalogs[catalog].keys.each do |key|
         @catalogs[catalog][key] = @client[@catalogs[catalog][key][0]][@catalogs[catalog][key][1]]
       end
     end
 
+    # All the tables that are not catalog specific
+    # We refer to fmh codes as fs codes as well (fachgebiet - spezialisierung codes)
+    # These range from 2 - 210
+    @fs = @client[@collections_config['fmh_codes'][0]][@collections_config['fmh_codes'][1]]
 
-    @fs          =
-      @client[@collections_config['fmh_codes'][0]][@collections_config['fmh_codes'][1]]
-
-    # TODO make catalog specific?
-    @mdc_to_fs   = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
-    @mdc         = @client[@collections_config['mdcs'][0]][@collections_config['mdcs'][1]]
-    @icd_keywords    = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
-    @chop_keywords    = @client[@collections_config['chop_keywords'][0]][@collections_config['chop_keywords'][1]]
+    @mdc_to_fs     = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
+    @mdc           = @client[@collections_config['mdcs'][0]][@collections_config['mdcs'][1]]
+    @icd_keywords  = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
+    @chop_keywords = @client[@collections_config['chop_keywords'][0]][@collections_config['chop_keywords'][1]]
 
     @doctors     = @client[@collections_config['doctors'][0]][@collections_config['doctors'][1]]
     @compounds   = @client[@collections_config['compounds'][0]][@collections_config['compounds'][1]]
     @icd_ranges  = @client[@collections_config['icd_ranges'][0]][@collections_config['icd_ranges'][1]]
     @chop_ranges = @client[@collections_config['chop_ranges'][0]][@collections_config['chop_ranges'][1]]
+
     @docfield_to_fmh = @client[@collections_config['docfield_to_FMH_code'][0]][@collections_config['docfield_to_FMH_code'][1]]
 
-    @thesaur_to_fs = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
+    @thesaur_to_fs  = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
     @thesaur_to_icd = @client[@collections_config['thesaur_to_icd'][0]][@collections_config['thesaur_to_icd'][1]]
-
-
   end
 
-  def authenticate(client, config)
-    return if client.nil? or config.nil?
-
-    admin = config[Rails.env]['database']
-    user = config[Rails.env]['username']
-    pw = config[Rails.env]['password']
-    @client.db(admin).authenticate(user, pw)
-
-  end
-
+  # @param catalog [String] A potential catalog name (e.g. 'icd_2012_ch')
+  # Throws an exception if catalog isn't the name of a catalog in the db.
+  # @note The catalog names are defined in the api's catalog regex and in config/mongo.yml
   def assert_catalog(catalog)
     raise "catalog #{catalog} does not exist " unless (@catalogs.has_key?(catalog))
   end
 
-  # True if the <catalog> database (must exist in some language) exists in <language>.
+  # @return True if the <catalog> database (must exist in some language) exists in <language>.
   def has_data_for_language_and_catalog?(language, catalog)
     assert_catalog(catalog)
     assert_language(language)
@@ -69,8 +67,11 @@ class DatabaseAdapter
     @catalogs[catalog].has_key?(language)
   end
 
-  # @return The raw icd database entry for the given ICD code. 
-  # nil if there's no entry for the given code
+  # @param code [String] An ICD or CHOP code.
+  # @param language [String] 'de', 'en', 'fr', 'it'
+  # @param catalog [String] The catalog to look in.
+  # @return [Hash] The raw icd database entry for the given ICD or CHOP code.
+  #   nil if there's no entry for the given code
   def get_catalog_entry(code, language, catalog)
     assert_code(code)
     assert_language(language)
@@ -78,8 +79,10 @@ class DatabaseAdapter
     assert(has_data_for_language_and_catalog?(language, catalog))
     @catalogs[catalog][language].find_one({code: code})
   end
-  
-  # @return An array of the drgs (most common diagnoses) for a given ICD/CHOP code.
+
+  # @param code [String] An ICD or CHOP code.
+  # @param catalog [String] The catalog to look in.
+  # @return [Array] An array of the drgs (most common diagnoses) for a given ICD/CHOP code.
   def get_drgs_for_code(code, catalog)
     assert_catalog(catalog)
     assert_code(code)
@@ -87,25 +90,23 @@ class DatabaseAdapter
     doc.nil? ? [] : doc['drgs']
   end
 
-  # @return The icd dictionary as a an array
+  # @return [Array] The icd dictionary
+  #   (an array of Hashes with "keyword" => String, "exklusiva" => [String], "fmhcodes" => [Integer 2-210]).
+  # @see In the database, under dictionaries/icd_dictionary
   def get_icd_keywords
-    # TODO Cache result? Probably not while still in development, but later.
-    documents = @icd_keywords.find()
-    documents.to_a
+    @icd_keywords.find().to_a
   end
 
-  # @return The chop dictionary as a an array
+  # @return [Array] The chop dictionary
+  #   (an array of Hashes with "keyword" => String, "exklusiva" => [String], "fmhcodes" => [Integer 2-210]).
+  # @see In the database, under dictionaries/chop_dictionary
   def get_chop_keywords
-    # TODO Cache result? Probably not while still in development, but later.
-    documents = @chop_keywords.find()
-    documents.to_a
+    @chop_keywords.find().to_a
   end
 
-  # Used for icd > drg > mdc > fs mapping.
-  # 
-  # @return An array of all fs codes related to a given MDC (Major diagnostic category).
-  # An empty array if there are none or this is not an mdc_code. 
-  # This is based on a manually set up table.
+  # @return [Array] An array of all fs codes related to a given MDC (Major diagnostic category).
+  #   An empty array if there are none or this is not an mdc_code.
+  # @note Used for icd > drg > mdc > fs mapping. This is based on a manually set up table.
   def get_fs_code_by_mdc(mdc_code)
     documents = @mdc_to_fs.find({mdc_code: mdc_code.to_s})
     fmhs = []
@@ -115,19 +116,7 @@ class DatabaseAdapter
     fmhs
   end
 
-  #private      #We don't need this anymore, do we?
-  #def get_manually_mapped_fs_codes(searchhash)
-  #  documents = @client['manualMappings']['manualMappings'].find(searchhash)
-  #  fs = []
-  #  documents.each do |document|
-  #    fs << document['fs_code']
-  #  end
-  #
-  #  fs
-  #end
-  public
-
-  # @return An array of available thesaur_name s
+  # @return [Array] An array of available thesaur_name s
   def get_available_thesaur_names
     names = []
     entries = @thesaur_to_icd.find()
@@ -137,14 +126,14 @@ class DatabaseAdapter
     names
   end
 
-  # @return A hash fs_code (Integer) to fs_name (localised to lang)
-  def get_fs_names(lang)
-    assert_language(lang)
-    # TODO  Cache result
+  # @param language [String] 'de', 'en', 'fr', 'it'
+  # @return [Hash] A hash fs_code (Integer) to fs_name (localised to language).
+  def get_fs_names(language)
+    assert_language(language)
     fs = {}
     @fs.find().each { |b| 
       fs[Integer(b['code'])] =
-        b[lang].encode('UTF-8')
+        b[language].encode('UTF-8')
     }
     fs
   end
@@ -157,8 +146,8 @@ class DatabaseAdapter
     @thesaur_to_icd.find_one({thesaur: thesaur_name})['icds'].include? icd_code
   end
 
-  # @return An array of all fs codes associated to the given thesaur. 
-  # @param thesaur_name one of get_available_thesaur_names.
+  # @return [Array] An array of all fs codes associated to the given thesaur.
+  # @param thesaur_name one of get_available_thesaur_names().
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
     @thesaur_to_fs.find(
@@ -166,16 +155,17 @@ class DatabaseAdapter
     ).to_a.map {|fs| fs['fs_code'] }
   end
 
-  # @return The MDC Code (1-23) associated with the given DRG prefix (A-Z). 
-  # nil if there is none or this is an invalid prefix.
+  # @return [String] The MDC Code (1-23) associated with the given DRG prefix (A-Z).
+  #   nil if there is none or this is an invalid prefix.
   def get_mdc_code(drg_prefix)
     document=@mdc.find_one({drgprefix: drg_prefix})
     document.nil? ? nil : document['code']
   end
 
-  # @return The name of the Fachgebiet/Spezialisierung with the given code 
-  # in the language specified. Throws an assertion error or returns 
-  # nil if fs_code is not a valid code!
+  # @param language [String] 'de', 'en', 'fr', 'it'
+  # @return [String] The name of the Fachgebiet/Spezialisierung with the given code
+  #   in the language specified. Throws an assertion error or returns
+  #   nil if fs_code is not a valid code!
   def get_fs_name(fs_code, language)
     assert_language(language)
     assert_field_code(fs_code)
@@ -183,12 +173,11 @@ class DatabaseAdapter
     document.nil? ? nil : document[language]
   end
 
-  # @return An array of all "docfields" that are mapped to the fs_code 
-  # (there are more fs_codes than docfields). Throws an exception or is empty
-  # if this is not a valid fs_code!
-  # Might be mmpty if there are no matching specialities.
-  # This is based on a manually set up table.
-  # This is used by get_doctors_by_fs.
+  # @return [Array] An array of all "docfields" that are mapped to the fs_code
+  #   (there are more fs_codes than docfields). Throws an exception or is empty
+  #   if fs_code is not a valid fs code!
+  #   Might be empty if there are no matching specialities.
+  # @note This is based on a manually set up table. This is used by get_doctors_by_fs.
   def get_specialities_from_fs(fs_code)
     assert_field_code(fs_code)
     @docfield_to_fmh.find(
@@ -196,8 +185,8 @@ class DatabaseAdapter
     ).to_a.map { |spec| spec['docfield'] }
   end
 
-  # @return An array of all doctors (the raw db entry) with speciality in a 
-  # given field (given as fs_code), possibly empty.
+  # @return [Array] An array of all doctors (the raw db entry) with speciality in a
+  #   given field (given as fs_code), possibly empty.
   def get_doctors_by_fs(fs_code)
     assert_field_code(fs_code)
     specs = get_specialities_from_fs fs_code
@@ -205,8 +194,9 @@ class DatabaseAdapter
     docs.nil? ? [] : docs.to_a
   end
 
-  # @return The table (array) of {}"components" [array of fs codes] => "result" (fs code) (as a hash)  } entries
-  # used for merging two or more codes into one
+  # @return [Array] The compound tabe (an array of Hashes
+  #   "components" => [fs_code], => "result" => fs_code)
+  # @note Used for merging two or more codes into one in CompoundInfoProvider. Based on a manually set up table.
   def get_compound_results_components
     d = @compounds.find()
     (d.nil?) ? [] : d.to_a
@@ -214,13 +204,13 @@ class DatabaseAdapter
     #assert_field_code(d[0]['components'][0]) if d.length > 0
   end
 
-  # @return An array of all ICD Code ranges (as specified by the who) a given 
-  # ICD code lies within.
-  # Every range contains an array 'fmhcodes' of codes related to it.
-  # This is based on a manually set up table.
+  # @return [Array] An array of all ICD Code ranges (a Hash for each range) (as specified by the WHO) a given
+  #   ICD code lies within.
+  #   Every range contains a field 'fmhcodes' which is an array of codes related to it.
+  # @note This is based on a manually set up table.
   def get_icd_ranges (icd)
     assert_icd_code(icd)
-    icd = icd[0] + icd[1] + icd[2] # only check the first three characters (B26)
+    icd = icd[0] + icd[1] + icd[2] # only check the first three characters ('B26' not the .x part)
     ranges = []
     @icd_ranges.find().each do |doc|
       if ((doc['beginning']<=> icd) <=0) and ((doc['ending']<=> icd) >=0)
@@ -232,11 +222,11 @@ class DatabaseAdapter
     ranges
   end
 
-  # @return An array of all CHOP Code ranges (as specified by the who) a given 
-  # ICD code lies within.
-  # Every range contains an array 'fmhcodes' of codes related to it.
-  # This is based on a manually set up table.
-  def get_chop_ranges (chop)
+  # @return [Array] An array of all CHOP Code ranges (as specified by the who) a given
+  #   ICD code lies within.
+  #   Every range contains an array 'fmhcodes' of codes related to it.
+  # @note This is based on a manually set up table.
+  def get_chop_ranges(chop)
     assert_chop_code(chop)
     chop = chop[0] + chop[1] # only compare the first two digits
     ranges = []

@@ -19,7 +19,7 @@ module OrangeProton
 
     # Load internal API files
     config.paths.add 'app/api', :glob => '**/*.rb'
-    config.autoload_paths += Dir["#{Rails.root}/app/api/*"] # TODO doesn't this do the same as the line above?
+    config.autoload_paths += Dir["#{Rails.root}/app/api/*"]
 
     # Load models in subfolders of /models
     config.autoload_paths += Dir[ Rails.root.join('app', 'models', '**/') ]
