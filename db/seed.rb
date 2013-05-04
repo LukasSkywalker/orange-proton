@@ -1,6 +1,7 @@
 require_relative 'script_db_adapter'
 require_relative 'dictionary_parser/dictionary_parser_runscript'
 require_relative 'chop_parser/chop_parser_runscript'
+require_relative 'chop_drg_parser/chop_drg_parser_runscript'
 
 
 
@@ -23,14 +24,36 @@ class Seed
 
     #Insert/Update icd dictionary
     adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
-    #DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
+    DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
 
     #Insert/Update chop dictionary
     adapter.set_collection(db_config['collections']['chop_keywords'][0],db_config['collections']['chop_keywords'][1])
-    #DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+    DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
 
-    #Insert/Update CHOP catalog
-    adapter.set_collection("test","de")
+    #Insert/Update CHOP catalog 2012 de
+    adapter.set_collection("test12","de")
     ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_de.csv")
+    ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
+
+    #Insert/Update CHOP catalog 2012 fr
+    adapter.set_collection("test12","fr")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_fr.csv")
+    ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
+
+    #Insert/Update CHOP catalog 2013 de
+    adapter.set_collection("test13","de")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_de.csv")
+    ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
+
+    #Insert/Update CHOP catalog 2013 fr
+    adapter.set_collection("test13","fr")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_fr.csv")
+    ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
+
+    #Insert/Update CHOP catalog 2013 it
+    adapter.set_collection("test13","it")
+    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_it.csv")
+    ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
+
   end
 end

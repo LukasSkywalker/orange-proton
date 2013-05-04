@@ -635,7 +635,7 @@ var megamind = {
           $(parent).scrollTop()),
       left: Math.max(0, (($(parent).width() - $(this).outerWidth()) / 2) +
           $(parent).scrollLeft())
-    }, {duration: duration, easing: 'linear', complete: function() {
+    }, {duration: duration, complete: function() {
       $(this).removeClass('centering');
       $(this).trigger('centerComplete');
     }});

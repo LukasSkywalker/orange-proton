@@ -9,8 +9,7 @@ namespace :db do
   end
   
   task :seed do
-    #env = Rails.env || "defaults"    this chooses development, which tries to find localhost
-    env = "defaults"
+    env = Rails.env || "defaults"
     seeder = Seed.run(env)
   end
 end
