@@ -255,14 +255,14 @@ input[type=button] {
     padding-top: 3px;
     overflow: hidden;
     @include border-radius($border-radius);
-    background: url(arrow.png) no-repeat right white;
+    background: url(/assets/arrow.png) no-repeat right white;
     margin-left: 16px;
     margin-top: 10px;
     height: 29px !important;
     width: $width;
 
     &.svg {
-      background: url(arrow.svg) no-repeat right white !important;
+      background: url(/assets/arrow.svg) no-repeat right white !important;
       background-size: 30px 15px !important;
     }
   }
@@ -703,7 +703,7 @@ div.container {
   li {
     display: inline;
     border-right: none;
-    background: url(separator.gif) no-repeat right center;
+    background: url(/assets/separator.gif) no-repeat right center;
     padding-right: 15px;
     padding-left: 10px;
 

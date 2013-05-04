@@ -1,10 +1,14 @@
 defaults: &defaults
   host: pse4.iam.unibe.ch
   port: 27017
-  database: admin
+
+  database: admin # The main database to connect to when unauthentified.
+
   username: pse4_read
   password: plokij
-  write_username: pse4_write
+  write_username: pse4_write # We need this for the seeds.
+
+  # Names of all the tables in the db
   collections: {
     chop_ranges: [chop_ranges_to_fmh, ranges],
     icd_ranges: [icd_ranges_to_fmh, ranges],

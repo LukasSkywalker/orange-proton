@@ -1,8 +1,12 @@
+# Raises an excpetion if r is not in the range [0,1]
 def assert_relatedness(r)
   assert_kind_of(Numeric, r)
   assert(0 <= r && r <= 1)
 end
 
+# The field entries as passed around by the information providers.
+# Only code and relatedness of this is used at first, it is then localised by the api via
+# a localised_data_provider, then converted to a hash/json object in api_response.
 class FieldEntry
   attr_reader :name, :code, :relatedness
 
@@ -22,14 +26,16 @@ class FieldEntry
   end
   public
 
-  # clamps the relatedness to the allowed range
+  # Adds r to the relatedness and clamps the resulting relatedness to the allowed range.
   def increase_relatedness(r)
+    assert_kind_of(Numeric, r)
     @relatedness += r
     clamp_relatedness
   end
 
-  # clamps the relatedness to the allowed range
+  # Mulitplies the relatedness by f and clamps the relatedness to the allowed range [0,1].
   def multiply_relatedness(f)
+    assert_kind_of(Numeric, f)
     @relatedness *= f
     clamp_relatedness
   end
@@ -50,6 +56,10 @@ class FieldEntry
       self.relatedness == other.relatedness
   end
 
+  # @param db [DatabaseAdapter] The db connection needed to resolve the text.
+  # @param lang [String] "de", "fr", "it", "en"
+  # Sets self.name to be the localised name of the self.code. self.name will be nil if the code doesn't exist.
+  # All codes can be translated to all supported languages.
   def localise(db, lang)
     assert_language(lang)
     assert(db)
@@ -58,9 +68,9 @@ class FieldEntry
 end
 
 # @param field_codes [Array] an array of fs codes (2-210)
-# @return An array of field codes formatted as by API standard ({name : "...",
-# relatedness: relatedness, field: code} for each code, that is an array of
-# FieldEntry objects)
+# @return [Array] An array of field codes formatted as by API standard ({name : "...",
+#   relatedness: relatedness, field: code} for each code, that is an array of
+#   FieldEntry objects)
 def fs_codes_to_fields(field_codes, relatedness)
   assert_kind_of(Array, field_codes)
   assert_kind_of(Integer, field_codes[0]) if field_codes.length > 0
@@ -71,7 +81,7 @@ def fs_codes_to_fields(field_codes, relatedness)
   }
 end
 
-# same as above, but just for one code
+# Same as fs_codes_to_fields, but just for one code.
 def fs_code_to_field_entry(fs_code, relatedness)
   assert_relatedness(relatedness)
   assert_field_code(fs_code)
@@ -81,14 +91,14 @@ def fs_code_to_field_entry(fs_code, relatedness)
                 )
 end
 
+# Raises an exception if api_fields_array is not an Array of {FieldEntry}s.
 def assert_fields_array(api_fields_array)
   assert_kind_of(Array, api_fields_array)
   assert_kind_of(FieldEntry, api_fields_array[0]) if api_fields_array.length > 0
 end
 
-# Takes a fields array formatted as specified by the api and normalizes the 
-# relatedness by setting the maximum found relatedness to 1 and the others
-# to their relative size compared to that.
+# Takes a FieldEntry array and normalizes the relatedness by setting the maximum found relatedness
+# to 1 and the others to their relative magnitude compared to that.
 def normalize_relatedness(api_fields_array)
   assert_fields_array(api_fields_array)
 
@@ -101,7 +111,7 @@ def normalize_relatedness(api_fields_array)
   return fields_multiply_relatedness(api_fields_array, 1.0/tot)
 end
 
-# Multipliy the relatedness of the fields in fcs by fac.
+# Multipliy the relatedness of the fields in the FieldEntry array api_fields_array by fac.
 # Clamps the resulting relatedness. In place.
 def fields_multiply_relatedness(api_fields_array, fac)
   assert_fields_array(api_fields_array)
@@ -111,10 +121,6 @@ def fields_multiply_relatedness(api_fields_array, fac)
 end
 
 # Removes duplicates in an array of FieldEntries, summing up their relatedness.
-# 
-# TODO PF: We could argue about this algorithm... 
-# Maybe we should just take the max. That is take the first and sort
-# before we do this.
 def fold_duplicate_fields(fields)
   assert_fields_array(fields)
 

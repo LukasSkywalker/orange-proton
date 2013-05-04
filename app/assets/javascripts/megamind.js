@@ -226,7 +226,7 @@ var megamind = {
            var part = className.split("-");
             return '<span class="incl">' + I18n.t(part[0]) + '</span>' + " & " + '<span class="excl">' + I18n.t(part[1]) + '</span>'
         } else if(className==="field"){
-            return I18n.t(className) + ' & ' + 'Ärzte'; //TODO I18n this shit
+            return I18n.t(className) + ' & ' + 'Ärzte'; //TODO I18n this
         } else {
            return I18n.t(className);
         }

@@ -11,8 +11,9 @@ class DoctorLocator
     Geocoder.configure( :units => :km)
   end
 
-  # @return The raw db entries of at most doctors with a given field of specialization 
-  # (fs_code), sorted by distance to the position specified.
+  # @return [Array] The raw db entries of at most count doctors with a given field of specialization
+  #   (fs_code), sorted by distance to the position specified in lat/long.
+  # @raise [RuntimeError]
   def find_doctors(field_code, lat, long, count)
     assert_field_code(field_code)
     assert_count(count)

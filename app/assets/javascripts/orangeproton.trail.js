@@ -45,7 +45,7 @@ Trail.prototype.getList = function() {
     for (var i = start; i < end; i++) {
         var context = this.crumbs[i].context;
         var code = this.crumbs[i].code;
-        //TODO localize this madafaka
+        //TODO localize this
         var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
 
         out += '<li ' + ((i == end - 1) ? 'class="last"' : '') +

@@ -3,6 +3,8 @@
 # belong to, and finally mapping these to fachgebiete (using a manually created
 # table).
 class MDCInfoProvider < DatabaseInfoProvider
+
+  # @see DatabaseInfoProvider#get_fields
   def get_fields(code, max_count, catalog)
     assert_count(max_count)
     @db.assert_catalog(catalog)
@@ -21,7 +23,7 @@ class MDCInfoProvider < DatabaseInfoProvider
     fs_codes = []
     mdcs.each do |mdc|
      @db.get_fs_code_by_mdc(mdc).each do |fs_code|
-        # TODO give higher weight to fs_codes already included?
+        # We could also give higher weight to fs codes already included
         fs_codes<<fs_code unless (fs_codes.include? fs_code) || (fs_codes.length >= max_count)
       end
     end

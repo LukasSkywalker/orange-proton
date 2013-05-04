@@ -7,6 +7,8 @@ class IcdRangeInfoProvider < DatabaseInfoProvider
   @@level_ratings = [0.2, 0.6, 0.8, 1.0]
   @@ranking_decay_coefficient = 0.1
 
+  # @note Returns an empty array if chop_code is not an icd code.
+  # @see DatabaseInfoProvider#get_fields
   def get_fields(icd_code, max_count, catalog)
     @db.assert_catalog(catalog)
     assert_count(max_count)

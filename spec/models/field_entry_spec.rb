@@ -1,4 +1,4 @@
-require 'spec_helper' # TODO do we really need to write this everytime?
+require 'spec_helper'
 
 describe FieldEntry do
   it 'should normalize relatedness' do

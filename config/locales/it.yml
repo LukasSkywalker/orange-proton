@@ -14,9 +14,9 @@ it:
   reset: "Resettare"
   save: "Salvare"
   position: "Selezionare posizione"
-  doc_help: "Dottore bipedibapedi" #TODO Translate...
+  doc_help: "Medici vicino a te"
   info_title: "Aiuto"
-  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden." #TODO Translate...
+  info_text:  "Clicca su un branca per trovare medici vicino a te."
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"

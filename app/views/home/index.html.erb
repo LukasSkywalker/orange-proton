@@ -2,7 +2,13 @@
 <html>
     <head>
         <title>OrangeProton</title>
-        <%= stylesheet_link_tag "application", :media => "all" %>
+        <!--[if lt IE 9]>
+          <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <%= stylesheet_link_tag "application-all", :media => "all" %>
+        <!--[if IE 7]>
+          <%= stylesheet_link_tag "application-ie", :media => "all" %>
+        <![endif]-->
         <%= csrf_meta_tags %>
     </head>
     <body>
@@ -53,10 +59,6 @@
               <div id="info" class="panel">
                 <div id="info-title" class="title"></div>
                 <div id="info-text"></div>
-              </div>
-              <div id="admin" class="panel">
-                <div id="admin-title" class="title"><p>Admin panel</p></div>
-                <div id="admin-text"></div>
               </div>
             </div>
         </div>

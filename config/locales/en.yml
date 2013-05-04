@@ -19,7 +19,7 @@ en:
   position: "Select position"
   doc_help: "Doctors near you"
   info_title: "Help"
-  info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden." #TODO Translate...
+  info_text:  "Click on a speciality, to find therein specializing doctors near you."
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"
