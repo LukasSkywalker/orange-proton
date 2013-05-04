@@ -76,7 +76,7 @@
         margin: 5px;
         height: 40px;
         width: 40px;
-        background: url(close.png) 10px 10px no-repeat;
+        background: url(/assets/close.png) 10px 10px no-repeat;
 }
 
 .notify-hidden .notify-close{

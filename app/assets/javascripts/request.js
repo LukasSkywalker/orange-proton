@@ -13,6 +13,10 @@ $(document).ready(function () {
 
     orangeproton.trail.clear();
     orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
+    
+    $(document).on('trailUpdated', function( e, trail ) {
+        $('#bread-crumbs').renderTrail(trail);
+    });
 
     /* TOP-BAR */
     // start search on enter key press

@@ -11,10 +11,12 @@ Trail.prototype.push = function(context, code) {
         return;
 
     this.crumbs.push({"context": context, "code": code});
+    $(document).trigger('trailUpdated', [this]);
 };
 
 Trail.prototype.pop = function() {
     this.crumbs.pop();
+    $(document).trigger('trailUpdated', [this]);
 };
 
 Trail.prototype.isNewCrumb = function(code, context) {
@@ -27,10 +29,12 @@ Trail.prototype.isNewCode = function(code) {
 
 Trail.prototype.trimTo = function(index) {
     this.crumbs.splice(index + 1, this.crumbs.length);
+    $(document).trigger('trailUpdated', [this]);
 };
 
 Trail.prototype.clear = function() {
     this.crumbs.clear();
+    $(document).trigger('trailUpdated', [this]);
 };
 
 Trail.prototype.getList = function() {
@@ -49,8 +53,7 @@ Trail.prototype.getList = function() {
         var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
 
         out += '<li ' + ((i == end - 1) ? 'class="last"' : '') +
-            'onclick="codeLink(\'' + code + '\', ' + i + ');" title="' +
-            contextString + '"><span>' + code + '</span>';
+            'onclick="codeLink(\'{0}\', {1});" title="{2}"><span>{0}</span>'.format(code, i, contextString);
         out += '</li>';
     }
     return out;
@@ -59,8 +62,19 @@ Trail.prototype.getList = function() {
 function codeLink(code, idx){
     if (!orangeproton.trail.isNewCode(code)) return;
 
-    $('#code-name').val(code);
     orangeproton.trail.trimTo(idx);
-    $(document).trigger('paramChange');
+    $(document).trigger('paramChange', [code]);
 }
 
+
+$.fn.renderTrail = function( trail ) {
+    $(this).html(trail.getList());
+    $(".tipsy").remove();
+    $(this).children('[title]').tipsy({
+        trigger: 'hover',
+        gravity: 's',
+        delayIn: '100',
+        delayOut: '0',
+        fade: 'true'
+    });
+};
