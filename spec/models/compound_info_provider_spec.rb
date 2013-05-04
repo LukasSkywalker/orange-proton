@@ -12,6 +12,23 @@ describe CompoundInfoProvider do
     @db = @provider.db
   end
 
+  it 'should find provider results' do
+    instance1 = ProviderInstance.new(MDCInfoProvider, 0.4)
+    instance2 = ProviderInstance.new(IcdRangeInfoProvider, 0.6)
+    instance3 = ProviderInstance.new(ThesaurInfoProvider, 1)
+    instance4 = ProviderInstance.new(StringmatchInfoProvider, 0.8)
+    instance5 = ProviderInstance.new(ChopRangeInfoProvider, 0.75)
+
+    instance1.stub(:get_results).with(anything, anything, anything).and_return[FieldEntry.new(0.5, 72), FieldEntry.new(0.5, 72)]
+    instance2.stub(:get_results).with(anything, anything, anything).and_return[FieldEntry.new(0.5, 72), FieldEntry.new(0.5, 72)]
+    instance3.stub(:get_results).with(anything, anything, anything).and_return[FieldEntry.new(0.5, 72), FieldEntry.new(0.5, 72)]
+    instance4.stub(:get_results).with(anything, anything, anything).and_return[FieldEntry.new(0.5, 72), FieldEntry.new(0.5, 72)]
+    instance5.stub(:get_results).with(anything, anything, anything).and_return[FieldEntry.new(0.5, 72), FieldEntry.new(0.5, 72)]
+
+    field = @provider.get_provider_results('A01.0', 4, 'icd_2010_ch')
+    field.should==[]
+  end
+
   it 'should extract fields' do
     fields = [FieldEntry.new(0.11, 74),FieldEntry.new(0.11, 74), FieldEntry.new(0.5, 48)]
     codes = [74, 74, 48]
