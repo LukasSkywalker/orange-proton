@@ -25,6 +25,8 @@ OrangeProton::Application.configure do
 
   # Precompile additional assets
   config.assets.precompile += %w( .otf .svg .eot .woff .ttf )
+  
+  config.assets.precompile += %w( application-all.css application-ie.css )
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found)
