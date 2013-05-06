@@ -24,8 +24,8 @@ class FieldEntry
     @relatedness = 1.0 if @relatedness > 1.0
     @relatedness = 0.0 if @relatedness < 0.0
   end
-  public
 
+  public
   # Adds r to the relatedness and clamps the resulting relatedness to the allowed range.
   def increase_relatedness(r)
     assert_kind_of(Numeric, r)
@@ -116,7 +116,7 @@ end
 def fields_multiply_relatedness(api_fields_array, fac)
   assert_fields_array(api_fields_array)
 
-  api_fields_array.each { |fc| fc.multiply_relatedness( fac) }
+  api_fields_array.each { |fc| fc.multiply_relatedness(fac) }
   api_fields_array
 end
 

@@ -25,11 +25,11 @@ class CompoundInfoProvider < DatabaseInfoProvider
     # Let all information providers return their results into fields
     fields = get_provider_results(code, max_count, catalog)
 
-    fields = fold_duplicate_fields fields # we want generate compounds to operate on single copies of everything
+    fields = fold_duplicate_fields(fields) # we want generate compounds to operate on single copies of everything
 
     fields = generate_compound_fields(fields) # implements #171
 
-    fields = fold_duplicate_fields fields # the above might have created more duplicated
+    fields = fold_duplicate_fields(fields) # the above might have created more duplicated
 
     fields.sort! do |x, y|
       y.relatedness <=> x.relatedness
@@ -62,18 +62,21 @@ class CompoundInfoProvider < DatabaseInfoProvider
     codes = fields.map {|f| f.code}
     Rails.logger.info "codes are: #{codes}"
 
-    rcs =@db.get_compound_results_components
+    rcs = @db.get_compound_results_components
     Rails.logger.info "compound table is #{rcs}"
 
     rcs.each {|rc|
       if is_subset?(rc['components'], codes)
         Rails.logger.info "rc #{rc} is entirely contained"
         fs = extract_fields_with_code_in(fields, rc['components'])
+
+        # calculate avg relatedness
         rmean = 0
         fs.each {|f| rmean += f.relatedness}
         assert(fs.size > 0)
         rmean /= fs.size
         assert_relatedness(rmean)
+
         Rails.logger.info "components: #{fs}, mean #{rmean}"
         fields << fs_code_to_field_entry(rc['result'], rmean)
       end
