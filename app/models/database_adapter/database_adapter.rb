@@ -46,6 +46,8 @@ class DatabaseAdapter
     @icd_ranges  = @client[@collections_config['icd_ranges'][0]][@collections_config['icd_ranges'][1]]
     @chop_ranges = @client[@collections_config['chop_ranges'][0]][@collections_config['chop_ranges'][1]]
 
+    @fmh_fallbacks= @client[@collections_config['fmh_fallbacks'][0]][@collections_config['fmh_fallbacks'][1]]
+
     @docfield_to_fmh = @client[@collections_config['docfield_to_FMH_code'][0]][@collections_config['docfield_to_FMH_code'][1]]
 
     @thesaur_to_fs  = @client[@collections_config['thesaur_to_fs'][0]][@collections_config['thesaur_to_fs'][1]]
@@ -57,6 +59,11 @@ class DatabaseAdapter
   # @note The catalog names are defined in the api's catalog regex and in config/mongo.yml
   def assert_catalog(catalog)
     raise "catalog #{catalog} does not exist " unless (@catalogs.has_key?(catalog))
+  end
+
+  # @return [Array] the fallback table - an array of ("from_fs": FSCode, "to_fs": FSCode) hashes.
+  def get_fmh_fallbacks_table()
+    @fmh_fallbacks.find().to_a
   end
 
   # @return True if the <catalog> database (must exist in some language) exists in <language>.

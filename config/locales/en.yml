@@ -20,6 +20,7 @@ en:
   doc_help: "Doctors near you"
   info_title: "Help"
   info_text:  "Click on a speciality, to find therein specializing doctors near you."
+  related: "Related diagnosis"
 
 #errors
   no_icd_chop_data: "No ICD/CHOP data found for given code"

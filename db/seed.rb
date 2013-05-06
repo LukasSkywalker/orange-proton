@@ -1,6 +1,7 @@
 require_relative 'script_db_adapter'
 require_relative 'dictionary_parser/dictionary_parser_runscript'
-require_relative 'chop_parser/chop_parser_runscript'
+require_relative 'dump_parser/chop_parser_runscript'
+require_relative 'dump_parser/icd_parser_runscript'
 require_relative 'chop_drg_parser/chop_drg_parser_runscript'
 
 
@@ -31,29 +32,52 @@ class Seed
     DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
 
     #Insert/Update CHOP catalog 2012 de
-    adapter.set_collection("test12","de")
-    ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_de.csv")
+    adapter.set_collection("testchop12","de")
+    ChopParserRunscript.run(adapter, "../dumps/chop_2012_ch_de.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2012 fr
-    adapter.set_collection("test12","fr")
-    ChopParserRunscript.run(adapter, "../csv_files/chop_2012_ch_fr.csv")
+    adapter.set_collection("testchop12","fr")
+    ChopParserRunscript.run(adapter, "../dumps/chop_2012_ch_fr.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 de
-    adapter.set_collection("test13","de")
-    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_de.csv")
+    adapter.set_collection("testchop13","de")
+    ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_de.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 fr
-    adapter.set_collection("test13","fr")
-    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_fr.csv")
+    adapter.set_collection("testchop13","fr")
+    ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_fr.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 it
-    adapter.set_collection("test13","it")
-    ChopParserRunscript.run(adapter, "../csv_files/chop_2013_ch_it.csv")
+    adapter.set_collection("testchop13","it")
+    ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_it.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
+    #Insert/Update ICD catalog 2012 de
+    adapter.set_collection("testicd12","de")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_de.json")
+
+    #Insert/Update ICD catalog 2012 fr
+    adapter.set_collection("testicd12","fr")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_fr.json")
+
+    #Insert/Update ICD catalog 2012 it
+    adapter.set_collection("testicd12","it")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_it.json")
+
+    #Insert/Update ICD catalog 2012 en
+    adapter.set_collection("testicd12","en")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2012_us_en.json")
+
+    #Insert/Update ICD catalog 2010 de
+    adapter.set_collection("testicd10","de")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_de.json")
+
+    #Insert/Update ICD catalog 2010 fr
+    adapter.set_collection("testicd10","fr")
+    IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_fr.json")
   end
 end

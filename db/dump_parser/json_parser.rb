@@ -1,6 +1,16 @@
-class ChopParser
+class JsonParser
   attr_accessor :file
 
+
+  def initialize (filename)
+    self.file = File.read(File.dirname(__FILE__) + "/#{filename}")
+
+  end
+
+  def parse_chops
+    JSON.parse(self.file)
+  end
+=begin
   def initialize (filename)
     self.file = File.open(File.dirname(__FILE__) + "/#{filename}")
   end
@@ -24,4 +34,5 @@ class ChopParser
     end
     docs
   end
+=end
 end

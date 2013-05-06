@@ -17,6 +17,7 @@ fr:
   doc_help: "Médcins près de vous"
   info_title: "Aide"
   info_text:  "Appuyez sur une branche, pour trouver des docteurs y specialisé."
+  related: "Verwandte Diagnose"
 
 #errors
   no_icd_chop_data: "Il n'y a pas d'informations ICD/CHOP pour le code demandé"

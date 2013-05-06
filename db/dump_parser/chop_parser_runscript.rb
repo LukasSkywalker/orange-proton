@@ -1,25 +1,27 @@
-require_relative 'dictionary_parser'
+require_relative 'json_parser'
 
-class DictionaryParserRunscript
+class ChopParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_ranges
+    puts "parsing CHOP catalog at #{file}"
+    parser = JsonParser.new(file)
+    docs = parser.parse_chops
     write_adapter = adapter
-    puts "-updating the collection..."
-
     i=0
 
-    docs.p_each do |doc|
+    puts "-updating the collection..."
+    docs.p_each(20) do |doc|
       #progress output
       STDOUT.print "                                 \r"
       STDOUT.print "-#{i*100/docs.size}%\r"
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
-      old.delete('fmhcodes')
+      old.delete('text')
+      old.delete('synonyms')
       doc['updated'] = true
+      doc['drgs'] = []
+      old.delete('drgs')
+      old.delete('updated')
       write_adapter.update_doc(old, doc)
     end
 
@@ -31,7 +33,7 @@ class DictionaryParserRunscript
         deleted.delete('_id')
         puts deleted
       end
-      puts "Do you want to delete them from the database? (y/N)"
+      puts "-Do you want to delete them (#{del_count}) from the database? (y/N)"
       if STDIN.gets.chomp == 'y'
         write_adapter.check_deletions.each do |deleted|
           write_adapter.delete(deleted)

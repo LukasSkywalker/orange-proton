@@ -17,6 +17,7 @@ it:
   doc_help: "Medici vicino a te"
   info_title: "Aiuto"
   info_text:  "Clicca su un branca per trovare medici vicino a te."
+  related: "Verwandte Diagnose"
 
 #errors
   no_icd_chop_data: "Nessuni dati ICD/CHOP trovati per codice"
