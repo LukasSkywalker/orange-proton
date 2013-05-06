@@ -13,7 +13,7 @@ class DictionaryParserRunscript
 
     i=0
     progress = '.'
-    docs.each do |doc|
+    docs.p_each do |doc|
       #progress output
       STDOUT.print "                                 \r"
       progress << '.' if i%10 == 0
