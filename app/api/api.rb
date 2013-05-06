@@ -14,6 +14,7 @@ class API < Grape::API
   @@provider                = ObjectFactory.get_information_provider
   @@doctor_locator          = ObjectFactory.get_doctor_locator
   @@localised_data_provider = ObjectFactory.get_localised_data_provider
+  @@fallback_provider       = ObjectFactory.get_fallback_provider
 
   # Some handy helpers for the API
   helpers do
@@ -90,6 +91,9 @@ class API < Grape::API
       fields = @@provider.get_fields(code, max_count, catalog)
       assert_fields_array(fields)
       assert(fields.length <= max_count)
+
+      # Get fallbacks
+      @@fallback_provider.get_fallbacks(fields)
 
       # we can always localise the field names to the requested language
       @@localised_data_provider.localise_field_entries(fields, lang)
@@ -169,8 +173,10 @@ class API < Grape::API
 
       desc 'Reset weights to default values'
       post 'reset' do
-        @@provider.reset_weights
-        encode_weight_values
+        if Rails.env == 'development' or Rails.env == 'development-remote'
+          @@provider.reset_weights
+          encode_weight_values
+        end
       end
 
       params do
@@ -179,9 +185,11 @@ class API < Grape::API
       end
 
       post 'set' do
-        values = extract_weight_values(params[:values])
-        @@provider.set_relatedness_weight(values)
-        encode_weight_values
+        if Rails.env == 'development' or Rails.env == 'development-remote'
+          values = extract_weight_values(params[:values])
+          @@provider.set_relatedness_weight(values)
+          encode_weight_values
+        end
       end
     end
   end

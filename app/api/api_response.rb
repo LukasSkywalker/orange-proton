@@ -42,7 +42,8 @@ module ApiResponse
           {
             :name => field.name,
             :relatedness => field.relatedness,
-            :field => field.code
+            :field => field.code,
+            :fallbacks => field.fallbacks
           }
         }
       end

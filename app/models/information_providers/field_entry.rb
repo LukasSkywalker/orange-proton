@@ -8,7 +8,7 @@ end
 # Only code and relatedness of this is used at first, it is then localised by the api via
 # a localised_data_provider, then converted to a hash/json object in api_response.
 class FieldEntry
-  attr_reader :name, :code, :relatedness
+  attr_reader :name, :code, :relatedness, :fallbacks
 
   # @param code either an icd or chop code
   def initialize(relatedness, field_code)
@@ -17,6 +17,7 @@ class FieldEntry
     set_relatedness(relatedness)
     @name = "<unlocalized #{field_code}>"
     @code = field_code.to_i
+    @fallbacks = []
   end
 
   private
@@ -24,7 +25,11 @@ class FieldEntry
     @relatedness = 1.0 if @relatedness > 1.0
     @relatedness = 0.0 if @relatedness < 0.0
   end
+
   public
+  def add_fallback(code)
+    @fallbacks << {:code => code, :name => "<unlocalized #{code}>"}
+  end
 
   # Adds r to the relatedness and clamps the resulting relatedness to the allowed range.
   def increase_relatedness(r)
@@ -64,6 +69,9 @@ class FieldEntry
     assert_language(lang)
     assert(db)
     @name = db.get_fs_name(self.code, lang)
+    fallbacks.each{ |f|
+      f[:name] = db.get_fs_name(f[:code], lang)
+    }
   end
 end
 

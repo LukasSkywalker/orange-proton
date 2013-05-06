@@ -42,6 +42,17 @@ module ObjectFactory
       end
     end
 
+    def get_fallback_provider
+      case Rails.env
+        when 'test'
+          MockFallbackProvider.new
+        when 'development-remote', 'development', 'production'
+          FallbackProvider.new
+        else
+          raise "No fallback provider for environment #{Rails.env}"
+      end
+    end
+
 
   end
 end

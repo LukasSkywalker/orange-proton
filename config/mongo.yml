@@ -41,6 +41,7 @@ defaults: &defaults
   fmh_codes : [fmh,fmh_names],
   mdc_to_fmh : [mdc,mdc_to_fmh],
   mdcs : [mdc,mdc_names],
+  fmh_fallbacks : [fmh_fallbacks, fmh_fallbacks],
   thesauri : [thesauren],
   thesaur_to_fs : [thesaur,thesaur_to_fmh],
   thesaur_to_icd : [thesaur, thesaur_to_icd]
