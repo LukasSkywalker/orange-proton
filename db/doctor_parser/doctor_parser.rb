@@ -12,7 +12,6 @@ class DoctorParser
     self.file.each_line do |line|
       doc = {}
       parts = line.split(';')
-      puts parts.size
       if parts.size == 10
         doc['name'] = parts[0].strip
         doc['title'] = parts[1].strip

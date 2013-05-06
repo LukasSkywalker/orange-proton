@@ -20,8 +20,8 @@ class DocParserRunscript
       STDOUT.print "                                 \r"
       STDOUT.print "-#{i*100/size}%\r"
 
-      entry['updated'] = true
       old = entry.clone
+      entry['updated'] = true
       adapter.update_doc(old,entry)
       i = i+1
     end
