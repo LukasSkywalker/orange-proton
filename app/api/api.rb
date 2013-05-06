@@ -169,8 +169,10 @@ class API < Grape::API
 
       desc 'Reset weights to default values'
       post 'reset' do
-        @@provider.reset_weights
-        encode_weight_values
+        if Rails.env == 'development' or Rails.env == 'development-remote'
+          @@provider.reset_weights
+          encode_weight_values
+        end
       end
 
       params do
@@ -179,9 +181,11 @@ class API < Grape::API
       end
 
       post 'set' do
-        values = extract_weight_values(params[:values])
-        @@provider.set_relatedness_weight(values)
-        encode_weight_values
+        if Rails.env == 'development' or Rails.env == 'development-remote'
+          values = extract_weight_values(params[:values])
+          @@provider.set_relatedness_weight(values)
+          encode_weight_values
+        end
       end
     end
   end
