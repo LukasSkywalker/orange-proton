@@ -3,6 +3,7 @@ require_relative 'dictionary_parser/dictionary_parser_runscript'
 require_relative 'dump_parser/chop_parser_runscript'
 require_relative 'dump_parser/icd_parser_runscript'
 require_relative 'chop_drg_parser/chop_drg_parser_runscript'
+require_relative 'doctor_parser/doc_parser_runscript'
 
 
 
@@ -23,6 +24,8 @@ class Seed
     pw = STDIN.gets.chomp()
     adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
 
+
+=begin
     #Insert/Update icd dictionary
     adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
     DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
@@ -79,5 +82,9 @@ class Seed
     #Insert/Update ICD catalog 2010 fr
     adapter.set_collection("testicd10","fr")
     IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_fr.json")
+=end
+    adapter.set_collection('testdocs','doctors')
+    DocParserRunscript.run(adapter, "../csv_files/doctors.csv")
+
   end
 end
