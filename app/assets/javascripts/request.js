@@ -16,11 +16,11 @@ $(document).ready(function () {
 
     var $codeInput = $('#code-name');
     var $lang = $('#lang');
-    var $catalog = $('#catalog');
-    var $mode = $('#mode');
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
     var $searchBar = $('#search-bar');
+
+    $("select").selectBoxIt();
 
     orangeproton.generic.injectConsoleLog();
 
@@ -57,12 +57,12 @@ $(document).ready(function () {
     I18n.fallbacks = true;
 
     // add event handler for language change on UI element
-    $lang.change(function () {
+    $("select#lang").change(function () {
       $(document).trigger('paramChange');
     });
 
     // add event handler for catlog change
-    $catalog.change(function () {
+    $("select#catalog").change(function () {
         var catalog = $(this).val();
         var prevCatalog = mindmapper.prevCatalog;
         if( mindmapper.prevCatalog ) {
@@ -78,7 +78,7 @@ $(document).ready(function () {
     });
 
     // add event handler for mode change on UI element
-    $mode.change(function () {
+    $("select#mode").change(function () {
         $(document).trigger('paramChange');
     });
 
@@ -131,6 +131,22 @@ $(document).ready(function () {
         $lang.val(lang);
         $catalog.val(catalog);
         $mode.val(mode);
+
+        /*$("select#lang").data("selectBox-selectBoxIt").selectOption(lang);
+        $("select#catalog").data("selectBox-selectBoxIt").selectOption(catalog);
+        $("select#mode").data("selectBox-selectBoxIt").selectOption(mode);*/
+
+        var select = $("#lang");
+        select.find("option[value="+ lang +"]").attr('selected','selected');
+        select.data("selectBox-selectBoxIt").refresh();
+
+        select = $('#catalog');
+        select.find("option[value="+ catalog +"]").attr('selected','selected');
+        select.data("selectBox-selectBoxIt").refresh();
+
+        select = $('#mode');
+        select.find("option[value="+ mode +"]").attr('selected','selected');
+        select.data("selectBox-selectBoxIt").refresh();
 
         // Change language if requested
         orangeproton.language.setLocale(lang);
@@ -200,12 +216,6 @@ $(document).ready(function () {
 
     // set the locale and load translations
     orangeproton.language.setLocale($lang.val());
-
-    //add svg class to elements where we have an SVG-image
-    if (orangeproton.generic.supportsSVG()) {
-        $('.hide-arrow').addClass('svg');
-        $('.mode-arrow').addClass('svg');
-    }
 });
 /**
  * Handle the main user flow

@@ -15,8 +15,8 @@
         <div id="search-bar">
             <input id="code-name" type="text" placeholder="Code">
             <p id="search-button" class="icon-search icon-large clickable"></p>
-            <div class="catalog-arrow">
-                <select name="catalog" id="catalog" size="1">
+            <div class="catalog-container">
+                <select name="catalog" id="catalog" size="5">
                     <option value="icd_2010_ch">ICD 2010 CH</option>
                     <option value="icd_2012_ch" selected="selected">ICD 2012 CH</option>
                     <option value="chop_2012_ch">CHOP 2012 CH</option>
@@ -28,16 +28,16 @@
                 <p class="location"></p>
               </div>
             </div>
-            <div class="lang-arrow">
-                <select name="lang" id="lang" size="1">
+            <div class="lang-container">
+                <select name="lang" id="lang" size="5">
                     <option value="de">Deutsch</option>
                     <option value="fr">Français</option>
                     <option value="it">Italiano</option>
                     <option value="en">English</option>
                 </select>
             </div>
-            <div class="mode-arrow">
-              <select name="mode" id="mode" size="1">
+            <div class="mode-container">
+              <select name="mode" id="mode" size="4">
                 <option value="sd">Standard</option>
                 <option value="ad" selected="selected">Advanced</option> <!-- While development, this is selected. Remove when deploying -->
               </select>
