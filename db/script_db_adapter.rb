@@ -56,7 +56,7 @@ class ScriptDBAdapter
       STDOUT.print "                                 \r"
       progress << '.' if i%10 == 0
       progress = '.' if progress.length >20
-      STDOUT.print "#{i*100/size}% #{progress}\r"
+      STDOUT.print "-#{i*100/size}% #{progress}\r"
 
       doc.delete('updated')
       self.coll.update(doc,doc)
