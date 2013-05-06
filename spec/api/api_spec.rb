@@ -69,6 +69,25 @@ describe API do
       end
     end
 
+    it 'should raise error if type of request and catalog is not the same for icd' do
+      get '/api/v1/fields/get?lang=de&code=00&count=4&catalog=icd_2012_ch'
+
+      json_response = JSON.parse(response.body)
+      json_response.should be_error_api_response
+    end
+
+    it 'should raise error if type of request and catalog is not the same for chop' do
+      get '/api/v1/fields/get?lang=de&code=A00.0&count=4&catalog=chop_2012_ch'
+
+      json_response = JSON.parse(response.body)
+      json_response.should be_error_api_response
+    end
+
+    it 'should raise error if type of request and catalog is not the same for an unknown code' do
+      get '/api/v1/fields/get?lang=de&code=002.y&count=4&catalog=icd_2012_ch'
+      response.status.should == 400
+    end
+
     it 'should respond with bad request if not all required parameters are sent' do
       get '/api/v1/fields/get?code=B26'
       response.status.should == 400

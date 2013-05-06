@@ -85,6 +85,13 @@ $(document).ready(function () {
         clearHighlight();
     }, null);
 
+    /* ADMIN-PANELS */
+    // load the panel
+    if(window.rails_env === 'development' || window.rails_env === 'development-remote'){
+        orangeproton.admin.loadPanel();
+    }
+
+
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
         orangeproton.mindmap.resizeMindmap();

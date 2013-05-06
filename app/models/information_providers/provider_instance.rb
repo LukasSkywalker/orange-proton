@@ -1,7 +1,7 @@
 require_relative '../assert.rb'
 
 class ProviderInstance
-  attr_reader :weight
+  attr_accessor :weight
 
   def initialize (provider_instance, weight)
     assert_relatedness(weight)
