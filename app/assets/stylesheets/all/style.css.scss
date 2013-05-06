@@ -689,8 +689,7 @@ div.container {
   background: $light-grey;
   left: 0;
   border-bottom: 1px solid $grey;
-  line-height: 30px;
-  vertical-align: middle;
+
   a:visited {
     text-decoration: none;
     color: black;
@@ -706,6 +705,8 @@ div.container {
     background: url(/assets/separator.gif) no-repeat right center;
     padding-right: 15px;
     padding-left: 10px;
+    line-height: 30px;
+    vertical-align: middle;
 
     &.last {
       background: none;

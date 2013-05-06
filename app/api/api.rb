@@ -19,6 +19,18 @@ class API < Grape::API
   helpers do
     # Some params we always use.
     def lang; params[:lang] end
+
+    def compare_type(catalog, type)
+      catalog = catalog.split('_')[0].to_sym
+
+      if type == :unknown
+        raise ProviderLookupError.new('no_icd_chop_data', lang)
+      elsif catalog == :chop and type != :chop
+        raise ProviderLookupError.new('request_not_chop_type', lang)
+      elsif catalog == :icd and type != :icd
+        raise ProviderLookupError.new('request_not_icd_type', lang)
+      end
+    end
   end
 
   # Always rescue ProviderLookupErrors
@@ -59,6 +71,9 @@ class API < Grape::API
       # the regex should not differ from the regex used to check this,
       # so this method should detect a code type as well
       assert(type != :unknown) 
+
+      # raises an error if type of code request does not match catalog (icd/chop)
+      compare_type(catalog, type)
 
       # Get data
       r = @@localised_data_provider.get_icd_or_chop_data(code,
@@ -118,6 +133,56 @@ class API < Grape::API
       assert_kind_of(Hash, doctors[0]) if doctors.length > 0
 
       Success.response(doctors)
+    end
+  end
+
+  # Handles admin queries
+    # /api/v2/admin/setWeight=[val1,val2,...]
+    # TODO This is not needed in the final version...
+    desc 'Handles admin queries, such as setting the relatedness bias'
+    resource :admin do
+      namespace :weights do
+
+        helpers do
+          # Extract integer values from a string array [val1, val2,...]
+          def extract_weight_values(values)
+              vals = values.split(',')
+              vals.map! do |val|
+                val.to_i / 100.0
+              end
+            vals
+          end
+
+        def encode_weight_values
+            weights = @@provider.get_relatedness_weight
+            weights.map! do |val|
+              Integer(val * 100)
+            end
+          weights
+        end
+      end
+
+      desc 'Return provider weights'
+      get 'get' do
+        encode_weight_values
+      end
+
+      desc 'Reset weights to default values'
+      post 'reset' do
+        @@provider.reset_weights
+        encode_weight_values
+      end
+
+      params do
+        requires :values, type: String, desc: 'The weight values the frontend sends',
+              regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
+      end
+
+      post 'set' do
+        values = extract_weight_values(params[:values])
+        @@provider.set_relatedness_weight(values)
+        encode_weight_values
+      end
     end
   end
 end

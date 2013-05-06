@@ -19,4 +19,6 @@ fr:
   info_text:  "Appuyez sur une branche, pour trouver des docteurs y specialisé."
 
 #errors
-  no_icd_chop_data: "Someone with French skills please translate :-)"
+  no_icd_chop_data: "Il n'y a pas d'informations ICD/CHOP pour le code demandé"
+  request_not_chop_type: "Votre demande n'est pas un CHOP code"
+  request_not_icd_type: "Votre demande n'est pas un ICD code"

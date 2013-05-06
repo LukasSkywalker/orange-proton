@@ -122,6 +122,10 @@ Array.prototype.shuffle = function() {
   }
 };
 
+Array.prototype.isEmpty = function (){
+    return this.length === 0;
+}
+
 /* return last element of array*/
 if(!Array.prototype.last) {
     Array.prototype.last = function() {

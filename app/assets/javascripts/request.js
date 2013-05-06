@@ -1,6 +1,19 @@
 var orangeproton = orangeproton || {};
 
 $(document).ready(function () {
+
+    if($.browser.name === 'msie' && $.browser.version === '8.0'){
+        var head = document.getElementsByTagName('head')[0],
+            style = document.createElement('style');
+        style.type = 'text/css';
+        style.styleSheet.cssText = ':before,:after{content:none !important';
+        head.appendChild(style);
+        setTimeout(function(){
+            head.removeChild(style);
+        }, 0);
+    }
+
+
     var $codeInput = $('#code-name');
     var $lang = $('#lang');
     var $catalog = $('#catalog');
@@ -84,6 +97,13 @@ $(document).ready(function () {
     $searchBar.hoverIntent(function(){
         clearHighlight();
     }, null);
+
+    /* ADMIN-PANELS */
+    // load the panel
+    if(window.rails_env === 'development' || window.rails_env === 'development-remote'){
+        orangeproton.admin.loadPanel();
+    }
+
 
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
