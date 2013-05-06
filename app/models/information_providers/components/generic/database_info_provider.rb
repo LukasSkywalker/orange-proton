@@ -1,5 +1,8 @@
 # Abstract base class for all information providers utilizing the db (which are basically all of them).
 class DatabaseInfoProvider
+
+  attr_reader :db
+
   def initialize
     @db = DatabaseAdapter.new
   end

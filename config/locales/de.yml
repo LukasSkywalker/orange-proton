@@ -22,3 +22,5 @@ de:
 
 #errors
   no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"
+  request_not_chop_type: "Ihre Anfrage ist kein CHOP Code"
+  request_not_icd_type: "Ihre Anfrage ist kein ICD Code"
