@@ -5,13 +5,16 @@ class ChopDrgParser
     self.file = File.open(File.dirname(__FILE__) + "/#{filename}")
   end
   def read_assocs
+    assoc_hash = {}
     assoc_list = []
-    drg  = ""
-    chop = ""
     file.each_line() do |line|
       splits = line.split(';')
       drg  = splits[0]
       chop = self.parse_chop(splits[1])
+      #if assoc_hash[chop].nil?
+      #  assoc_hash[chop] = []
+      #end
+      #assoc_hash[chop]<<drg
       assoc_list << {"drg" => drg , "chop" => chop}
     end
     assoc_list

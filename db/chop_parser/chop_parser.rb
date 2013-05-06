@@ -15,7 +15,7 @@ class ChopParser
         code  = splits[0].strip
         text = splits[1].strip
         for i in 2..splits.length-1 do
-          splits[i].strip unless splits[i].nil?
+          splits[i].strip! unless splits[i].nil?
           synonyms << splits[i] unless splits[i] == '' or splits[i] == "\n"
         end
 

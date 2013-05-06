@@ -23,6 +23,9 @@ class ChopParserRunscript
       old.delete('text')
       old.delete('synonyms')
       doc['updated'] = true
+      doc['drgs'] = []
+      old.delete('drgs')
+      old.delete('updated')
       write_adapter.update_doc(old, doc)
     end
 

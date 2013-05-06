@@ -5,7 +5,7 @@ include Mongo
 class ScriptDBAdapter
   attr_accessor :mongo_client, :db, :coll, :write
   def initialize (db , collection ,host, port, admin_db, write, write_user = '', write_pw = '')
-    self.mongo_client = MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 30)
+    self.mongo_client = MongoClient.new(host, port, :pool_size => 20, :pool_timeout => 60)
     self.write = write
     if write
       mongo_client.db(admin_db).authenticate(write_user,write_pw)
@@ -52,7 +52,7 @@ class ScriptDBAdapter
     size = self.coll.find().count()
     i=0
     progress = '.'
-    self.coll.find().each do |doc|
+    self.coll.find().p_each do |doc|
       STDOUT.print "                                 \r"
       progress << '.' if i%10 == 0
       progress = '.' if progress.length >20
@@ -62,6 +62,10 @@ class ScriptDBAdapter
       self.coll.update(doc,doc)
       i+=1
     end
+  end
+
+  def find_one(query)
+    self.coll.find_one(query)
   end
 
 end
