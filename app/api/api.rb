@@ -120,4 +120,54 @@ class API < Grape::API
       Success.response(doctors)
     end
   end
+
+  # Handles admin queries
+    # /api/v2/admin/setWeight=[val1,val2,...]
+    # TODO This is not needed in the final version...
+    desc 'Handles admin queries, such as setting the relatedness bias'
+    resource :admin do
+      namespace :weights do
+
+        helpers do
+          # Extract integer values from a string array [val1, val2,...]
+          def extract_weight_values(values)
+              vals = values.split(',')
+              vals.map! do |val|
+                val.to_i / 100.0
+              end
+            vals
+          end
+
+        def encode_weight_values
+            weights = @@provider.get_relatedness_weight
+            weights.map! do |val|
+              Integer(val * 100)
+            end
+          weights
+        end
+      end
+
+      desc 'Return provider weights'
+      get 'get' do
+        encode_weight_values
+      end
+
+      desc 'Reset weights to default values'
+      post 'reset' do
+        @@provider.reset_weights
+        encode_weight_values
+      end
+
+      params do
+        requires :values, type: String, desc: 'The weight values the frontend sends',
+              regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
+      end
+
+      post 'set' do
+        values = extract_weight_values(params[:values])
+        @@provider.set_relatedness_weight(values)
+        encode_weight_values
+      end
+    end
+  end
 end

@@ -89,4 +89,25 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
 
+  # TODO remove for final version:
+  public
+    # Handle
+    # /api/v1/admin/set??? (values?)
+    # Assign new weights to each info provider. Values is a simple list (?).
+    def set_relatedness_weight(vals)
+        @providers.each_with_index do |provider, index|
+           provider.weight = vals[index] if vals[index]
+        end
+    end
+
+  def get_relatedness_weight
+      @providers.map {|provider| provider.weight}
+    end
+
+  def reset_weights
+      @providers.each do |provider|
+         provider.reset_weight
+      end
+  end
+
 end
