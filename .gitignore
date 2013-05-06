@@ -11,6 +11,7 @@
 /log
 /tmp
 /db/csv_files
+/db/dumps
 
 *.gem
 *.rbc

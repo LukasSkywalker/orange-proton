@@ -1,9 +1,12 @@
+require 'json'
+
 class ChopDrgParser
   attr_accessor :file
   assocs = []
   def initialize (filename)
     self.file = File.open(File.dirname(__FILE__) + "/#{filename}")
   end
+
   def read_assocs
     assoc_hash = {}
     assoc_list = []
@@ -11,13 +14,14 @@ class ChopDrgParser
       splits = line.split(';')
       drg  = splits[0]
       chop = self.parse_chop(splits[1])
-      #if assoc_hash[chop].nil?
-      #  assoc_hash[chop] = []
-      #end
-      #assoc_hash[chop]<<drg
-      assoc_list << {"drg" => drg , "chop" => chop}
+      if assoc_hash[chop].nil?
+        assoc_hash[chop] = []
+      end
+      assoc_hash[chop]<<drg
+      #assoc_list << {"drg" => drg , "chop" => chop}
     end
-    assoc_list
+    #assoc_list
+    assoc_hash
   end
   def parse_chop (raw_chop)
     output= ''
