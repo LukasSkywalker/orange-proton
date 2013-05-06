@@ -142,7 +142,6 @@ class API < Grape::API
 
   # Handles admin queries
     # /api/v2/admin/setWeight=[val1,val2,...]
-    # TODO This is not needed in the final version...
     desc 'Handles admin queries, such as setting the relatedness bias'
     resource :admin do
       namespace :weights do

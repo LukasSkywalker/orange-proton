@@ -18,7 +18,7 @@ de:
   doc_help: "Ärzte in ihrer Umgebung"
   info_title: "Hilfe"
   info_text:  "Klicken sie auf ein Fachgebiet, um Fachärzte in ihrer Umgebung zu finden. <br /> Um ihren Standort zu ändern, klicken sie auf die Adresse oben."
-
+  related: "Verwandte Diagnose"
 
 #errors
   no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"

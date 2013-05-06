@@ -224,7 +224,6 @@ input[type=button] {
 
 #search-bar {
   position: fixed;
-  overflow: hidden; /* allow contained divs to be side by side */
   width: 100%;
   height: 50px;
   background: $light-grey;
@@ -234,7 +233,7 @@ input[type=button] {
   z-index: 11;
 
   #code-name {
-    width: 200px;
+    width: 150px;
     height: 28px;
     margin-top: 10px;
     margin-left: 15px;
@@ -243,7 +242,7 @@ input[type=button] {
   }
 
   #search-button {
-    margin-left: 16px;
+    margin-left: 8px;
     margin-top: 16px;
     padding-top: 3px;
     float: left;
@@ -251,34 +250,24 @@ input[type=button] {
   }
 
   @mixin hide-arrow($width) {
-    border: 1px solid $grey;
-    padding-top: 3px;
-    overflow: hidden;
-    @include border-radius($border-radius);
-    background: url(/assets/arrow.png) no-repeat right white;
     margin-left: 16px;
     margin-top: 10px;
-    height: 29px !important;
+    height: 32px !important;
     width: $width;
-
-    &.svg {
-      background: url(/assets/arrow.svg) no-repeat right white !important;
-      background-size: 30px 15px !important;
-    }
   }
 
-  .lang-arrow {
+  .lang-container {
     float: right;
     margin-right: 16px;
     @include hide-arrow(100px);
   }
 
-  .mode-arrow {
+  .mode-container {
     float: right;
     @include hide-arrow(110px);
   }
 
-  .catalog-arrow {
+  .catalog-container {
     float: left;
     @include hide-arrow(140px);
   }
@@ -295,22 +284,25 @@ input[type=button] {
   }
 
   #lang {
+    float: right;
     @include select(125px);
 
   }
 
   #mode {
+    float: right;
     @include select(135px);
   }
 
   #catalog {
+    float: left;
     @include select(165px);
   }
 
   #location-container {
     height: 32px;
     min-width: 200px;
-    max-width: 400px;
+    max-width: 380px;
     @include border-radius($border-radius);
     border: 1px solid $grey;
     background: white;
@@ -341,6 +333,56 @@ input[type=button] {
       max-width: 430px;
       font-size: 0.8em;
     }
+  }
+
+
+  .selectboxit-btn {
+    background-color: white;
+    border: 1px solid $grey;
+  }
+
+  .selectboxit-btn.selectboxit-enabled:hover,
+  .selectboxit-btn.selectboxit-enabled:focus,
+  .selectboxit-btn.selectboxit-enabled:active {
+    color: black;
+    background-color: $grey;
+  }
+
+  .selectboxit-btn.selectboxit-enabled:hover,
+  .selectboxit-btn.selectboxit-enabled:focus {
+    color: black;
+    text-decoration: none;
+    background-position: 0 -15px;
+  }
+
+  .selectboxit-default-arrow {
+    width: 0;
+    height: 0;
+    border-top: 4px solid #000000;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+  }
+
+  .selectboxit-list {
+    background-color: #ffffff;
+    border: 1px solid white;
+  }
+
+  .selectboxit-list .selectboxit-option-anchor {
+    color: black;
+  }
+
+  .selectboxit-list > .selectboxit-focus > .selectboxit-option-anchor {
+    color: #ffffff;
+    background-color: $dark-blue;
+  }
+
+  .selectboxit-list > .selectboxit-disabled > .selectboxit-option-anchor {
+    color: $dark-grey;
+  }
+
+  .selectboxit-list{
+    border: 1px solid $dark-grey;
   }
 
 }

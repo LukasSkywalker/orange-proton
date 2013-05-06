@@ -3,9 +3,9 @@ require_relative '../assert.rb'
 class ProviderInstance
   attr_accessor :weight
 
-  def initialize (provider_instance, weight)
+  def initialize (provider_class, weight)
     assert_relatedness(weight)
-    @provider_instance = provider_instance
+    @provider_class = provider_class
     @weight = weight
   end
 
@@ -17,8 +17,8 @@ class ProviderInstance
     # skip provider if relatedness was set to zero or we don't respond to this code type
     return [] unless @weight > 0.0
 
-    tf = @provider_instance.get_fields(code, max_count, catalog)
-    Rails.logger.info "#{@provider_instance} found: "
+    tf = @provider_class.get_fields(code, max_count, catalog)
+    Rails.logger.info "#{@provider_class} found: "
     Rails.logger.info tf.empty? ? 'nothing' : tf
     return fields_multiply_relatedness(tf, @weight)
   end
