@@ -201,7 +201,7 @@ class DatabaseAdapter
     docs.nil? ? [] : docs.to_a
   end
 
-  # @return [Array] The compound tabe (an array of Hashes
+  # @return [Array] The compound table (an array of Hashes
   #   "components" => [fs_code], => "result" => fs_code)
   # @note Used for merging two or more codes into one in CompoundInfoProvider. Based on a manually set up table.
   def get_compound_results_components
