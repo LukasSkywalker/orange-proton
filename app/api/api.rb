@@ -19,6 +19,18 @@ class API < Grape::API
   helpers do
     # Some params we always use.
     def lang; params[:lang] end
+
+    def compare_type(catalog, type)
+      catalog = catalog.split('_')[0].to_sym
+
+      if type == :unknown
+        raise ProviderLookupError.new('no_icd_chop_data', lang)
+      elsif catalog == :chop and type != :chop
+        raise ProviderLookupError.new('request_not_chop_type', lang)
+      elsif catalog == :icd and type != :icd
+        raise ProviderLookupError.new('request_not_icd_type', lang)
+      end
+    end
   end
 
   # Always rescue ProviderLookupErrors
@@ -59,6 +71,9 @@ class API < Grape::API
       # the regex should not differ from the regex used to check this,
       # so this method should detect a code type as well
       assert(type != :unknown) 
+
+      # raises an error if type of code request does not match catalog (icd/chop)
+      compare_type(catalog, type)
 
       # Get data
       r = @@localised_data_provider.get_icd_or_chop_data(code,
