@@ -250,10 +250,9 @@ input[type=button] {
   }
 
   @mixin hide-arrow($width) {
-    padding-top: 3px;
     margin-left: 16px;
     margin-top: 10px;
-    height: 29px !important;
+    height: 32px !important;
     width: $width;
   }
 
