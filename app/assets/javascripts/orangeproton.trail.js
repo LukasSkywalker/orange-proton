@@ -60,12 +60,10 @@ Trail.prototype.getList = function() {
 };
 
 function codeLink(code, idx){
-    if (!orangeproton.trail.isNewCode(code)) return;
-
     orangeproton.trail.trimTo(idx);
-    $(document).trigger('paramChange', [code]);
+    //if (orangeproton.trail.isNewCode(code))
+    $(document).trigger('paramChange', [code, null, true]);
 }
-
 
 $.fn.renderTrail = function( trail ) {
     $(this).html(trail.getList());
