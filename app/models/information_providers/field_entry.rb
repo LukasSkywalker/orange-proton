@@ -124,7 +124,7 @@ end
 def fields_multiply_relatedness(api_fields_array, fac)
   assert_fields_array(api_fields_array)
 
-  api_fields_array.each { |fc| fc.multiply_relatedness( fac) }
+  api_fields_array.each { |fc| fc.multiply_relatedness(fac) }
   api_fields_array
 end
 
