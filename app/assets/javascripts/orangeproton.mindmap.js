@@ -151,7 +151,7 @@ orangeproton.mindmap = {
     else {
       synonyms = orangeproton.mindmap.generateBubbles(data.synonyms, options.max_syn, 'syn');
     }
-    var c = $mm.megamind('addCanvas', ['bottomRight'], 'syn');
+    var c = $mm.megamind('addCanvas', ['bottom'], 'syn');
     c.addNodes(synonyms);
 
     var superclasses = [];
@@ -170,7 +170,7 @@ orangeproton.mindmap = {
     //mode setting
     if(mode == 'ad'){
       var drgs = orangeproton.mindmap.generateBubbles(data.drgs, orangeproton.options.display.max_drgs, 'drg');
-      var c = $mm.megamind('addCanvas', ['bottom'], 'drg', {shuffle: false});
+      var c = $mm.megamind('addCanvas', ['right'], 'drg', {shuffle: false});
       c.addNodes(drgs);
 
       var exc = orangeproton.mindmap.preprocessNodes(data.exclusiva);
@@ -179,7 +179,7 @@ orangeproton.mindmap = {
 
       var inc = orangeproton.mindmap.preprocessNodes(data.inclusiva);
       var inclusiva = orangeproton.mindmap.generateBubbles(inc, options.max_inclusiva, 'inclusiva', icdPattern);
-      var c = $mm.megamind('addCanvas', ['right'], 'inclusiva-exclusiva');
+      var c = $mm.megamind('addCanvas', ['bottomRight'], 'inclusiva-exclusiva');
       c.addNodes(exclusiva.concat(inclusiva));
     }
 
