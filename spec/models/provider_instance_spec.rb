@@ -13,7 +13,4 @@ describe ProviderInstance do
     @instance5 = ProviderInstance.new(ChopRangeInfoProvider, 0.75)
   end
 
-  it 'should get results and multiply relatedness' do
-    @instance1.stub(:get_fields)
-  end
 end

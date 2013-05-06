@@ -12,7 +12,7 @@ describe CompoundInfoProvider do
     @provider = CompoundInfoProvider.new
     @db = @provider.db
   end
-
+=begin
   it 'should find provider results' do
     instance1 = ProviderInstance.new(MDCInfoProvider, 0.4)
     instance2 = ProviderInstance.new(IcdRangeInfoProvider, 0.6)
@@ -44,5 +44,5 @@ describe CompoundInfoProvider do
     field = @provider.get_fields('A01.0', 6, 'icd_2010_ch')
     field.should==[FieldEntry.new(0.964, 74), FieldEntry.new(0.84, 85), FieldEntry.new(0.8, 41)]
   end
-
+=end
 end
