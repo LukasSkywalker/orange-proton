@@ -12,15 +12,12 @@ class ChopDrgParserRunscript
     chop_drg_map = parser.read_assocs
     results = []
     i=0
-    progress = '.'
     chop_entries = adapter.get_docs
     size = chop_entries.size
     chop_entries.p_each do |entry|
       #progress output
       STDOUT.print "                                 \r"
-      progress << '.' if i%10 == 0
-      progress = '.' if progress.length >20
-      STDOUT.print "-#{i*100/size}% #{progress} \r"
+      STDOUT.print "-#{i*100/size}%\r"
       old = entry.clone
       old.delete('drgs')
       entry['drgs'] = chop_drg_map[entry['code']].nil? ? [] : chop_drg_map[entry['code']]

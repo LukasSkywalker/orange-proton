@@ -7,14 +7,12 @@ class ChopParserRunscript
     docs = parser.parse_chops
     write_adapter = adapter
     i=0
-    progress = '.'
+
     puts "-updating the collection..."
     docs.p_each(20) do |doc|
       #progress output
       STDOUT.print "                                 \r"
-      progress << '.' if i%10 == 0
-      progress = '.' if progress.length >20
-      STDOUT.print "-#{i*100/docs.size}% #{progress} \r"
+      STDOUT.print "-#{i*100/docs.size}%\r"
       i+=1
 
       old = doc.clone

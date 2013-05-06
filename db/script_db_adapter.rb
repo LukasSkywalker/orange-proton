@@ -51,12 +51,9 @@ class ScriptDBAdapter
   def remove_updated
     size = self.coll.find().count()
     i=0
-    progress = '.'
     self.coll.find().p_each do |doc|
       STDOUT.print "                                 \r"
-      progress << '.' if i%10 == 0
-      progress = '.' if progress.length >20
-      STDOUT.print "-#{i*100/size}% #{progress}\r"
+      STDOUT.print "-#{i*100/size}%\r"
 
       doc.delete('updated')
       self.coll.update(doc,doc)

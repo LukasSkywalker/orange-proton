@@ -9,13 +9,11 @@ class DictionaryParserRunscript
     puts "-updating the collection..."
 
     i=0
-    progress = '.'
+
     docs.p_each do |doc|
       #progress output
       STDOUT.print "                                 \r"
-      progress << '.' if i%10 == 0
-      progress = '.' if progress.length >20
-      STDOUT.print "-#{i*100/docs.size}% #{progress} \r"
+      STDOUT.print "-#{i*100/docs.size}%\r"
       i+=1
 
       old = doc.clone
