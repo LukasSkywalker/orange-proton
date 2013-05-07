@@ -1,6 +1,6 @@
-require_relative 'range_parser'
+require_relative 'compound_parser'
 
-class RangeParserRunscript
+class CompoundParserRunscript
   def self.run (adapter, file)
     puts "parsing ranges at #{file}"
     parser = CompoundParser.new(file)
@@ -12,13 +12,12 @@ class RangeParserRunscript
 
     docs.p_each do |doc|
       #progress output
-      STDOUT.print "                                 \r"
+      STDOUT.print "                    \r"
       STDOUT.print "-#{i*100/docs.size}%\r"
       i+=1
 
       old = doc.clone
-      old.delete('name')
-      old.delete('fmhcodes')
+      old.delete('components')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)
     end
