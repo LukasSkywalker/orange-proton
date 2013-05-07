@@ -11,6 +11,7 @@ require_relative 'docfield_to_fs_parser/docfield_to_fs_parser_runscript'
 require_relative 'thesaur_to_icd_parser/thesaur_to_icd_parser_runscript'
 require_relative 'thesaur_to_fmh_parser/thesaur_to_fmh_parser_runscript'
 require_relative 'mdc_to_fmh_parser/mdc_to_fmh_parser_runscript'
+require_relative 'mdc_names_parser/mdc_names_parser_runscript'
 
 
 
@@ -113,10 +114,13 @@ class Seed
 
     adapter.set_collection('test_thesaur', 'thesaur_to_fmh')
     ThesaurToFmhParserRunscript.run(adapter, "../csv_files/thesaur_to_fmh.csv")
-=end
 
     adapter.set_collection('test_mdc', 'mdc_to_fmh')
     MdcToFmhParserRunscript.run(adapter, "../csv_files/mdc_to_fmh.csv")
+=end
+
+    adapter.set_collection('test_mdc','mdc_names')
+    MdcNamesParserRunscript.run(adapter, "../csv_files/mdc_names.csv")
 
   end
 end
