@@ -4,6 +4,7 @@ require_relative 'dump_parser/chop_parser_runscript'
 require_relative 'dump_parser/icd_parser_runscript'
 require_relative 'chop_drg_parser/chop_drg_parser_runscript'
 require_relative 'doctor_parser/doc_parser_runscript'
+require_relative 'fmh_names_parser/fmh_names_parser_runscript'
 
 
 
@@ -82,9 +83,12 @@ class Seed
     #Insert/Update ICD catalog 2010 fr
     adapter.set_collection("testicd10","fr")
     IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_fr.json")
-=end
+
     adapter.set_collection('testdocs','doctors')
     DocParserRunscript.run(adapter, "../csv_files/doctors.csv")
+=end
+    adapter.set_collection('testfmh','fmh_names')
+    FmhNamesParserRunscript.run(adapter, "../csv_files/fmh_names.csv")
 
   end
 end
