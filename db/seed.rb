@@ -8,6 +8,7 @@ require_relative 'fmh_names_parser/fmh_names_parser_runscript'
 require_relative 'range_parser/range_parser_runscript'
 require_relative 'compound_parser/compound_parser_runscript'
 require_relative 'docfield_to_fs_parser/docfield_to_fs_parser_runscript'
+require_relative 'thesaur_to_icd_parser/thesaur_to_icd_parser_runscript'
 
 
 
@@ -101,10 +102,13 @@ class Seed
 
     adapter.set_collection('test_fmh_compounds', 'compounds')
     CompoundParserRunscript.run(adapter, "../csv_files/fmh_compounds.csv")
-=end
 
     adapter.set_collection('test_docs','docfield_to_fmh')
     DocfieldToFsParserRunscript.run(adapter, "../csv_files/docfield_to_fmh.csv")
+=end
+    adapter.set_collection('test_thesaur','thesaur_to_icd')
+    ThesaurToIcdParserRunscript.run(adapter, "../csv_files/thesaur_to_icd.csv")
+
 
   end
 end
