@@ -5,6 +5,7 @@ require_relative 'dump_parser/icd_parser_runscript'
 require_relative 'chop_drg_parser/chop_drg_parser_runscript'
 require_relative 'doctor_parser/doc_parser_runscript'
 require_relative 'fmh_names_parser/fmh_names_parser_runscript'
+require_relative 'range_parser/range_parser_runscript'
 
 
 
@@ -86,9 +87,17 @@ class Seed
 
     adapter.set_collection('testdocs','doctors')
     DocParserRunscript.run(adapter, "../csv_files/doctors.csv")
-=end
+
     adapter.set_collection('testfmh','fmh_names')
     FmhNamesParserRunscript.run(adapter, "../csv_files/fmh_names.csv")
+
+    adapter.set_collection('test_icd_ranges_to_fmh', 'ranges')
+    RangeParserRunscript.run(adapter, "../csv_files/icd_ranges.csv")
+
+    adapter.set_collection('test_chop_ranges_to_fmh', 'ranges')
+    RangeParserRunscript.run(adapter, "../csv_files/chop_ranges.csv")
+=end
+
 
   end
 end

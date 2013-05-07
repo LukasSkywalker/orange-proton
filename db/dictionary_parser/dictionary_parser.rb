@@ -5,7 +5,7 @@ class DictionaryParser
     self.file = File.open(File.dirname(__FILE__) + "/#{filename}")
   end
 
-  def parse_ranges
+  def parse_dictionary
 
     docs = []
     file.each_line() do |line|
