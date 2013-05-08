@@ -32,9 +32,22 @@ Trail.prototype.trimTo = function(index) {
     $(document).trigger('trailUpdated', [this]);
 };
 
+Trail.prototype.trimToNextOccurenceOf = function(code) {
+    var idx = this.crumbs.lastIndexOf(code);
+    this.trimTo(idx);
+};
+
+Trail.prototype.lastCode = function() {
+    return this.crumbs.last().code;
+};
+
 Trail.prototype.clear = function() {
     this.crumbs.clear();
     $(document).trigger('trailUpdated', [this]);
+};
+
+Trail.prototype.isEmpty = function() {
+    return this.crumbs.isEmpty();
 };
 
 Trail.prototype.getList = function() {

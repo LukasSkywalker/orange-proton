@@ -155,7 +155,6 @@ $(document).ready(function () {
         // Change language if requested
         orangeproton.language.setLocale(lang);
 
-
         if (code != '') {
             // save state in history, including all parameters
             History.pushState(
@@ -168,10 +167,19 @@ $(document).ready(function () {
             // and if they didn't we fire.
             if (!mindmapper.prevCode || force && mindmapper.prevCode === code && mindmapper.prevLang === lang && mindmapper.prevMode === mode && mindmapper.prevCatalog === catalog)
                 History.Adapter.trigger(window, 'statechange');
+
             mindmapper.prevCode = code;
             mindmapper.prevLang = lang;
             mindmapper.prevCatalog = catalog;
             mindmapper.prevMode = mode;
+
+            // Trim crumbs to last occurence of the code in the root node if last
+            // code in crumbs does not match code of root node (back functionality)
+            // This somehow does not work :( Probably has to do with asynchronicity
+
+            /*if (!orangeproton.trail.isEmpty() && (orangeproton.trail.lastCode() !== code)) {
+                orangeproton.trail.trimToNextOccurenceOf(code);
+            }*/
         }
     });
 

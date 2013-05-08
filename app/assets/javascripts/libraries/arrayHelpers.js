@@ -124,7 +124,16 @@ Array.prototype.shuffle = function() {
 
 Array.prototype.isEmpty = function (){
     return this.length === 0;
-}
+};
+
+Array.prototype.lastIndexOf = function(element) {
+    for (var i = this.length - 1; i >= 0; i--) {
+        if (element === this[i])
+            return this[i];
+    }
+
+    return null;
+};
 
 /* return last element of array*/
 if(!Array.prototype.last) {

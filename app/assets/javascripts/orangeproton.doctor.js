@@ -117,20 +117,21 @@ orangeproton.doctor = {
             for (var address in addresses) {
                 var nrs = addresses[address];
 
-                var markerLabel = '';
-                for (var i = 0; i < nrs.length; i++) {
-                    markerLabel += nrs[i] + 1;
-                    if (i != nrs.length - 1) {
-                        markerLabel += ',';
-                    }
-                }
-
-                var caption = '';
                 // Accumulate titles and names into marker caption
+                // Genrate marker label
+                var markerLabel = '';
+                var caption = '';
                 for (var i = 0; i < nrs.length; i++) {
                     var doc = docs[nrs[i]];
-                    caption += doc.title + '\n' + doc.name + '\n\n';
+                    markerLabel += nrs[i] + 1;
+                    caption += '<i>{0}</i><br/><b>{1}</b>'.format(doc.title, doc.name);
+
+                    if (i != nrs.length - 1) {
+                        markerLabel += ',';
+                        caption += ',<br /><br />';
+                    }
                 }
+                caption += '<br />';
 
                 markers.push({
                     caption: caption,
@@ -152,7 +153,7 @@ orangeproton.doctor = {
                     icon: 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=1.0|0|FF6363|13|b|' + marker.label,
                     shadow: shadow,
                     infoWindow: {
-                        content: '<div style="max-width: 200px;">' + marker.caption + '<br />' + address + '</div>'
+                        content: '<div style="max-width: 200px;">{0}<br />{1}</div>'.format(marker.caption, marker.address)
                     }
                 });
             }
