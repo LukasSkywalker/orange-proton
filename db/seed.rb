@@ -12,6 +12,7 @@ require_relative 'thesaur_to_icd_parser/thesaur_to_icd_parser_runscript'
 require_relative 'thesaur_to_fmh_parser/thesaur_to_fmh_parser_runscript'
 require_relative 'mdc_to_fmh_parser/mdc_to_fmh_parser_runscript'
 require_relative 'mdc_names_parser/mdc_names_parser_runscript'
+require_relative 'fmh_fallback_parser/fmh_fallback_parser_runscript'
 
 
 
@@ -33,7 +34,6 @@ class Seed
     adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
 
 
-=begin
     #Insert/Update icd dictionary
     adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
     DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
@@ -117,10 +117,12 @@ class Seed
 
     adapter.set_collection('test_mdc', 'mdc_to_fmh')
     MdcToFmhParserRunscript.run(adapter, "../csv_files/mdc_to_fmh.csv")
-=end
 
     adapter.set_collection('test_mdc','mdc_names')
     MdcNamesParserRunscript.run(adapter, "../csv_files/mdc_names.csv")
+
+    adapter.set_collection('test_fmh_fallbacks', 'fmh_fallbacks')
+    FmhFallbackParserRunscript.run(adapter, '../csv_files/fmh_fallbacks.csv')
 
   end
 end

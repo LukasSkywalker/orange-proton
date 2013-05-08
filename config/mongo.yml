@@ -50,8 +50,7 @@ defaults: &defaults
 development:
   <<: *defaults
   host: localhost
-  username:
-  password:
+
 
 development-remote:
   <<: *defaults
