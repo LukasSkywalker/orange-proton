@@ -1,10 +1,10 @@
-require_relative 'dictionary_parser'
+require_relative 'docfield_to_fs_parser'
 
-class DictionaryParserRunscript
+class DocfieldToFsParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_dictionary
+    puts "parsing relations at #{file}"
+    parser = DocfieldToFsParser.new(file)
+    docs = parser.parse_documents
     write_adapter = adapter
     puts "-updating the collection..."
 
@@ -17,7 +17,7 @@ class DictionaryParserRunscript
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
+      old.delete('name')
       old.delete('fmhcodes')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)

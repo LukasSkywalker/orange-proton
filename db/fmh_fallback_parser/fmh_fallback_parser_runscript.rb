@@ -1,10 +1,10 @@
-require_relative 'dictionary_parser'
+require_relative 'fmh_fallback_parser'
 
-class DictionaryParserRunscript
+class FmhFallbackParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_dictionary
+    puts "parsing fallbacks at #{file}"
+    parser = FmhFallbackParser.new(file)
+    docs = parser.parse_docs
     write_adapter = adapter
     puts "-updating the collection..."
 
@@ -17,8 +17,7 @@ class DictionaryParserRunscript
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
-      old.delete('fmhcodes')
+      old.delete('to_fs')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)
     end

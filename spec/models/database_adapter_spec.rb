@@ -95,7 +95,7 @@ describe DatabaseAdapter do
     paed_code.should==[59]   # = Kinder- und Jugendmedizin
 
     orth_code = @adapter.get_fs_codes_for_thesaur_named('Orthopdie')
-    orth_code.should==[36, 79, 80, 154]   # 36 = Physikalische Medizin und Rehabilitation
+    orth_code.to_set.should==[36, 79, 80, 154].to_set   # 36 = Physikalische Medizin und Rehabilitation
                                           # 79 = Manuelle Medizin
                                           # 80 = Sportmedizin
                                           # 154 = Interventionelle Schmerztherapie

@@ -246,7 +246,7 @@ orangeproton.location = {
         lat = position.coords.latitude;
         lng = position.coords.longitude;
       }, function error(error_msg) {
-        alert(error_msg.message);
+          $.notify.error(error_msg.message, { occupySpace: true, close: true});
         fallbackGeoIp();
       });
       orangeproton.location.setLocation(lat, lng);

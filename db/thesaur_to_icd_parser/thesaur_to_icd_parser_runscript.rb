@@ -1,10 +1,10 @@
-require_relative 'dictionary_parser'
+require_relative 'thesaur_to_icd_parser'
 
-class DictionaryParserRunscript
+class ThesaurToIcdParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_dictionary
+    puts "parsing thesauri at #{file}"
+    parser = ThesaurToIcdParser.new(file)
+    docs = parser.parse_docs
     write_adapter = adapter
     puts "-updating the collection..."
 
@@ -17,8 +17,7 @@ class DictionaryParserRunscript
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
-      old.delete('fmhcodes')
+      old.delete('icds')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)
     end

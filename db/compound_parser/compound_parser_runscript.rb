@@ -1,10 +1,10 @@
-require_relative 'dictionary_parser'
+require_relative 'compound_parser'
 
-class DictionaryParserRunscript
+class CompoundParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_dictionary
+    puts "parsing compounds at #{file}"
+    parser = CompoundParser.new(file)
+    docs = parser.parse_ranges
     write_adapter = adapter
     puts "-updating the collection..."
 
@@ -12,13 +12,12 @@ class DictionaryParserRunscript
 
     docs.p_each do |doc|
       #progress output
-      STDOUT.print "                                 \r"
+      STDOUT.print "                    \r"
       STDOUT.print "-#{i*100/docs.size}%\r"
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
-      old.delete('fmhcodes')
+      old.delete('components')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)
     end

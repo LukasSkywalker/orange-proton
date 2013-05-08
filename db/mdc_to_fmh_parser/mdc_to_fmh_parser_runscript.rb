@@ -1,10 +1,10 @@
-require_relative 'dictionary_parser'
+require_relative 'mdc_to_fmh_parser'
 
-class DictionaryParserRunscript
+class MdcToFmhParserRunscript
   def self.run (adapter, file)
-    puts "parsing dictionary at #{file}"
-    parser = DictionaryParser.new(file)
-    docs = parser.parse_dictionary
+    puts "parsing mdc at #{file}"
+    parser = MdcToFmhParser.new(file)
+    docs = parser.parse_docs
     write_adapter = adapter
     puts "-updating the collection..."
 
@@ -17,8 +17,6 @@ class DictionaryParserRunscript
       i+=1
 
       old = doc.clone
-      old.delete('exklusiva')
-      old.delete('fmhcodes')
       doc['updated'] = true
       write_adapter.update_doc(old, doc)
     end

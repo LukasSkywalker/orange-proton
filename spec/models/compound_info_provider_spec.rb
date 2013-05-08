@@ -11,6 +11,8 @@ describe CompoundInfoProvider do
   before do
     @provider = CompoundInfoProvider.new
     @db = @provider.db
+    @db.stub(:assert_catalog).and_return(true)
+
   end
 
   it 'should find provider results for each provider class' do
@@ -64,6 +66,7 @@ describe CompoundInfoProvider do
                                                                                          FieldEntry.new(0.2, 22),
                                                                                          FieldEntry.new(0.3, 77),
                                                                                          FieldEntry.new(0.4, 77)])
+    @db.stub(:get_compound_results_components).and_return([])
     fields = @provider.get_fields('A01.0', 7, 'icd_2010_ch')
     fields.should==[FieldEntry.new(1.0, 11),
                     FieldEntry.new(0.7, 77),

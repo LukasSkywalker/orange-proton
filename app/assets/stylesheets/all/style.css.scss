@@ -318,22 +318,21 @@ input[type=button] {
       padding-left: 5px;
       padding-right: 5px;
       height: 28px;
+      text-overflow: ellipsis;
     }
 
     p {
       display: inline;
     }
 
-    .globe {
-      font-size: 1.5em;
-      margin-right: 3px;
-    }
 
     .location {
       max-width: 430px;
       font-size: 0.8em;
     }
   }
+
+
 
 
   .selectboxit-btn {
@@ -385,6 +384,11 @@ input[type=button] {
     border: 1px solid $dark-grey;
   }
 
+}
+
+.globe {
+  font-size: 1.5em;
+  margin-right: 5px !important;
 }
 
 /********************************************/
@@ -466,6 +470,9 @@ div.node, div.legend {
 div.node {
   &.syn {
     overflow-y: auto;
+    li{
+      padding-right: 15px;
+    }
   }
 }
 
@@ -760,3 +767,67 @@ div.container {
     }
   }
 }
+
+
+/************************************/
+/***********Scrollpane*************/
+/************************************/
+
+
+.jspContainer
+{
+  overflow: hidden;
+  position: relative;
+
+  .jspPane
+  {
+    position: absolute;
+  }
+  }
+
+  .jspCap
+  {
+    display: none;
+  }
+
+  .jspTrack
+  {
+    background: $light-grey;
+    border-left: 1px solid $grey;
+    position: relative;
+    border-top-right-radius: 7px;
+  }
+
+  .jspDrag
+  {
+    background: #888;
+    border: 1px solid #555;
+    position: relative;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    @include border-radius($border-radius);
+  }
+
+  .jspVerticalBar
+  {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 7px;
+    height: 85%;
+
+    *{
+      margin: 0;
+      padding: 0;
+    }
+
+    .jspArrow{
+      height: 16px;
+    }
+
+    .jspArrow:focus
+    {
+      outline: none;
+    }
+  }

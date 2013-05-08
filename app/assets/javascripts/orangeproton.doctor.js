@@ -36,7 +36,7 @@ orangeproton.doctor = {
         var status = response.status;
         if (status === 'error') {
             var message = response.message;
-            alert(message);
+            $.notify.error(message, { occupySpace: true, close: true});
             return;
         }
 

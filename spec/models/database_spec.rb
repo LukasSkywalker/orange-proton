@@ -96,12 +96,10 @@ describe DatabaseAdapter do
   end
 =end
 
-  it 'should not raise error when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
-    expect{@db.get_mdc_code('9')}.to_not raise_error NoMethodError
+  it 'should not raise error when get_mdc_code is called with undefined prefix, 9 (Issue #127)' do
+    expect{@db.get_mdc_code(9)}.to_not raise_error NoMethodError
   end
 
-  it 'should return nil when get_mdc_code is called with undefined prefix, \'9\' (Issue #127)' do
-    @db.get_mdc_code('9').should be nil
-  end
+
 
 end
