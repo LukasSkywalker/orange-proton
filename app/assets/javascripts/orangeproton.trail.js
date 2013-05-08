@@ -61,7 +61,6 @@ Trail.prototype.getList = function() {
 
 function codeLink(code, idx){
     orangeproton.trail.trimTo(idx);
-    //if (orangeproton.trail.isNewCode(code))
     $(document).trigger('paramChange', [code, null, true]);
 }
 
@@ -76,3 +75,4 @@ $.fn.renderTrail = function( trail ) {
         fade: 'true'
     });
 };
+

@@ -95,6 +95,69 @@ orangeproton.doctor = {
             var bounds = new google.maps.LatLngBounds(userPos);
 
             var docs = response.result;
+
+            // Assign numbers to doctors
+            for (var i = 0; i < docs.length; i++) {
+                docs[i].nr = i;
+            }
+
+            // Accumulate addresses
+            var addresses = {};
+            for (var i = 0; i < docs.length; i++) {
+                doc = docs[i];
+
+                if (addresses[doc.address] == null) {
+                    addresses[doc.address] = [];
+                }
+                addresses[doc.address].push(doc.nr);
+            }
+
+            // Generate markers
+            var markers = [];
+            for (var address in addresses) {
+                var nrs = addresses[address];
+
+                var markerLabel = '';
+                for (var i = 0; i < nrs.length; i++) {
+                    markerLabel += nrs[i] + 1;
+                    if (i != nrs.length - 1) {
+                        markerLabel += ',';
+                    }
+                }
+
+                var caption = '';
+                // Accumulate titles and names into marker caption
+                for (var i = 0; i < nrs.length; i++) {
+                    var doc = docs[nrs[i]];
+                    caption += doc.title + '\n' + doc.name + '\n\n';
+                }
+
+                markers.push({
+                    caption: caption,
+                    address: address,
+                    label: markerLabel,
+                    location: {
+                        lat: docs[nrs[0]].lat,
+                        lng: docs[nrs[0]].long
+                    }
+                })
+            }
+
+            // Add markers to map
+            for (var i = 0; i < markers.length; i++) {
+                var marker = markers[i];
+                map.addMarker({
+                    lat: marker.location.lat,
+                    lng: marker.location.lng,
+                    icon: 'http://chart.apis.google.com/chart?chst=d_map_spin&chld=1.0|0|FF6363|13|b|' + marker.label,
+                    shadow: shadow,
+                    infoWindow: {
+                        content: '<div style="max-width: 200px;">' + marker.caption + '<br />' + address + '</div>'
+                    }
+                });
+            }
+
+            // Add doctor menu entries
             for (var i = 0; i < docs.length; i++) {
                 var doc = docs[i];
                 var title = doc.title;
@@ -102,7 +165,7 @@ orangeproton.doctor = {
                 var lat = doc.lat;
                 var lng = doc.long;
                 var address = doc.address.replace(/,\s*/gi, "<br />");
-                var number = i+1;
+                var number = doc.nr + 1;
                 var element =
                     '<div id="docItem-{0}" class="docItem" type="radio" name="doctors">'
                         + '<label class="docLabel clickable" >'
@@ -111,34 +174,12 @@ orangeproton.doctor = {
                         + '  <p class="doc address">{2}<br />{3}</p>'
                         + '</label>'
                         + '</div>';
-                //Icon api is slow, change to standard for speed
-                map.addMarker({
-                    lat: lat,
-                    lng: lng,
-                    icon: 'http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld='+number+'|FF6363|000000',
-                    shadow: shadow,
-                    infoWindow: {
-                        content: '<div style="max-width: 200px;">' + title + '<br />' + name + '<br />' + address + '</div>'
-                    }
-                });
+
                 var $menuItem = $(element.format(i, title, name, address));
 
                 $menuItem.on('click', {details: doc}, function doctorClick(e) {
                     var map = $('#map').data('map');
                     map.setCenter(e.data.details.lat, e.data.details.long);
-                    //google.maps.event.trigger(map, 'resize');
-
-                    /*map.removeMarker($('#map').data('greenMarker'));
-
-                    $('#map').data('greenMarker', map.addMarker({
-                        lat: e.data.details.lat,
-                        lng: e.data.details.long,
-                        zIndex: google.maps.Marker.MAX_ZINDEX + 1,
-                        icon: "http://maps.google.com/mapfiles/ms/micons/green-dot.png",
-                        infoWindow: {
-                            content: '<div style="max-width: 200px;">' + e.data.details.title + '<br />' + e.data.details.name + '<br />' + e.data.details.address + '</div>'
-                        }
-                    }));*/
                 });
                 $docList.append($menuItem);
                 
