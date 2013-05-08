@@ -6,6 +6,7 @@ describe ChopRangeInfoProvider do
   before do
     @provider = ChopRangeInfoProvider.new
     @db = @provider.db
+    @db.stub(:assert_catalog).and_return(true)
 
     @hash1 = {'beginning'=>'42', 'ending'=>'54', 'fmhcodes'=>[136.0, 85.0]}
     @hash2 = {'beginning'=>'85', 'ending'=>'86', 'fmhcodes'=>[85.0, 7.0]}
