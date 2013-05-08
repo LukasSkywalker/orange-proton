@@ -324,16 +324,14 @@ input[type=button] {
       display: inline;
     }
 
-    .globe {
-      font-size: 1.5em;
-      margin-right: 3px;
-    }
 
     .location {
       max-width: 430px;
       font-size: 0.8em;
     }
   }
+
+
 
 
   .selectboxit-btn {
@@ -385,6 +383,11 @@ input[type=button] {
     border: 1px solid $dark-grey;
   }
 
+}
+
+.globe {
+  font-size: 1.5em;
+  margin-right: 5px !important;
 }
 
 /********************************************/
