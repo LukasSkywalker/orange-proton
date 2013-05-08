@@ -99,8 +99,7 @@
 							padding: 0
 						}
 					);
-					// TODO: Deal with where width/ height is 0 as it probably means the element is hidden and we should
-					// come back to it later and check once it is unhidden...
+
                     paneWidth = elem.innerWidth() + originalPaddingTotalWidth;
 					paneHeight = elem.innerHeight();
 
@@ -114,21 +113,6 @@
 						}
 					).append(pane).appendTo(elem);
 
-
-					/*
-					// Move any margins from the first and last children up to the container so they can still
-					// collapse with neighbouring elements as they would before jScrollPane 
-					firstChild = pane.find(':first-child');
-					lastChild = pane.find(':last-child');
-					elem.css(
-						{
-							'margin-top': firstChild.css('margin-top'),
-							'margin-bottom': lastChild.css('margin-bottom')
-						}
-					);
-					firstChild.css('margin-top', 0);
-					lastChild.css('margin-bottom', 0);
-					*/
 				} else {
 					elem.css('width', '');
 
