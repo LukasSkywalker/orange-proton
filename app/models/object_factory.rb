@@ -5,6 +5,17 @@ require_rel '../models/information_providers'
 module ObjectFactory
 
   class << self
+    # @raise [RuntimeError]
+    def get_database_adapter
+      case Rails.env
+        when 'test'
+          Object.new
+        when 'development-remote', 'development', 'production'
+          DatabaseAdapter.new
+        else
+          raise "No adapter found for environment #{Rails.env}"
+      end
+    end
 
     # @raise [RuntimeError]
     def get_information_provider

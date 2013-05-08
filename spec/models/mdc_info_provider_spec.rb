@@ -6,6 +6,7 @@ describe MDCInfoProvider do
   before do
     @provider = MDCInfoProvider.new
     @db = @provider.db
+    @db.stub(:assert_catalog).and_return(true)
   end
 
   it 'should return an empty array for unknown code' do
