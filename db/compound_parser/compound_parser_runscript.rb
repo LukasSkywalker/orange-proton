@@ -2,7 +2,7 @@ require_relative 'compound_parser'
 
 class CompoundParserRunscript
   def self.run (adapter, file)
-    puts "parsing ranges at #{file}"
+    puts "parsing compounds at #{file}"
     parser = CompoundParser.new(file)
     docs = parser.parse_ranges
     write_adapter = adapter
@@ -30,7 +30,7 @@ class CompoundParserRunscript
         deleted.delete('_id')
         puts deleted
       end
-      puts "Do you want to delete them from the database? (y/N)"
+      puts "Do you want to delete them (#{del_count}) from the database? (y/N)"
       if STDIN.gets.chomp == 'y'
         write_adapter.check_deletions.each do |deleted|
           write_adapter.delete(deleted)

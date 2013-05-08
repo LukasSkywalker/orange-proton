@@ -30,7 +30,7 @@ class FmhFallbackParserRunscript
         deleted.delete('_id')
         puts deleted
       end
-      puts "Do you want to delete them from the database? (y/N)"
+      puts "Do you want to delete them (#{del_count}) from the database? (y/N)"
       if STDIN.gets.chomp == 'y'
         write_adapter.check_deletions.each do |deleted|
           write_adapter.delete(deleted)
