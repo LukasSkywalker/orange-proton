@@ -2,13 +2,13 @@ var orangeproton = orangeproton || {};
 
 $(document).ready(function () {
 
-    if($.browser.name === 'msie' && $.browser.version === '8.0'){
+    if ($.browser.name === 'msie' && $.browser.version === '8.0') {
         var head = document.getElementsByTagName('head')[0],
             style = document.createElement('style');
         style.type = 'text/css';
         style.styleSheet.cssText = ':before,:after{content:none !important';
         head.appendChild(style);
-        setTimeout(function(){
+        setTimeout(function () {
             head.removeChild(style);
         }, 0);
     }
@@ -22,14 +22,16 @@ $(document).ready(function () {
 
     $("select").selectBoxIt();
 
+    resizeSearchBar();
+
     orangeproton.generic.injectConsoleLog();
 
-    $(document).on('trailUpdated', function( e, trail ) {
+    $(document).on('trailUpdated', function (e, trail) {
         $('#bread-crumbs').renderTrail(trail);
     });
 
     orangeproton.trail.clear();
-    if(orangeproton.generic.getUrlVars()["code"])
+    if (orangeproton.generic.getUrlVars()["code"])
         orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
 
     /* TOP-BAR */
@@ -50,7 +52,7 @@ $(document).ready(function () {
 
     // add click handler for location display
     $('#location-container').on('click', null, function () {
-      orangeproton.location.showMap();
+        orangeproton.location.showMap();
     });
 
     I18n.defaultLocale = 'de';
@@ -58,18 +60,18 @@ $(document).ready(function () {
 
     // add event handler for language change on UI element
     $("select#lang").change(function () {
-      $(document).trigger('paramChange');
+        $(document).trigger('paramChange');
     });
 
     // add event handler for catlog change
     $("select#catalog").change(function () {
         var catalog = $(this).val();
         var prevCatalog = mindmapper.prevCatalog;
-        if( mindmapper.prevCatalog ) {
-            if( prevCatalog.indexOf('icd') > -1 && catalog.indexOf('icd') > -1 ) {
+        if (mindmapper.prevCatalog) {
+            if (prevCatalog.indexOf('icd') > -1 && catalog.indexOf('icd') > -1) {
                 $(document).trigger('paramChange');
             }
-            if( prevCatalog.indexOf('chop') > -1 && catalog.indexOf('chop') > -1 ) {
+            if (prevCatalog.indexOf('chop') > -1 && catalog.indexOf('chop') > -1) {
                 $(document).trigger('paramChange');
             }
         } else {
@@ -88,19 +90,19 @@ $(document).ready(function () {
         lat = lat || pos.lat;
         lng = lng || pos.lng;
         orangeproton.location.reverseGeoCode(lat, lng, function (lat, lng, address) {
-            $('.location').html('<p class="icon-globe globe"></p><p id="loc">'+ I18n.t('location') +': </p><p>' + address.ellipses(100) + '</p>');
+            $('.location').html('<p class="icon-globe globe"></p><p id="loc">' + I18n.t('location') + ': </p><p>' + address.ellipses(100) + '</p>');
         });
     });
 
     $(document).trigger('locationChange');
 
-    $searchBar.hoverIntent(function(){
+    $searchBar.hoverIntent(function () {
         clearHighlight();
     }, null);
 
     /* ADMIN-PANELS */
     // load the panel
-    if(window.rails_env === 'development' || window.rails_env === 'development-remote'){
+    if (window.rails_env === 'development' || window.rails_env === 'development-remote') {
         orangeproton.admin.loadPanel();
     }
 
@@ -109,17 +111,19 @@ $(document).ready(function () {
     function resize() {
         orangeproton.mindmap.resizeMindmap();
         $('#mindmap').megamind('redraw');
+        resizeSearchBar();
     }
-    $(window).resize( $.debounce( 250, resize ) );
+
+    $(window).resize($.debounce(250, resize));
 
     // add event handler for param changes (starts a search)
     $(document).on('paramChange', function (e, code, lang, force, mode, catalog) {
         $.notify.close();
 
-        var $code    = $('#code-name');
-        var $lang    = $('#lang');
+        var $code = $('#code-name');
+        var $lang = $('#lang');
         var $catalog = $('#catalog');
-        var $mode    = $('#mode');
+        var $mode = $('#mode');
 
         code = code || $code.val();
         catalog = catalog || $catalog.val();
@@ -133,19 +137,19 @@ $(document).ready(function () {
         $mode.val(mode);
 
         /*$("select#lang").data("selectBox-selectBoxIt").selectOption(lang);
-        $("select#catalog").data("selectBox-selectBoxIt").selectOption(catalog);
-        $("select#mode").data("selectBox-selectBoxIt").selectOption(mode);*/
+         $("select#catalog").data("selectBox-selectBoxIt").selectOption(catalog);
+         $("select#mode").data("selectBox-selectBoxIt").selectOption(mode);*/
 
         var select = $("#lang");
-        select.find("option[value="+ lang +"]").attr('selected','selected');
+        select.find("option[value=" + lang + "]").attr('selected', 'selected');
         select.data("selectBox-selectBoxIt").refresh();
 
         select = $('#catalog');
-        select.find("option[value="+ catalog +"]").attr('selected','selected');
+        select.find("option[value=" + catalog + "]").attr('selected', 'selected');
         select.data("selectBox-selectBoxIt").refresh();
 
         select = $('#mode');
-        select.find("option[value="+ mode +"]").attr('selected','selected');
+        select.find("option[value=" + mode + "]").attr('selected', 'selected');
         select.data("selectBox-selectBoxIt").refresh();
 
         // Change language if requested
@@ -155,10 +159,10 @@ $(document).ready(function () {
         if (code != '') {
             // save state in history, including all parameters
             History.pushState(
-                    {code: code, lang: lang, catalog: catalog, mode: mode},
-                    "OrangeProton",
-                    "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
-                    );
+                {code: code, lang: lang, catalog: catalog, mode: mode},
+                "OrangeProton",
+                "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
+            );
             // when no parameter changed, the statechange event won't be fired after calling pushState(). This is why we allow to 'force' a statechange, for example
             // when the user presses the search button again. To prevent firing manually when pushState() already fired, we check whether parameters changed
             // and if they didn't we fire.
@@ -241,8 +245,8 @@ var mindmapper = {
     getICD: function (input, lang, mode, catalog) {
         var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog);
         var count = orangeproton.options.display.max_fields;
-        if( mindmapper.requestQueue.length > 0 ) {
-            for(var i = 0; i < mindmapper.requestQueue.length; i++) {
+        if (mindmapper.requestQueue.length > 0) {
+            for (var i = 0; i < mindmapper.requestQueue.length; i++) {
                 mindmapper.requestQueue[i].abort();
             }
         }
@@ -254,9 +258,9 @@ var mindmapper = {
             contentType: "charset=UTF-8",
             success: function (response) {
                 var animatedNode = $('.centering');
-                if( animatedNode.length > 0 ) {
+                if (animatedNode.length > 0) {
                     console.log('node is moving, adding complete handler');
-                    animatedNode.on('centerComplete', function() {
+                    animatedNode.on('centerComplete', function () {
                         console.log('node movement complete, drawing');
                         orangeproton.mindmap.draw(response, input, mode);
                     });
@@ -267,7 +271,7 @@ var mindmapper = {
 
             error: mindmapper.handleApiError,
 
-            complete: function(jqXhr) {
+            complete: function (jqXhr) {
                 mindmapper.requestQueue.removeElement(jqXhr);
 
             }
@@ -284,11 +288,12 @@ var mindmapper = {
     handleApiError: function (xhr, httpStatus, error) {
         try {
             var message = jQuery.parseJSON(xhr.responseText).error;
-            $.notify.error(message, { occupySpace : true ,close : true});
+            $.notify.error(message, { occupySpace: true, close: true});
         } catch (e) {
-            if (error && error != '' && error != 'abort') $.notify.error(error, { occupySpace : true ,close : true});;
+            if (error && error != '' && error != 'abort') $.notify.error(error, { occupySpace: true, close: true});
+            ;
         }
-        if( error != 'abort')
+        if (error != 'abort')
             mindmapper.hideSpinner();
     },
 
@@ -305,7 +310,7 @@ var mindmapper = {
      */
     panelHidden: function () {
         var hidden = $('#panels').data('hidden');
-        if( hidden !== undefined ) return hidden;
+        if (hidden !== undefined) return hidden;
         else return true;
     }
 };
@@ -321,7 +326,7 @@ function togglePanels() {
         $('#mindmap').megamind('redraw');
     }
 
-    if(panelHidden) {
+    if (panelHidden) {
         $panelHider.animate({'right': '+=200'}, 400);
         $('#panels-container').show(400, resizeMindmap);
     } else {
@@ -333,8 +338,8 @@ function togglePanels() {
 
 //Highlight the hovered node type (with huge hack...)
 var last;
-function toggleHighlightContainer(className){
-    if(last!==className){
+function toggleHighlightContainer(className) {
+    if (last !== className) {
         clearHighlight();
         var $container = $('.container.' + className);
         $container.clearQueue().toggleClass('active', 400);
@@ -344,7 +349,30 @@ function toggleHighlightContainer(className){
 
 }
 
-function clearHighlight(){
+function clearHighlight() {
     $('.container').removeClass('active', 400);
     last = undefined;
+}
+
+function resizeSearchBar(){
+    var searchBarWidth = $('#search-bar').width();
+    var $loc = $('#location-container');
+    if (searchBarWidth <= 1024) {
+        var $code = $('#code-name');
+        var $btn = $('#search-button');
+        var $cat = $('.catalog-container');
+        var $lang = $('.lang-container');
+        var $mode =  $('.mode-container');
+
+        var margins = parseInt($loc.css('margin-left')) + parseInt($code.css('margin-left'))
+            + parseInt($btn.css('margin-left')) + parseInt($cat.css('margin-left'))
+            + parseInt($lang.css('margin-left')) + parseInt($mode.css('margin-left'))
+            + parseInt($loc.css('margin-right')) + parseInt($code.css('margin-right'))
+            + parseInt($btn.css('margin-right')) + parseInt($cat.css('margin-right'))
+            + parseInt($lang.css('margin-right')) + parseInt($mode.css('margin-right'));
+        var width = searchBarWidth - 20 - (margins + $code.outerWidth() + $btn.outerWidth() + $cat.outerWidth() + $lang.outerWidth() + $mode.outerWidth()        );
+        $loc.width(width);
+    } else {
+        $loc.width(380);
+    }
 }
