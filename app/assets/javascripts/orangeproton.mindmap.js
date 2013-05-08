@@ -48,9 +48,9 @@ orangeproton.mindmap = {
             $element.on('click', {match: result}, function (e) {
               var code = decodeURI(e.data.match[0]);
               code = code.replace('<', '').replace('{', '').replace('}', ''); //bad fix for a bad regex
+              orangeproton.trail.push(className, code);
               $(document).trigger('paramChange', [code, null]);
               $('#mindmap').megamind('setRoot', this, true);
-              orangeproton.trail.push(className, code);
             });
           }
           $element.addClass('clickable');

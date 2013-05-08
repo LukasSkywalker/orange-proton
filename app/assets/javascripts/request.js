@@ -172,14 +172,6 @@ $(document).ready(function () {
             mindmapper.prevLang = lang;
             mindmapper.prevCatalog = catalog;
             mindmapper.prevMode = mode;
-
-            // Trim crumbs to last occurence of the code in the root node if last
-            // code in crumbs does not match code of root node (back functionality)
-            // This somehow does not work :( Probably has to do with asynchronicity
-
-            /*if (!orangeproton.trail.isEmpty() && (orangeproton.trail.lastCode() !== code)) {
-                orangeproton.trail.trimToNextOccurenceOf(code);
-            }*/
         }
     });
 
@@ -212,6 +204,12 @@ $(document).ready(function () {
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
+
+            // If last crumb is not the same as displayed in the root node (back functionality) trim to
+            // first occurence of the code in the crumb stack from behind
+            if (!orangeproton.trail.isEmpty() && (orangeproton.trail.lastCode() !== code)) {
+                orangeproton.trail.trimToNextOccurenceOf(code);
+            }
             mindmapper.getICD(code, lang, mode, catalog);
         }
     });

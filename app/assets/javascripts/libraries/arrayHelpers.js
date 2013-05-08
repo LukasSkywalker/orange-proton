@@ -51,7 +51,7 @@ Array.prototype.pluck = function( property ) {
     console.log(this[i]);
   }
   return arr;
-}
+};
 
 /* get the max value of an array */
 Array.prototype.max = function () {
@@ -129,7 +129,7 @@ Array.prototype.isEmpty = function (){
 Array.prototype.lastIndexOf = function(element) {
     for (var i = this.length - 1; i >= 0; i--) {
         if (element === this[i])
-            return this[i];
+            return i;
     }
 
     return null;
