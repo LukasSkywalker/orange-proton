@@ -408,6 +408,7 @@ var megamind = {
         var n = new Node(element, null);
         if (n.height() > this.height) {
           console.log("### unable to add node, is {0} px high, max is {1}".format(n.height(), this.height));
+          $.notify.alert('Es wurden Informationen versteckt', { occupySpace: true, close: true, autoClose : 3000});   //TODO I18n this s**t
           element.remove();
           break;
         }
@@ -438,6 +439,7 @@ var megamind = {
             this.addRow(n);
           } else {  // no luck. out of space.
             console.log('no more vertical space left');
+            $.notify.alert('Es wurden Informationen versteckt', { occupySpace: true, close: true, autoClose : 3000}); //TODO I18n this s**t
             break;
           }
         }

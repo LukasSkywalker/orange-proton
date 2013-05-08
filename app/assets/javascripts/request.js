@@ -297,7 +297,6 @@ var mindmapper = {
             $.notify.error(message, { occupySpace: true, close: true});
         } catch (e) {
             if (error && error != '' && error != 'abort') $.notify.error(error, { occupySpace: true, close: true});
-            ;
         }
         if (error != 'abort')
             mindmapper.hideSpinner();
