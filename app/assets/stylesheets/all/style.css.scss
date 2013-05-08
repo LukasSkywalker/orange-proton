@@ -470,6 +470,9 @@ div.node, div.legend {
 div.node {
   &.syn {
     overflow-y: auto;
+    li{
+      padding-right: 15px;
+    }
   }
 }
 
@@ -764,3 +767,67 @@ div.container {
     }
   }
 }
+
+
+/************************************/
+/***********Scrollpane*************/
+/************************************/
+
+
+.jspContainer
+{
+  overflow: hidden;
+  position: relative;
+
+  .jspPane
+  {
+    position: absolute;
+  }
+  }
+
+  .jspCap
+  {
+    display: none;
+  }
+
+  .jspTrack
+  {
+    background: $light-grey;
+    border-left: 1px solid $grey;
+    position: relative;
+    border-top-right-radius: 7px;
+  }
+
+  .jspDrag
+  {
+    background: #888;
+    border: 1px solid #555;
+    position: relative;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    @include border-radius($border-radius);
+  }
+
+  .jspVerticalBar
+  {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 7px;
+    height: 85%;
+
+    *{
+      margin: 0;
+      padding: 0;
+    }
+
+    .jspArrow{
+      height: 16px;
+    }
+
+    .jspArrow:focus
+    {
+      outline: none;
+    }
+  }

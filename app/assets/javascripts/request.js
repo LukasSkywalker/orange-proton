@@ -220,6 +220,12 @@ $(document).ready(function () {
 
     // set the locale and load translations
     orangeproton.language.setLocale($lang.val());
+
+    $(document).on('afterDraw', function(){
+        $('.syn.node').jScrollPane({
+            hideFocus: true
+        });
+    });
 });
 /**
  * Handle the main user flow
