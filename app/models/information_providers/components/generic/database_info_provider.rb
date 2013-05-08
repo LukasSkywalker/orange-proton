@@ -4,7 +4,7 @@ class DatabaseInfoProvider
   attr_reader :db
 
   def initialize
-    @db = DatabaseAdapter.new
+    @db = ObjectFactory.get_database_adapter
   end
 
   # @param code [String] The icd or chop code to search the fields for.

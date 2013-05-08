@@ -6,6 +6,7 @@ describe IcdRangeInfoProvider do
   before do
     @provider = IcdRangeInfoProvider.new
     @db = @provider.db
+    @db.stub(:assert_catalog).and_return(true)
 
     @hash1 = {'level'=>1, 'beginning'=>'A00', 'ending'=>'B99', 'fmhcodes'=>[74]}
     @hash2 = {'level'=>2, 'beginning'=>'B20', 'ending'=>'B24', 'fmhcodes'=>[7]}

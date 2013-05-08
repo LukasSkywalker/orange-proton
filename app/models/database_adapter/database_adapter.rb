@@ -1,4 +1,4 @@
-# This class connects to the real database and retrieves requested basic information. 
+# This class connects to the real database and retrieves requested basic information.
 # We do not compute compound information here -- the information providers use
 # the data they get from here to do this.
 #
@@ -62,7 +62,7 @@ class DatabaseAdapter
   end
 
   # @return [Array] the fallback table - an array of ("from_fs": FSCode, "to_fs": FSCode) hashes.
-  def get_fmh_fallbacks_table()
+  def get_fmh_fallbacks_table
     @fmh_fallbacks.find().to_a
   end
 
