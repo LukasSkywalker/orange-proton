@@ -140,17 +140,17 @@ $(document).ready(function () {
          $("select#catalog").data("selectBox-selectBoxIt").selectOption(catalog);
          $("select#mode").data("selectBox-selectBoxIt").selectOption(mode);*/
 
-        var select = $("#lang");
-        select.find("option[value=" + lang + "]").attr('selected', 'selected');
-        select.data("selectBox-selectBoxIt").refresh();
+        var $langSelect = $("#lang");
+        $langSelect.find("option[value=" + lang + "]").attr('selected', 'selected');
+        $langSelect.data("selectBox-selectBoxIt").refresh();
 
-        select = $('#catalog');
-        select.find("option[value=" + catalog + "]").attr('selected', 'selected');
-        select.data("selectBox-selectBoxIt").refresh();
+        var $catalogSelect = $('#catalog');
+        $catalogSelect.find("option[value=" + catalog + "]").attr('selected', 'selected');
+        $catalogSelect.data("selectBox-selectBoxIt").refresh();
 
-        select = $('#mode');
-        select.find("option[value=" + mode + "]").attr('selected', 'selected');
-        select.data("selectBox-selectBoxIt").refresh();
+        var $modeSelect = $('#mode');
+        $modeSelect.find("option[value=" + mode + "]").attr('selected', 'selected');
+        $modeSelect.data("selectBox-selectBoxIt").refresh();
 
         // Change language if requested
         orangeproton.language.setLocale(lang);
