@@ -4,5 +4,6 @@ OrangeProton::Application.routes.draw do
 
   root :to => 'home#index'
   mount API => '/'
+  match '*path' => redirect('/')
 
 end

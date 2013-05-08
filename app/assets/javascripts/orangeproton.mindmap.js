@@ -134,6 +134,8 @@ orangeproton.mindmap = {
     var rootNode = $('<div class="root"><p>{0}</br>{1}</p></div>'.format(input, name)).hoverIntent(function(){
       clearHighlight();
     }, null);
+    
+    document.title = '{0}: {1}'.format(input, name);
 
     //Add handler to clear Highlight
 
