@@ -101,7 +101,7 @@ $(document).ready(function () {
     }, null);
 
     /* ADMIN-PANELS */
-    // load the panel
+    // load the panel in development mode
     if (window.rails_env === 'development' || window.rails_env === 'development-remote') {
         orangeproton.admin.loadPanel();
     }
@@ -224,6 +224,14 @@ $(document).ready(function () {
     $(document).on('afterDraw', function(){
         $('.syn.node').jScrollPane({
             hideFocus: true
+        });
+
+        $('.field.node [title]').tipsy({
+            trigger: 'hover',
+            gravity: 'n',
+            delayIn: '300',
+            delayOut: '100',
+            fade: 'true'
         });
     });
 });
