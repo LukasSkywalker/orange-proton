@@ -7,6 +7,8 @@ describe ThesaurInfoProvider do
     @provider = ThesaurInfoProvider.new
     @db = @provider.db
 
+    @db.stub(:assert_catalog).and_return(true)
+
     @db.stub(:get_available_thesaur_names).and_return ['chirurgie', 'gynäkologie']
     @db.stub(:get_fs_codes_for_thesaur_named).with('chirurgie').and_return [2,3]
     @db.stub(:get_fs_codes_for_thesaur_named).with('gynäkologie').and_return [4,5]
