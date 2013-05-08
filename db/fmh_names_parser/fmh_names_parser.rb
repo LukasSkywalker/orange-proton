@@ -12,7 +12,7 @@ class FmhNamesParser
     self.file.each_line do |line|
       doc = {}
       parts = line.split(';')
-      if parts.size == 5
+      if parts.size == 6
         doc['code'] = parts[0].strip.to_i
         doc['de'] = parts[1].strip
         doc['en'] = parts[2].strip

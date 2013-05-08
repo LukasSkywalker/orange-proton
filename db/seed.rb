@@ -43,85 +43,96 @@ class Seed
     DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
 
     #Insert/Update CHOP catalog 2012 de
-    adapter.set_collection("testchop12","de")
+    adapter.set_collection(db_config['collections']['catalogs']['chop_2012_ch']['de'][0],db_config['collections']['catalogs']['chop_2012_ch']['de'][1])
     ChopParserRunscript.run(adapter, "../dumps/chop_2012_ch_de.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2012 fr
-    adapter.set_collection("testchop12","fr")
+    adapter.set_collection(db_config['collections']['catalogs']['chop_2012_ch']['fr'][0],db_config['collections']['catalogs']['chop_2012_ch']['fr'][1])
     ChopParserRunscript.run(adapter, "../dumps/chop_2012_ch_fr.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 de
-    adapter.set_collection("testchop13","de")
+    adapter.set_collection(db_config['collections']['catalogs']['chop_2013_ch']['de'][0],db_config['collections']['catalogs']['chop_2013_ch']['de'][1])
     ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_de.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 fr
-    adapter.set_collection("testchop13","fr")
+    adapter.set_collection(db_config['collections']['catalogs']['chop_2013_ch']['fr'][0],db_config['collections']['catalogs']['chop_2013_ch']['fr'][1])
     ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_fr.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update CHOP catalog 2013 it
-    adapter.set_collection("testchop13","it")
+    adapter.set_collection(db_config['collections']['catalogs']['chop_2013_ch']['it'][0],db_config['collections']['catalogs']['chop_2013_ch']['it'][1])
     ChopParserRunscript.run(adapter, "../dumps/chop_2013_ch_it.json")
     ChopDrgParserRunscript.run(adapter, "../csv_files/chop_to_drg_12_13.csv")
 
     #Insert/Update ICD catalog 2012 de
-    adapter.set_collection("testicd12","de")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2012_ch']['de'][0],db_config['collections']['catalogs']['icd_2012_ch']['de'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_de.json")
 
     #Insert/Update ICD catalog 2012 fr
-    adapter.set_collection("testicd12","fr")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2012_ch']['fr'][0],db_config['collections']['catalogs']['icd_2012_ch']['fr'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_fr.json")
 
     #Insert/Update ICD catalog 2012 it
-    adapter.set_collection("testicd12","it")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2012_ch']['it'][0],db_config['collections']['catalogs']['icd_2012_ch']['it'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2012_ch_it.json")
 
     #Insert/Update ICD catalog 2012 en
-    adapter.set_collection("testicd12","en")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2012_ch']['en'][0],db_config['collections']['catalogs']['icd_2012_ch']['en'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2012_us_en.json")
 
     #Insert/Update ICD catalog 2010 de
-    adapter.set_collection("testicd10","de")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2010_ch']['de'][0],db_config['collections']['catalogs']['icd_2010_ch']['de'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_de.json")
 
     #Insert/Update ICD catalog 2010 fr
-    adapter.set_collection("testicd10","fr")
+    adapter.set_collection(db_config['collections']['catalogs']['icd_2010_ch']['fr'][0],db_config['collections']['catalogs']['icd_2010_ch']['fr'][1])
     IcdParserRunscript.run(adapter, "../dumps/icd_2010_ch_fr.json")
 
-    adapter.set_collection('test_docs','doctors')
+    #Insert/Update doctors
+    adapter.set_collection(db_config['collections']['doctors'][0],db_config['collections']['doctors'][1])
     DocParserRunscript.run(adapter, "../csv_files/doctors.csv")
 
-    adapter.set_collection('test_fmh','fmh_names')
-    FmhNamesParserRunscript.run(adapter, "../csv_files/fmh_names.csv")
-
-    adapter.set_collection('test_icd_ranges_to_fmh', 'ranges')
-    RangeParserRunscript.run(adapter, "../csv_files/icd_ranges.csv")
-
-    adapter.set_collection('test_chop_ranges_to_fmh', 'ranges')
-    RangeParserRunscript.run(adapter, "../csv_files/chop_ranges.csv")
-
-    adapter.set_collection('test_fmh_compounds', 'compounds')
-    CompoundParserRunscript.run(adapter, "../csv_files/fmh_compounds.csv")
-
-    adapter.set_collection('test_docs','docfield_to_fmh')
+    #Insert/Update doctors to fmh
+    adapter.set_collection(db_config['collections']['docfield_to_FMH_code'][0],db_config['collections']['docfield_to_FMH_code'][1])
     DocfieldToFsParserRunscript.run(adapter, "../csv_files/docfield_to_fmh.csv")
 
-    adapter.set_collection('test_thesaur','thesaur_to_icd')
+    #Insert/Update FMH codes
+    adapter.set_collection(db_config['collections']['fmh_codes'][0],db_config['collections']['fmh_codes'][1])
+    FmhNamesParserRunscript.run(adapter, "../csv_files/fmh_names.csv")
+
+    #Insert/Update ICD ranges
+    adapter.set_collection(db_config['collections']['icd_ranges'][0],db_config['collections']['icd_ranges'][1])
+    RangeParserRunscript.run(adapter, "../csv_files/icd_ranges.csv")
+
+    #Insert/Update CHOP ranges
+    adapter.set_collection(db_config['collections']['chop_ranges'][0],db_config['collections']['chop_ranges'][1])
+    RangeParserRunscript.run(adapter, "../csv_files/chop_ranges.csv")
+
+    #Insert/Update FMH compounds
+    adapter.set_collection(db_config['collections']['compounds'][0],db_config['collections']['compounds'][1])
+    CompoundParserRunscript.run(adapter, "../csv_files/fmh_compounds.csv")
+
+    #Insert/Update thesaur to ICD
+    adapter.set_collection(db_config['collections']['thesaur_to_icd'][0],db_config['collections']['thesaur_to_icd'][1])
     ThesaurToIcdParserRunscript.run(adapter, "../csv_files/thesaur_to_icd.csv")
 
-    adapter.set_collection('test_thesaur', 'thesaur_to_fmh')
+    #Insert/Update thesaur to FMH
+    adapter.set_collection(db_config['collections']['thesaur_to_fs'][0],db_config['collections']['thesaur_to_fs'][1])
     ThesaurToFmhParserRunscript.run(adapter, "../csv_files/thesaur_to_fmh.csv")
 
-    adapter.set_collection('test_mdc', 'mdc_to_fmh')
+    #Insert/Update mdc to FMH
+    adapter.set_collection(db_config['collections']['mdc_to_fmh'][0],db_config['collections']['mdc_to_fmh'][1])
     MdcToFmhParserRunscript.run(adapter, "../csv_files/mdc_to_fmh.csv")
 
-    adapter.set_collection('test_mdc','mdc_names')
+    #Insert/Update mdc codes
+    adapter.set_collection(db_config['collections']['mdcs'][0],db_config['collections']['mdcs'][1])
     MdcNamesParserRunscript.run(adapter, "../csv_files/mdc_names.csv")
 
-    adapter.set_collection('test_fmh_fallbacks', 'fmh_fallbacks')
+    #Insert/Update fmh fallbacks
+    adapter.set_collection(db_config['collections']['fmh_fallbacks'][0],db_config['collections']['fmh_fallbacks'][1])
     FmhFallbackParserRunscript.run(adapter, '../csv_files/fmh_fallbacks.csv')
 
   end

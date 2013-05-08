@@ -3,7 +3,7 @@ require_relative 'range_parser'
 class RangeParserRunscript
   def self.run (adapter, file)
     puts "parsing ranges at #{file}"
-    parser = CompoundParser.new(file)
+    parser = RangeParser.new(file)
     docs = parser.parse_ranges
     write_adapter = adapter
     puts "-updating the collection..."
