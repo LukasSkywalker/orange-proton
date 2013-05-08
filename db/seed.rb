@@ -33,7 +33,6 @@ class Seed
     pw = STDIN.gets.chomp()
     adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
 
-
     #Insert/Update icd dictionary
     adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
     DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
