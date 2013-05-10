@@ -37,16 +37,18 @@ $(document).ready(function () {
     /* TOP-BAR */
     // start search on enter key press
     $searchBar.enterHandler(function () {
-        $(document).trigger('paramChange', [null, null, true]);
         orangeproton.trail.clear();
-        orangeproton.trail.push('root', $codeInput.val())
+        orangeproton.trail.push('root', $codeInput.val().toUpperCase());
+        $(document).trigger('paramChange', [null, null, true]);
     });
+
     // start search on button click
     $searchButton.on('click', null, function () {
-        $(document).trigger('paramChange', [null, null, true]);
         orangeproton.trail.clear();
-        orangeproton.trail.push('root', $codeInput.val())
+        orangeproton.trail.push('root', $codeInput.val().toUpperCase());
+        $(document).trigger('paramChange', [null, null, true]);
     });
+
     // focus search field
     $codeInput.focus();
 
@@ -105,7 +107,6 @@ $(document).ready(function () {
     if (window.rails_env === 'development' || window.rails_env === 'development-remote') {
         orangeproton.admin.loadPanel();
     }
-
 
     //re-do layout when window size changes. Wait 150ms before firing.
     function resize() {
