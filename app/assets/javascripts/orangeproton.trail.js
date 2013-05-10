@@ -55,6 +55,11 @@ Trail.prototype.trimTo = function(index) {
     $(document).trigger('trailUpdated', [this]);
 };
 
+Trail.prototype.setTrail = function(trail) {
+    this.crumbs = trail;
+    $(document).trigger('trailUpdated', [this]);
+};
+
 /**
  * Trims the crumb to the last occurence of a certain code (first from back)
  * @param code The code to trim to

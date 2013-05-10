@@ -158,7 +158,7 @@ $(document).ready(function () {
         if (code != '') {
             // save state in history, including all parameters
             History.pushState(
-                {code: code, lang: lang, catalog: catalog, mode: mode},
+                {code: code, lang: lang, catalog: catalog, mode: mode, trail: orangeproton.trail.crumbs},
                 "OrangeProton",
                 "?code=" + code + "&lang=" + lang + "&mode=" + mode + "&catalog=" + catalog
             );
@@ -194,6 +194,7 @@ $(document).ready(function () {
         var lang = State.data.lang;
         var catalog = State.data.catalog;
         var mode = State.data.mode;
+        var trail = State.data.trail;
 
         // update the UI elements and start search when back-button is used or statechange is fired manually
         if (code !== undefined && code !== '') {
@@ -204,12 +205,13 @@ $(document).ready(function () {
             var $mm = $('#mindmap');
             $mm.megamind('cleanUp');
             $mm.spin(orangeproton.options.libraries.spinner);
+            orangeproton.trail.setTrail(trail);
 
             // If last crumb is not the same as displayed in the root node (back functionality) trim to
             // first occurence of the code in the crumb stack from behind
-            if (!orangeproton.trail.isEmpty() && (orangeproton.trail.lastCode() !== code)) {
+            /*if (!orangeproton.trail.isEmpty() && (orangeproton.trail.lastCode() !== code)) {
                 orangeproton.trail.trimToNextOccurenceOf(code);
-            }
+            }*/
             mindmapper.getICD(code, lang, mode, catalog);
         }
     });

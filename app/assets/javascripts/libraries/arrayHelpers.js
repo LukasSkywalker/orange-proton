@@ -48,7 +48,6 @@ Array.prototype.pluck = function( property ) {
   var arr = [];
   for (var i = 0; i < this.length; i++) {
     arr.push(this[i][property]);
-    console.log(this[i]);
   }
   return arr;
 };
