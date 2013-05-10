@@ -54,7 +54,7 @@ orangeproton.doctor = {
             $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
-            //var fieldFallbacks = response.result.fallbacks;
+            //var fieldFallbacks = response.result.fallbacks.reverse(true);
             // A few sample fallbacks
             var fieldFallbacks = [
                 {
@@ -69,7 +69,7 @@ orangeproton.doctor = {
                     "code": 5,
                     "name": "Allgemeinmedizin"
                 }
-            ];
+            ].reverse(true);
 
             var fbList = '<span>Zeige Ärzte weniger spezialisierter Fachgebiete:</span><ul>';
             var loc = orangeproton.location.getLocation();
