@@ -205,6 +205,7 @@ orangeproton.mindmap = {
         $(this).spin(orangeproton.options.libraries.docSpinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
+        var lang = orangeproton.generic.getUrlVars()['lang'];
         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
       });
       s.push(newdiv);

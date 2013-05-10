@@ -648,7 +648,30 @@ div.container {
   }
 
   #docHeader {
-    height: 10%;
+    height: 40px;
+  }
+
+  #fallbacks {
+    padding: 10px;
+    margin: 0;
+
+    ul {
+      padding: 0;
+      margin: 0;
+      display: inline;
+    }
+
+    li {
+      display: inline;
+      list-style-type: circle;
+      padding-left: 10px;
+      padding-right: 10px;
+
+      &:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    }
   }
 
   #docTitle {

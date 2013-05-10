@@ -20,18 +20,19 @@ orangeproton.doctor = {
             type: 'GET',
             dataType: 'json',
             contentType: "charset=UTF-8",
-            success: orangeproton.doctor.getDoctorsSuccessHandler,
-
+            success: function(response) {
+                orangeproton.doctor.getDoctorsSuccessHandler(response, lang)
+            },
             error: mindmapper.handleApiError,
-
             complete: mindmapper.hideSpinner
         });
     },
     /**
      * Callback for a successful doctor search. Displays the doctor overlay.
-     * @param {Object} response the response object
+     * @param {Object} response response the response object
+     * @param {String} language The language of the response
      */
-    getDoctorsSuccessHandler: function (response) {
+    getDoctorsSuccessHandler: function (response, language) {
         $('.docOverlay').remove();  //delete previously loaded stuff
         var status = response.status;
         if (status === 'error') {
@@ -42,6 +43,7 @@ orangeproton.doctor = {
 
         function drawContent() {
             var $overlay = $('.docOverlay');
+            var $fallbacks = $('<div id="fallbacks"></div>');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
             //TODO translate
@@ -49,8 +51,40 @@ orangeproton.doctor = {
                         '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Karte zentrieren"></div>' +
                         '</div> ');
 
-            $overlay.append($docList).append($map).append('<div style="clear:both;"></div>');
+            $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
+
+            //var fieldFallbacks = response.result.fallbacks;
+            // A few sample fallbacks
+            var fieldFallbacks = [
+                {
+                    "code": 13,
+                    "name": "Innere Medizin"
+                },
+                {
+                    "code": 162,
+                    "name": "Allgemeine Innere Medizin"
+                },
+                {
+                    "code": 5,
+                    "name": "Allgemeinmedizin"
+                }
+            ];
+
+            var fbList = '<span>Zeige Ärzte weniger spezialisierter Fachgebiete:</span><ul>';
+            var loc = orangeproton.location.getLocation();
+
+            for (var i = 0; i < fieldFallbacks.length; i++) {
+                var fb = fieldFallbacks[i].name;
+                var code = fieldFallbacks[i].code;
+                fbList += '<li onclick="orangeproton.doctor.getDoctors({0}, \'{1}\', {2}, {3});">{4}</li>'.format(code, language, loc.lat, loc.lng, fb);
+
+                if (i != fieldFallbacks.length - 1) {
+                    fbList += '<i class="icon-caret-right"></i>'
+                }
+            }
+            fbList += '</ul>';
+            $('#fallbacks').html(fbList);
 
             $('#docHeader [title]').tipsy({
                 trigger: 'hover',
