@@ -226,7 +226,7 @@ var megamind = {
            var part = className.split("-");
             return '<span class="incl">' + I18n.t(part[0]) + '</span>' + " & " + '<span class="excl">' + I18n.t(part[1]) + '</span>'
         } else if(className==="field"){
-            return I18n.t(className) + ' & ' + 'Ärzte'; //TODO I18n this
+            return I18n.t(className) + ' & ' + I18n.t('doctors');
         } else {
            return I18n.t(className);
         }
@@ -408,7 +408,7 @@ var megamind = {
         var n = new Node(element, null);
         if (n.height() > this.height) {
           console.log("### unable to add node, is {0} px high, max is {1}".format(n.height(), this.height));
-            $.notify.alert('Es wurden Informationen versteckt', {close: true, autoClose : 3000});   //TODO I18n this s**t
+            $.notify.alert(I18n.t('info_hidden'), {close: true, autoClose : 3000});
           element.remove();
           break;
         }
@@ -439,7 +439,7 @@ var megamind = {
             this.addRow(n);
           } else {  // no luck. out of space.
             console.log('no more vertical space left');
-            $.notify.alert('Es wurden Informationen versteckt', {close: true, autoClose : 3000}); //TODO I18n this s**t
+            $.notify.alert(I18n.t('info_hidden'), {close: true, autoClose : 3000});
             break;
           }
         }

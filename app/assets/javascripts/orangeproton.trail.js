@@ -109,8 +109,7 @@ Trail.prototype.getList = function() {
     for (var i = start; i < end; i++) {
         var context = this.crumbs[i].context;
         var code = this.crumbs[i].code;
-        //TODO localize this
-        var contextString = (i === start) ? 'Root' : I18n.t(context) + ' von ' + this.crumbs[i-1].code;
+        var contextString = (i === start) ? I18n.t('breadcrumb_root') : I18n.t(context) + ' '+I18n.t('breadcrumb_of') + ' ' + this.crumbs[i-1].code;
 
         out += '<li ' + ((i == end - 1) ? 'class="last"' : '') +
             'onclick="codeLink(\'{0}\', {1});" title="{2}"><span>{0}</span>'.format(code, i, contextString);

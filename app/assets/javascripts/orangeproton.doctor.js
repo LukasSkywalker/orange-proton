@@ -53,18 +53,16 @@ orangeproton.doctor = {
             var $fallbacks = $('<div id="fallbacks"></div>');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
-            //TODO translate
             var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
-                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="Karte zentrieren"></div>' +
+                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('center_map')+ '"></div>' +
                         '</div> ');
 
             $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
-            console.log(self.fallbacks);
             var fieldFallbacks = self.fallbacks;
 
-            var fbList = '<span>Zeige Ärzte weniger spezialisierter Fachgebiete:</span><ul>';
+            var fbList = '<span>'+I18n.t('show_fallback')+':</span><br/><ul>';
             var loc = orangeproton.location.getLocation();
 
             for (var i = 0; i < fieldFallbacks.length; i++) {

@@ -198,7 +198,7 @@ orangeproton.mindmap = {
       var r = field.relatedness;
       var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
           '<div class="relatedness-container">' +
-          '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
+          '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" '+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"></div>' +
           '</div></div>' +
           '<p class="icon-user-md"></p>' +
           '</div>');
@@ -232,7 +232,7 @@ orangeproton.mindmap = {
     });
 
     if(response.result.is_fallback){
-      $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this
+      $.notify.alert(I18n.t('fallback_language'), { occupySpace : true ,close : true, autoClose : 3000});
     }
   }
 };

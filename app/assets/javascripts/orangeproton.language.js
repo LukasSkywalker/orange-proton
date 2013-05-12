@@ -34,13 +34,12 @@ orangeproton.language = {
         $('#loc').html(I18n.t('location') + ': ');
 
         //Tooltips
-        // TODO Translate this stuff
-        $('#code-name').attr('title', 'Geben Sie hier einen ICD- oder CHOP- Code ein');
-        $('#catalogSelectBoxItContainer').attr('title', 'Wählen Sie einen Katalog');
-        $('#modeSelectBoxItContainer').attr('title', 'Wählen Sie den Modus');
-        $('#langSelectBoxItContainer').attr('title', 'Wählen Sie die Sprache');
-        $('#hide-panels').attr('title', 'Zeigt Hilfe und Legende an');
-        $('#location-container').attr('title', 'Klicken Sie hier um Ihren Standort zu ändern');
+        $('#code-name').attr('title', I18n.t('enter_icd_or_chop'));
+        $('#catalogSelectBoxItContainer').attr('title', I18n.t('choose_catalog'));
+        $('#modeSelectBoxItContainer').attr('title', I18n.t('choose_mode'));
+        $('#langSelectBoxItContainer').attr('title', I18n.t('choose_language'));
+        $('#hide-panels').attr('title', I18n.t('shows_help'));
+        $('#location-container').attr('title', I18n.t('change_loc'));
 
         $('#search-bar [title]').tipsy({
             trigger: 'hover',
