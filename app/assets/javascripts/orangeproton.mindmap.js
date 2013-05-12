@@ -197,16 +197,18 @@ orangeproton.mindmap = {
       var r = fields[i].relatedness;
       var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
           '<div class="relatedness-container">' +
-          '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
+          '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" '+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"></div>' +
           '</div></div>' +
           '<p class="icon-user-md"></p>' +
           '</div>');
-      newdiv.on('click', { field: f }, function (e) {
+
+      newdiv.on('click', { field: f, fallbacks: fields[i].fallbacks }, function (e) {
         $(this).spin(orangeproton.options.libraries.docSpinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         var lang = orangeproton.generic.getUrlVars()['lang'];
         orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
+        orangeproton.doctor.setFallbacks(e.data.fallbacks);
       });
       s.push(newdiv);
 
@@ -229,7 +231,7 @@ orangeproton.mindmap = {
     });
 
     if(response.result.is_fallback){
-      $.notify.alert("Fallback language", { occupySpace : true ,close : true, autoClose : 3000}); //TODO I18n this
+      $.notify.alert(I18n.t('fallback_language'), { occupySpace : true ,close : true, autoClose : 3000});
     }
   }
 };

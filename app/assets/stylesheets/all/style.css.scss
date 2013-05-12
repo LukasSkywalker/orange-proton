@@ -325,7 +325,6 @@ input[type=button] {
       display: inline;
     }
 
-
     .location {
       max-width: 430px;
       font-size: 0.8em;
@@ -621,6 +620,10 @@ div.container {
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  #loc {
+    margin-left: 5px
+  }
 
   .location p {
     position: relative;

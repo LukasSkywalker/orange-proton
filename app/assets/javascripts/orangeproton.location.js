@@ -146,11 +146,11 @@ orangeproton.location = {
    */
   showMap: function() {
     var $popup = $('<div id="location-popup"></div>');
-    var $search = $('<input type="text" id="location-input" title="Geben Sie hier Ihren Standort ein."/>'); //TODO I18n
-    var $searchButton = $('<input type="button" title="Klicken Sie hier um Ihren Standort zu suchen." value="'+ I18n.t('search') +'"/>');
-    var $resetButton = $('<input type="button" title="Klicken Sie hier um Ihren alten Standort zu lassen." class="right" value="'+ I18n.t('cancel') +'"/>');
-    var $setButton = $('<input type="button" title="Klicken Sie hier um den Standort zu übernehmen." class="right" value="'+ I18n.t('save') +'"/>');
-    var $autoButton = $('<input type="button" title="Klicken Sie hier um Ihren Standort automatisch ermitteln zu lassen." value="'+ I18n.t('auto') +'"/>');
+    var $search = $('<input type="text" id="location-input" title="'+I18n.t('location_enter')+'"/>');
+    var $searchButton = $('<input type="button" title="'+I18n.t('location_search')+'" value="'+ I18n.t('search') +'"/>');
+    var $resetButton = $('<input type="button" title="'+I18n.t('location_abort')+'" class="right" value="'+ I18n.t('cancel') +'"/>');
+    var $setButton = $('<input type="button" title="'+I18n.t('location_confirm')+'" class="right" value="'+ I18n.t('save') +'"/>');
+    var $autoButton = $('<input type="button" title="'+I18n.t('location_auto')+'" value="'+ I18n.t('auto') +'"/>');
     var $currentLocation = $('<p></p>').addClass('location');
 
     $search.enterHandler(function() {

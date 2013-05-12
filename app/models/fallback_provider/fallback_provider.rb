@@ -13,11 +13,12 @@ class FallbackProvider
 
       code = field.code
       docfields = db.get_specialities_from_fs(code)
-      Rails.logger.info '====== fir cide'
+      Rails.logger.info "====== finding fallbacks for code #{code}"
+      field.add_fallback(code) #always add what we already have (simplifies displaying)
 
-      while true do
-        Rails.logger.info code
-        Rails.logger.info 'has docfields '+docfields.to_s
+      while true do # we keep looking for fallbacks and abort if we don't find any
+        Rails.logger.info "...at code #{code}"
+        Rails.logger.info 'currently covered docfields: '+docfields.to_s
 
         found = false
         table.each{ |entry|
@@ -28,13 +29,21 @@ class FallbackProvider
           end
         }
         break unless found
+        Rails.logger.info "found fallback #{code}"
         tmpdocfields = db.get_specialities_from_fs(code)
-        next if tmpdocfields.to_set == docfields.to_set
+        Rails.logger.info 'with docfields '+tmpdocfields.to_s
+
+        next if is_subset?(tmpdocfields, docfields)
+        docfields.concat tmpdocfields
+        docfields = docfields.to_set.to_a
         field.add_fallback(code)
         Rails.logger.info '... and was added as fallback'
       end
 
       field.add_fallback(5) unless docfields.include? 'allgemeinaerzte' # 5 is allgemeine medizin
+      Rails.logger.info field.fallbacks
     end
+
+
   end
 end

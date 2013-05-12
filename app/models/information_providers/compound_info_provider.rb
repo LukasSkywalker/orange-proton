@@ -92,7 +92,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
 
-  # TODO remove for final version:
+  # TODO remove for final version (is already removed from frontend)
   public
     # Handle
     # /api/v1/admin/set??? (values?)
