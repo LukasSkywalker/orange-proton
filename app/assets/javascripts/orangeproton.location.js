@@ -149,6 +149,7 @@ orangeproton.location = {
     var $search = $('<input type="text" id="location-input" title="'+I18n.t('location_enter')+'"/>');
     var $searchButton = $('<input type="button" title="'+I18n.t('location_search')+'" value="'+ I18n.t('search') +'"/>');
     var $resetButton = $('<input type="button" title="'+I18n.t('location_abort')+'" class="right" value="'+ I18n.t('cancel') +'"/>');
+    var $centerButton = $('<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('location_center')+ '"></div>');
     var $setButton = $('<input type="button" title="'+I18n.t('location_confirm')+'" class="right" value="'+ I18n.t('save') +'"/>');
     var $autoButton = $('<input type="button" title="'+I18n.t('location_auto')+'" value="'+ I18n.t('auto') +'"/>');
     var $currentLocation = $('<p></p>').addClass('location');
@@ -159,6 +160,12 @@ orangeproton.location = {
 
     $searchButton.on('click', null, function onSearchButtonClick() {
       orangeproton.location.geoCodeAndMark($('#location-input').val());
+    });
+
+    //register center button
+    $centerButton.on('click', null, function onCenterButtonClick() {
+        var map = $('#location-map').data('map');
+        map.setCenter(orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng);
     });
 
     $resetButton.on('click', null, function onResetButtonClick() {
@@ -192,7 +199,7 @@ orangeproton.location = {
 
     var $map = $('<div id="location-map"></div>').width(800).height(500);
 
-    $popup.append('<h3>'+ I18n.t('position') +'</h3>').append($search).append($searchButton).append($resetButton).append($setButton)
+    $popup.append('<h3>'+ I18n.t('position') +'</h3>').append($centerButton).append($search).append($searchButton).append($resetButton).append($setButton)
         .append($autoButton).append($currentLocation).append($map).appendTo('body');
 
 

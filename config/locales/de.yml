@@ -31,6 +31,7 @@ de:
   center_map: "Karte zentrieren"
   location_enter: "Geben Sie hier Ihren Standort ein."
   location_search: "Klicken Sie hier um Ihren Standort zu suchen."
+  location_center: "Klicken Sie hier um die Map-Ansicht zurück zu setzen."
   location_abort: "Klicken Sie hier um die Standortänderung abzubrechen."
   location_confirm: "Klicken Sie hier um den Standort zu übernehmen."
   location_auto: "Klicken Sie hier um Ihren Standort automatisch ermitteln zu lassen."
