@@ -100,7 +100,7 @@ orangeproton.doctor = {
                 lat: orangeproton.location.getLocation().lat,
                 lng: orangeproton.location.getLocation().lng,
                 width: 520,
-                height: 400
+                height: $('#docOverlay').innerHeight() - ($('#docHeader').outerHeight() + $('#fallbacks').outerHeight())
             });
 
             var shadow = new google.maps.MarkerImage(

@@ -55,6 +55,13 @@ $(document).ready(function () {
     // add click handler for location display
     $('#location-container').on('click', null, function () {
         orangeproton.location.showMap();
+        $('#location-popup [title]').tipsy({
+            trigger: 'hover',
+            gravity: 'n',
+            delayIn: '300',
+            delayOut: '100',
+            fade: 'true'
+        });
     });
 
     I18n.defaultLocale = 'de';

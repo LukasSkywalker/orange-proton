@@ -332,8 +332,14 @@ input[type=button] {
     }
   }
 
+  .globe {
+    font-size: 1.5em;
+    margin-right: 5px !important;
+  }
 
-
+  /********************************************/
+  /*****************Selectboxes***************/
+  /******************************************/
 
   .selectboxit-btn {
     background-color: white;
@@ -384,11 +390,6 @@ input[type=button] {
     border: 1px solid $dark-grey;
   }
 
-}
-
-.globe {
-  font-size: 1.5em;
-  margin-right: 5px !important;
 }
 
 /********************************************/
@@ -619,6 +620,7 @@ div.container {
 .docOverlay, #location-popup {
   height: 100%;
   width: 100%;
+  overflow: hidden;
 
   .location p {
     position: relative;
@@ -637,7 +639,7 @@ div.container {
     float: right;
     display: inline;
     width: 60%;
-    height: 85%;
+    height: 80%;
   }
 
   #location-map {
@@ -649,9 +651,11 @@ div.container {
 
   #docHeader {
     height: 40px;
+    width: 100%;
   }
 
   #fallbacks {
+    width: 100%;
     padding: 10px;
     margin: 0;
 
