@@ -387,6 +387,7 @@ input[type=button] {
 
   .selectboxit-list{
     border: 1px solid $dark-grey;
+    z-index: 10000;
   }
 
 }
