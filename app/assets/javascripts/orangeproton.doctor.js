@@ -6,10 +6,8 @@ var orangeproton = orangeproton || {};
 orangeproton.doctor = {
 
     setFallbacks: function(fallbacks) {
-        self.fallbacks = fallbacks.slice(0).reverse(true);
+        orangeproton.doctor.fallbacks = fallbacks.slice(0).reverse(true);
     },
-
-
 
     /**
      * Fetch and display the doctors from the db specific to the field and the users location
@@ -27,7 +25,7 @@ orangeproton.doctor = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function(response) {
-                orangeproton.doctor.getDoctorsSuccessHandler(response, lang);
+                orangeproton.doctor.getDoctorsSuccessHandler(response, lang, field);
             },
             error: mindmapper.handleApiError,
             complete: mindmapper.hideSpinner
@@ -38,7 +36,7 @@ orangeproton.doctor = {
      * @param {Object} response response the response object
      * @param {String} language The language of the response
      */
-    getDoctorsSuccessHandler: function (response, language) {
+    getDoctorsSuccessHandler: function (response, language, activeField) {
         $('.docOverlay').remove();  //delete previously loaded stuff
         var status = response.status;
 
@@ -60,7 +58,7 @@ orangeproton.doctor = {
             $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
-            var fieldFallbacks = self.fallbacks;
+            var fieldFallbacks = orangeproton.doctor.fallbacks;
 
             var fbList = '<span>'+I18n.t('show_fallback')+':</span><br/><ul>';
             var loc = orangeproton.location.getLocation();
@@ -68,7 +66,9 @@ orangeproton.doctor = {
             for (var i = 0; i < fieldFallbacks.length; i++) {
                 var fb = fieldFallbacks[i].name;
                 var code = fieldFallbacks[i].code;
-                fbList += '<li onclick="orangeproton.doctor.linkFmh({0}, \'{1}\', {2}, {3});">{4}</li>'.format(code, language, loc.lat, loc.lng, fb);
+
+                fbList += '<li onclick="orangeproton.doctor.linkFmh({0}, \'{1}\', {2}, {3});">'.format(code, language, loc.lat, loc.lng);
+                fbList += (activeField === code) ? '<b>{0}</b></li>'.format(fb) : '{0}</li>'.format(fb);
 
                 if (i != fieldFallbacks.length - 1) {
                     fbList += '<i class="icon-caret-right"></i>'
