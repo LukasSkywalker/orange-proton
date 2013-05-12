@@ -11,8 +11,8 @@ orangeproton.doctor = {
      * @param {Number} lat user's latitude
      * @param {Number} lng user's longitude
      */
-    getDoctors: function (field, lang, lat, lng) {
-        $('.docOverlay').remove();  //delete previously loaded stuff
+    getDoctors: function (field, lang, lat, lng, fallbacks) {
+        //$('.docOverlay').remove();  //delete previously loaded stuff
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
@@ -21,7 +21,7 @@ orangeproton.doctor = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function(response) {
-                orangeproton.doctor.getDoctorsSuccessHandler(response, lang)
+                orangeproton.doctor.getDoctorsSuccessHandler(response, field, lang, fallbacks)
             },
             error: mindmapper.handleApiError,
             complete: mindmapper.hideSpinner
@@ -32,7 +32,7 @@ orangeproton.doctor = {
      * @param {Object} response response the response object
      * @param {String} language The language of the response
      */
-    getDoctorsSuccessHandler: function (response, language) {
+    getDoctorsSuccessHandler: function (response, field, language, fallbacks) {
         $('.docOverlay').remove();  //delete previously loaded stuff
         var status = response.status;
         if (status === 'error') {
@@ -54,22 +54,7 @@ orangeproton.doctor = {
             $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
-            //var fieldFallbacks = response.result.fallbacks.reverse(true);
-            // A few sample fallbacks
-            var fieldFallbacks = [
-                {
-                    "code": 13,
-                    "name": "Innere Medizin"
-                },
-                {
-                    "code": 162,
-                    "name": "Allgemeine Innere Medizin"
-                },
-                {
-                    "code": 5,
-                    "name": "Allgemeinmedizin"
-                }
-            ].reverse(true);
+            var fieldFallbacks = fallbacks[field].reverse(true);
 
             var fbList = '<span>Zeige Ärzte weniger spezialisierter Fachgebiete:</span><ul>';
             var loc = orangeproton.location.getLocation();
@@ -77,7 +62,7 @@ orangeproton.doctor = {
             for (var i = 0; i < fieldFallbacks.length; i++) {
                 var fb = fieldFallbacks[i].name;
                 var code = fieldFallbacks[i].code;
-                fbList += '<li onclick="orangeproton.doctor.getDoctors({0}, \'{1}\', {2}, {3});">{4}</li>'.format(code, language, loc.lat, loc.lng, fb);
+                fbList += '<li onclick="orangeproton.doctor.linkFmh({0}, \'{1}\', {2}, {3});">{4}</li>'.format(code, language, loc.lat, loc.lng, fb);
 
                 if (i != fieldFallbacks.length - 1) {
                     fbList += '<i class="icon-caret-right"></i>'
@@ -229,10 +214,16 @@ orangeproton.doctor = {
         var opts = orangeproton.options.libraries.fancybox;
         $.fancybox('<div class="docOverlay"></div>', $.extend({}, opts, {
             afterShow: function () {
+                $('docOverlay').remove();
                 drawContent();
             },
             beforeClose: function () {
                 $('.docOverlay').remove();
             }}));
+    },
+
+    linkFmh: function(code, lang, lat, lng) {
+        $('.docOverlay').spin(orangeproton.options.libraries.spinner);
+        orangeproton.doctor.getDoctors(code, lang, lat, lng);
     }
 };

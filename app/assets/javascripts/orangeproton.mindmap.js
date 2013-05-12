@@ -206,7 +206,16 @@ orangeproton.mindmap = {
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         var lang = orangeproton.generic.getUrlVars()['lang'];
-        orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng);
+
+        // Generate associative fallbackMap
+
+        var fallbackMap = {};
+        for (var i = 0; i < fields.length; i++) {
+            var field = fields[i];
+            fallbackMap[field.field] = field.fallbacks;
+        }
+
+        orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng, fallbackMap);
       });
       s.push(newdiv);
 
