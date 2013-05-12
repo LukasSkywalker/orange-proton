@@ -219,7 +219,9 @@ orangeproton.location = {
           orangeproton.location.setUserLocation(tempLocation.lat, tempLocation.lng);
         }
         $(document).trigger('locationChange');
-        $('#location-popup').remove(); }
+        $('#location-popup').remove();
+        $(".tipsy").remove();
+      }
     });
   },
 
