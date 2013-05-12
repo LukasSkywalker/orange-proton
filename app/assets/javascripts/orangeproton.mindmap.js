@@ -192,30 +192,24 @@ orangeproton.mindmap = {
     fields.sortBy('relatedness');
     fields.reverse();
     for (var i = 0; i < Math.min(options.max_fields, fields.length); i++) {
-      var f = fields[i].field;
-      var n = fields[i].name;
-      var r = fields[i].relatedness;
+      var field = fields[i];
+      var f = field.field;
+      var n = field.name;
+      var r = field.relatedness;
       var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
           '<div class="relatedness-container">' +
           '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" Relevanz ' + Math.round(r * 100) + '%"></div>' +
           '</div></div>' +
           '<p class="icon-user-md"></p>' +
           '</div>');
-      newdiv.on('click', { field: f }, function (e) {
+      newdiv.on('click', { field: field }, function (e) {
         $(this).spin(orangeproton.options.libraries.docSpinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         var lang = orangeproton.generic.getUrlVars()['lang'];
 
-        // Generate associative fallbackMap
-
-        var fallbackMap = {};
-        for (var i = 0; i < fields.length; i++) {
-            var field = fields[i];
-            fallbackMap[field.field] = field.fallbacks;
-        }
-
-        orangeproton.doctor.getDoctors(e.data.field, lang, lat, lng, fallbackMap);
+        orangeproton.doctor.setFallbacks(e.data.field.fallbacks);
+        orangeproton.doctor.getDoctors(e.data.field.field, lang, lat, lng);
       });
       s.push(newdiv);
 

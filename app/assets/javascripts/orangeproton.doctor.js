@@ -4,6 +4,13 @@
  */
 var orangeproton = orangeproton || {};
 orangeproton.doctor = {
+
+    setFallbacks: function(fallbacks) {
+        self.fallbacks = fallbacks.slice(0).reverse(true);
+    },
+
+
+
     /**
      * Fetch and display the doctors from the db specific to the field and the users location
      * @param {Number} field number of the speciality
@@ -11,8 +18,7 @@ orangeproton.doctor = {
      * @param {Number} lat user's latitude
      * @param {Number} lng user's longitude
      */
-    getDoctors: function (field, lang, lat, lng, fallbacks) {
-        //$('.docOverlay').remove();  //delete previously loaded stuff
+    getDoctors: function (field, lang, lat, lng) {
         var count = orangeproton.options.display.max_docs;
 
         jQuery.ajax({
@@ -21,7 +27,7 @@ orangeproton.doctor = {
             dataType: 'json',
             contentType: "charset=UTF-8",
             success: function(response) {
-                orangeproton.doctor.getDoctorsSuccessHandler(response, field, lang, fallbacks)
+                orangeproton.doctor.getDoctorsSuccessHandler(response, lang);
             },
             error: mindmapper.handleApiError,
             complete: mindmapper.hideSpinner
@@ -32,9 +38,10 @@ orangeproton.doctor = {
      * @param {Object} response response the response object
      * @param {String} language The language of the response
      */
-    getDoctorsSuccessHandler: function (response, field, language, fallbacks) {
+    getDoctorsSuccessHandler: function (response, language) {
         $('.docOverlay').remove();  //delete previously loaded stuff
         var status = response.status;
+
         if (status === 'error') {
             var message = response.message;
             $.notify.error(message, { occupySpace: true, close: true});
@@ -54,7 +61,8 @@ orangeproton.doctor = {
             $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
             $overlay.prepend($help);
 
-            var fieldFallbacks = fallbacks[field].reverse(true);
+            console.log(self.fallbacks);
+            var fieldFallbacks = self.fallbacks;
 
             var fbList = '<span>Zeige Ärzte weniger spezialisierter Fachgebiete:</span><ul>';
             var loc = orangeproton.location.getLocation();
@@ -79,8 +87,6 @@ orangeproton.doctor = {
                 fade: 'true',
                 opacity: 1
             });
-
-
 
             var map = new GMaps({
                 div: '#map',
