@@ -95,12 +95,14 @@ orangeproton.doctor = {
                 opacity: 1
             });
 
+
+
             var map = new GMaps({
                 div: '#map',
                 lat: orangeproton.location.getLocation().lat,
                 lng: orangeproton.location.getLocation().lng,
                 width: 520,
-                height: $('#docOverlay').innerHeight() - ($('#docHeader').outerHeight() + $('#fallbacks').outerHeight())
+                height: 600
             });
 
             var shadow = new google.maps.MarkerImage(

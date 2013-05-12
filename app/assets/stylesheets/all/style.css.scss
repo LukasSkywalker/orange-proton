@@ -746,6 +746,7 @@ div.container {
 
 #center-button {
   float: right;
+  display: inline;
   @include clickable;
 }
 
