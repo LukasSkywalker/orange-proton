@@ -193,10 +193,9 @@ orangeproton.mindmap = {
     fields.reverse();
     for (var i = 0; i < Math.min(options.max_fields, fields.length); i++) {
       var field = fields[i];
-      var f = field.field;
       var n = field.name;
       var r = field.relatedness;
-      var newdiv = $('<div class="field clickable"><div class="content">' + f + ':' + n +
+      var newdiv = $('<div class="field clickable"><div class="content">'+ n +
           '<div class="relatedness-container">' +
           '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" '+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"></div>' +
           '</div></div>' +
