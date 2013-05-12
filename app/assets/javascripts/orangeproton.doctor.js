@@ -186,7 +186,8 @@ orangeproton.doctor = {
             // Add doctor menu entries
             for (var i = 0; i < docs.length; i++) {
                 var doc = docs[i];
-                var title = doc.title.replace("für","<br> für");
+                //Format Title
+                var title = doc.title.replace(' für ',"<br> für ").replace(' e ',"<br> e ").replace(' en ',"<br> en ");
                 var name = doc.name;
                 var lat = doc.lat;
                 var lng = doc.long;
