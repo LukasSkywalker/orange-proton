@@ -55,13 +55,7 @@ $(document).ready(function () {
     // add click handler for location display
     $('#location-container').on('click', null, function () {
         orangeproton.location.showMap();
-        $('#location-popup [title]').tipsy({
-            trigger: 'hover',
-            gravity: 'n',
-            delayIn: '300',
-            delayOut: '100',
-            fade: 'true'
-        });
+        $('#location-popup [title]').tipsy(orangeproton.options.libraries.tipsy);
     });
 
     I18n.defaultLocale = 'de';
@@ -145,21 +139,16 @@ $(document).ready(function () {
         $catalog.val(catalog);
         $mode.val(mode);
 
-        /*$("select#lang").data("selectBox-selectBoxIt").selectOption(lang);
-         $("select#catalog").data("selectBox-selectBoxIt").selectOption(catalog);
-         $("select#mode").data("selectBox-selectBoxIt").selectOption(mode);*/
 
         var $langSelect = $("#lang");
         $langSelect.find("option[value=" + lang + "]").attr('selected', 'selected');
         $langSelect.data("selectBox-selectBoxIt").refresh();
 
-        var $catalogSelect = $('#catalog');
-        $catalogSelect.find("option[value=" + catalog + "]").attr('selected', 'selected');
-        $catalogSelect.data("selectBox-selectBoxIt").refresh();
+        $catalog.find("option[value=" + catalog + "]").attr('selected', 'selected');
+        $catalog.data("selectBox-selectBoxIt").refresh();
 
-        var $modeSelect = $('#mode');
-        $modeSelect.find("option[value=" + mode + "]").attr('selected', 'selected');
-        $modeSelect.data("selectBox-selectBoxIt").refresh();
+        $mode.find("option[value=" + mode + "]").attr('selected', 'selected');
+        $mode.data("selectBox-selectBoxIt").refresh();
 
         // Change language if requested
         orangeproton.language.setLocale(lang);
@@ -243,13 +232,7 @@ $(document).ready(function () {
             hideFocus: true
         });
 
-        $('.field.node [title]').tipsy({
-            trigger: 'hover',
-            gravity: 'n',
-            delayIn: '300',
-            delayOut: '100',
-            fade: 'true'
-        });
+        $('.field.node [title]').tipsy(orangeproton.options.libraries.tipsy);
     });
 });
 /**

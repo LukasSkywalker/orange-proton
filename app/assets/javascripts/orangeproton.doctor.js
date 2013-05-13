@@ -77,14 +77,7 @@ orangeproton.doctor = {
             fbList += '</ul>';
             $('#fallbacks').html(fbList);
 
-            $('#docHeader [title]').tipsy({
-                trigger: 'hover',
-                gravity: 'n',
-                delayIn: '300',
-                delayOut: '100',
-                fade: 'true',
-                opacity: 1
-            });
+            $('#docHeader [title]').tipsy(orangeproton.options.libraries.tipsy);
 
             var map = new GMaps({
                 div: '#map',

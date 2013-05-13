@@ -42,6 +42,14 @@ orangeproton.options = {
           shadow: false, // Whether to render a shadow
           hwaccel: false, // Whether to use hardware acceleration
           left: 150
+      },
+      tipsy: {
+          trigger: 'hover',
+          gravity: 'n',
+          delayIn: '300',
+          delayOut: '100',
+          fade: 'true',
+          opacity: 1
       }
   },
 

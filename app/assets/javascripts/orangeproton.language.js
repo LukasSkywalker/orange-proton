@@ -41,13 +41,7 @@ orangeproton.language = {
         $('#hide-panels').attr('title', I18n.t('shows_help'));
         $('#location-container').attr('title', I18n.t('change_loc'));
 
-        $('#search-bar [title]').tipsy({
-            trigger: 'hover',
-            gravity: 'n',
-            delayIn: '300',
-            delayOut: '100',
-            fade: 'true'
-        });
+        $('#search-bar [title]').tipsy(orangeproton.options.libraries.tipsy);
 
 
     }
