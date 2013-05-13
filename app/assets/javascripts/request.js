@@ -229,8 +229,6 @@ $(document).ready(function () {
 
     $(document).on('afterDraw', function(){
         $('.syn.node').jScrollPane(orangeproton.options.libraries.jScrollPane);
-
-        $('.field.node [title]').tipsy(orangeproton.options.libraries.tipsy);
     });
 });
 /**

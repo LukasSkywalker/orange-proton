@@ -195,9 +195,9 @@ orangeproton.mindmap = {
       var field = fields[i];
       var n = field.name;
       var r = field.relatedness;
-      var newdiv = $('<div class="field clickable"><div class="content">'+ n +
+      var newdiv = $('<div class="field clickable" title="'+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"><div class="content">'+ n +
           '<div class="relatedness-container">' +
-          '<div class="relatedness-display" style="width:' + r * 100 + '%;" title=" '+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"></div>' +
+          '<div class="relatedness-display" style="width:' + r * 100 + '%;"></div>' +
           '</div></div>' +
           '<p class="icon-user-md"></p>' +
           '</div>');
@@ -212,12 +212,20 @@ orangeproton.mindmap = {
       });
       s.push(newdiv);
 
+      newdiv.tipsy({
+          trigger: 'hover',
+          gravity: $.fn.tipsy.autoNS,
+          delayIn: '300',
+          delayOut: '100',
+          fade: 'true',
+          opacity: 1
+      });
+
       //add hover event to every field node
       $(newdiv).hoverIntent(function (){
         toggleHighlightContainer('field');
       },null);
     }
-
 
     var c = $mm.megamind('addCanvas', ['topLeft', 'left', 'bottomLeft'], 'field', {shuffle: false});
     c.addNodes(s);

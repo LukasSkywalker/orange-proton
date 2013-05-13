@@ -43,6 +43,15 @@ orangeproton.language = {
 
         $('#search-bar [title]').tipsy(orangeproton.options.libraries.tipsy);
 
+        $('#hide-panels').tipsy({
+            trigger: 'hover',
+            gravity: 'e',
+            delayIn: '300',
+            delayOut: '100',
+            fade: 'true',
+            opacity: 1
+        });
+
 
     }
 };
