@@ -49,14 +49,16 @@ orangeproton.doctor = {
         function drawContent() {
             var $overlay = $('.docOverlay');
             var $fallbacks = $('<div id="fallbacks"></div>');
+            var $container = $('<div id="doc-container"></div>');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
             var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
                         '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('center_map')+ '"></div>' +
                         '</div> ');
 
-            $overlay.append($fallbacks).append($docList).append($map).append('<div style="clear:both;"></div>');
-            $overlay.prepend($help);
+            $container.append($docList).append($map).append('<div style="clear:both;"></div>');
+            $help.append($fallbacks);
+            $overlay.append($help).append($container);
 
             var fieldFallbacks = orangeproton.doctor.fallbacks;
 
@@ -214,9 +216,13 @@ orangeproton.doctor = {
             afterShow: function () {
                 $('docOverlay').remove();
                 drawContent();
+                $('#doc-container').height($('.docOverlay').height() - $('#docHeader').outerHeight());
             },
             beforeClose: function () {
                 $('.docOverlay').remove();
+            },
+            onUpdate: function(){
+                $('#doc-container').height($('.docOverlay').height() - $('#docHeader').outerHeight());
             }}));
     },
 

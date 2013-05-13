@@ -643,7 +643,7 @@ div.container {
     float: right;
     display: inline;
     width: 60%;
-    height: 80%;
+    height: 100%;
   }
 
   #location-map {
@@ -654,7 +654,8 @@ div.container {
   }
 
   #docHeader {
-    height: 40px;
+    position: relative;
+    height: 80px;
     width: 100%;
   }
 
@@ -691,8 +692,8 @@ div.container {
     float: left;
     display: inline;
     width: 40%;
-    height: 85%;
-    overflow: scroll;
+    height: 100%;
+    overflow: auto;
     overflow-x: hidden;
 
     /* the label for the input behind the doc list */
