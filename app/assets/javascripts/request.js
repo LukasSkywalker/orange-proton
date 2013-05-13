@@ -173,6 +173,10 @@ $(document).ready(function () {
         }
     });
 
+    //remove all tooltips when clicking anywhere
+    $(document).on('click', function(){
+       $('.tipsy').remove();
+    });
 
     // Adjust the size of the mindmap div
     orangeproton.mindmap.resizeMindmap();
