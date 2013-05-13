@@ -203,6 +203,7 @@ orangeproton.mindmap = {
           '</div>');
       newdiv.on('click', { field: field }, function (e) {
         $(this).find('p').spin(orangeproton.options.libraries.spinner);
+		$('.tipsy').remove();
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         var lang = orangeproton.generic.getUrlVars()['lang'];

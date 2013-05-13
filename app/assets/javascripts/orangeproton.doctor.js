@@ -52,7 +52,8 @@ orangeproton.doctor = {
             var $container = $('<div id="doc-container"></div>');
             var $docList = $('<div id="docList"></div>');
             var $map = $('<div id="map"></div>');
-            var $help = $('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
+            var $help = ($.browser.name === 'msie' && $.browser.version === '7.0')?$('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
+                        '</div> '):$('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
                         '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('center_map')+ '"></div>' +
                         '</div> ');
 
@@ -103,11 +104,13 @@ orangeproton.doctor = {
                 shadow: shadow,
                 infoWindow: { content: 'Ihr Standort' }
             });
-
-            //register center button
-            $('#center-button').on('click', null, function () {
-                 map.setCenter(orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng);
-            });
+			
+			if (!($.browser.name === 'msie' && $.browser.version === '7.0')){
+				//register center button
+				$('#center-button').on('click', null, function () {
+					 map.setCenter(orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng);
+				});
+			}
 
             $('#map').data('map', map);
             
