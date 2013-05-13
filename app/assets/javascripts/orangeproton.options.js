@@ -42,6 +42,11 @@ orangeproton.options = {
             delayOut: '100',
             fade: 'true',
             opacity: 1
+        },
+
+        jScrollPane: {
+            hideFocus: true,
+            mouseWheelSpeed: 20
         }
     },
 

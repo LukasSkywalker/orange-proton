@@ -228,9 +228,7 @@ $(document).ready(function () {
     orangeproton.language.setLocale($lang.val());
 
     $(document).on('afterDraw', function(){
-        $('.syn.node').jScrollPane({
-            hideFocus: true
-        });
+        $('.syn.node').jScrollPane(orangeproton.options.libraries.jScrollPane);
 
         $('.field.node [title]').tipsy(orangeproton.options.libraries.tipsy);
     });
