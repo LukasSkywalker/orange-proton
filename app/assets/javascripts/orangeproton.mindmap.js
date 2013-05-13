@@ -202,7 +202,7 @@ orangeproton.mindmap = {
           '<p class="icon-user-md"></p>' +
           '</div>');
       newdiv.on('click', { field: field }, function (e) {
-        $(this).spin(orangeproton.options.libraries.docSpinner);
+        $(this).find('p').spin(orangeproton.options.libraries.spinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
         var lang = orangeproton.generic.getUrlVars()['lang'];
