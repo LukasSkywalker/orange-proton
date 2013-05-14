@@ -10,8 +10,8 @@
 #   - lib/source2.js
 #   - dist/**/*.js
 #
-#src_files:
-#  - assets/application.js
+src_files:
+  - assets/application.js
 #
 # stylesheets
 #
