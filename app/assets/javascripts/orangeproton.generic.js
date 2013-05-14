@@ -8,9 +8,9 @@ orangeproton.generic = {  // Read a page's GET URL variables and return them as 
    * Parse the url and return an associative array of the parameter names and values
    * @returns {Array} associative array a[key] = value
    */
-  getUrlVars: function() {
+  getUrlVars: function(url) {
     var vars = [], hash;
-    var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+    var hashes = url.slice(url.indexOf('?') + 1).split('&');
     for (var i = 0; i < hashes.length; i++) {
       hash = hashes[i].split('=');
       vars.push(hash[0]);

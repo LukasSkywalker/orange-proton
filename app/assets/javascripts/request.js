@@ -218,13 +218,15 @@ $(document).ready(function () {
         }
     });
 
-    var codeParam = orangeproton.generic.getUrlVars()["code"];
+    var url = window.location.href;
+    var urlVars = orangeproton.generic.getUrlVars(url);
+    var codeParam = urlVars["code"];
 
     if (codeParam !== undefined && codeParam !== '') {
         var code = $.trim(codeParam.toUpperCase());
-        var lang = orangeproton.generic.getUrlVars()["lang"] || "de";
-        var catalog = orangeproton.generic.getUrlVars()["catalog"] || "icd_2012_ch";
-        var mode = orangeproton.generic.getUrlVars()["mode"] || "sd";
+        var lang = urlVars["lang"] || "de";
+        var catalog = urlVars["catalog"] || "icd_2012_ch";
+        var mode = urlVars["mode"] || "sd";
         $(document).trigger('paramChange', [code, lang, true, mode, catalog]);
     }
 

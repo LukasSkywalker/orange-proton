@@ -205,7 +205,7 @@ orangeproton.mindmap = {
         $(this).find('p').spin(orangeproton.options.libraries.spinner);
         var lat = orangeproton.location.getLocation().lat;
         var lng = orangeproton.location.getLocation().lng;
-        var lang = orangeproton.generic.getUrlVars()['lang'];
+        var lang = orangeproton.generic.getUrlVars(window.location.href)['lang'];
 
         orangeproton.doctor.setFallbacks(e.data.field.fallbacks);
         orangeproton.doctor.getDoctors(e.data.field.field, lang, lat, lng);
