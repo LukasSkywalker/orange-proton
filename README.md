@@ -6,6 +6,7 @@ orange-proton
 * Install the bundler gem: `gem install bundler`
 * Install the gems defined in Gemfile `bundle install`
 * Install the Node Javascript-runtime as described in [joyent/node](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager#ubuntu-mint)
+* Set up the database (follow the instructions in "README.txt" in the db folder.
 * Run the server
   * in development mode (local DB) with `rails s -e development`
   * in development mode (remote DB) with `rails s -e development-remote`
