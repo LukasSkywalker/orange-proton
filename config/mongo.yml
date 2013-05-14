@@ -10,8 +10,8 @@ defaults: &defaults
 
   # Names of all the tables in the db
   collections: {
-    chop_ranges: [chop_ranges_to_fmh, ranges],
-    icd_ranges: [icd_ranges_to_fmh, ranges],
+    chop_ranges: [ranges, chop_ranges_to_fmh],
+    icd_ranges: [ranges, icd_ranges_to_fmh],
     catalogs: {
       icd_2010_ch: {
       de: [icd_2010_ch,de],
