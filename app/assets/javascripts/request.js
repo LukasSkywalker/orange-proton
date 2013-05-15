@@ -14,7 +14,7 @@ $(document).ready(function () {
     }
 
 
-    var $codeInput = $('#code-name');
+    var $codeInput = $('#code');
     var $lang = $('#lang');
     var $searchButton = $('#search-button');
     var $panelToggler = $('#hide-panels');
@@ -124,7 +124,7 @@ $(document).ready(function () {
         $.notify.close();
         $(".tipsy").remove();
 
-        var $code = $('#code-name');
+        var $code = $('#code');
         var $lang = $('#lang');
         var $catalog = $('#catalog');
         var $mode = $('#mode');
@@ -201,7 +201,7 @@ $(document).ready(function () {
 
         // update the UI elements and start search when back-button is used or statechange is fired manually
         if (code !== undefined && code !== '') {
-            $('#code-name').val(code);
+            $('#code').val(code);
             $('#lang').val(lang);
             $('#mode').val(mode);
             $('#catalog').val(catalog);
@@ -374,7 +374,7 @@ function resizeSearchBar(){
     var searchBarWidth = $('#search-bar').width();
     var $loc = $('#location-container');
     if (searchBarWidth <= 1024) {
-        var $code = $('#code-name');
+        var $code = $('#code');
         var $btn = $('#search-button');
         var $cat = $('.catalog-container');
         var $lang = $('.lang-container');

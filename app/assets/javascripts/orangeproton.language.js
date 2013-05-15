@@ -37,7 +37,7 @@ orangeproton.language = {
 
     updateToolTips: function(){
         //Tooltips
-        $('#code-name').attr('title', I18n.t('enter_icd_or_chop'));
+        $('#code').attr('title', I18n.t('enter_icd_or_chop'));
         $('#catalogSelectBoxIt').attr('title', I18n.t('choose_catalog'));
         $('#modeSelectBoxIt').attr('title', I18n.t('choose_mode'));
         $('#langSelectBoxIt').attr('title', I18n.t('choose_language'));
