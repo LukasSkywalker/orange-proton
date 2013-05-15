@@ -32,7 +32,10 @@ orangeproton.language = {
         $('#info-text').html('<p>' + I18n.t('info_text') + '</p>');
 
         $('#loc').html(I18n.t('location') + ': ');
+        this.updateToolTips();
+    },
 
+    updateToolTips: function(){
         //Tooltips
         $('#code-name').attr('title', I18n.t('enter_icd_or_chop'));
         $('#catalogSelectBoxIt').attr('title', I18n.t('choose_catalog'));
@@ -51,7 +54,5 @@ orangeproton.language = {
             fade: 'true',
             opacity: 1
         });
-
-
     }
 };

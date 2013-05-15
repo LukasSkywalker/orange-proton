@@ -20,3 +20,8 @@ orange-proton
 ## Todo when deploying
 * When using an Apache or Nginx server, be sure to prevent the Rails server from serving static assets with setting `config.serve_static_assets` to false. When it's true, the Rails server will handle request to static assets in /public/assets, which is unnecessary overhead, since Apache/Nginx can serve those already-compiled files faster and without requiring the full rails stack.
 * Add database spec which counts entries. This is uncommented in /spec/models/database_spec.rb
+
+## Style conventions
+* Use fence-case for naming css selectors (don't use camelCase or snake_case)
+* Use camelCase for JavaScript
+* Use snake_case for Ruby
