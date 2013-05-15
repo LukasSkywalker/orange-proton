@@ -8,7 +8,6 @@ describe LocalisedDataProvider do
 
   it 'should return localised data for code' do
      d = @p.get_icd_or_chop_data('B26', 'de', 'icd_2012_ch')
-     puts d
      (d[:data]["inclusiva"].include?("Infektiöse Parotitis")).should eq(true)
   end
 
