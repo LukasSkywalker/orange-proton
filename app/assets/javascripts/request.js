@@ -31,8 +31,9 @@ $(document).ready(function () {
     });
 
     orangeproton.trail.clear();
-    if (orangeproton.generic.getUrlVars()["code"])
-        orangeproton.trail.push('root', orangeproton.generic.getUrlVars()["code"]);
+    var urlVars = orangeproton.generic.getUrlVars(document.location.href);
+    if (urlVars["code"])
+        orangeproton.trail.push('root', urlVars["code"]);
 
     /* TOP-BAR */
     // start search on enter key press
