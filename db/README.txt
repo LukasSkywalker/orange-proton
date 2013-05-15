@@ -9,4 +9,5 @@ To set up the database, follow the following instructions:
     a) Change host and port to the values used for your mongo server
     b) Update username, password and write_user with the credentials created in step 2
     c) (discouraged) change the name and location of the collections
+4)  Add the folders "csv_files" and "dumps" to the "db" directory
 5)  Open a terminal in the project root and run "RAILS_ENV="[environment]" rake db:seed".
