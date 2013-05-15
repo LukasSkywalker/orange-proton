@@ -35,6 +35,7 @@ orangeproton.doctor = {
      * Callback for a successful doctor search. Displays the doctor overlay.
      * @param {Object} response response the response object
      * @param {String} language The language of the response
+     * @param {Number} activeField the code of the active field
      */
     getDoctorsSuccessHandler: function (response, language, activeField) {
         $('#doc-overlay').remove();  //delete previously loaded stuff
@@ -90,7 +91,7 @@ orangeproton.doctor = {
                 lat: orangeproton.location.getLocation().lat,
                 lng: orangeproton.location.getLocation().lng,
                 width: 520,
-                height: 600
+                height: 400
             });
 
             var shadow = new google.maps.MarkerImage(
@@ -222,7 +223,6 @@ orangeproton.doctor = {
         $.fancybox('<div id="doc-overlay"></div>', $.extend({}, opts, {
             afterShow: function () {
                 drawContent();
-                $('#doc-container').height($('#doc-overlay').height() - $('#doc-header').outerHeight());
             },
             beforeClose: function () {
                 $('#doc-overlay').remove();

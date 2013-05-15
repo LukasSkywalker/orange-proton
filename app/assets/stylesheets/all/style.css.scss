@@ -654,7 +654,6 @@ div.container {
   }
 
   #doc-header {
-    position: relative;
     height: 80px;
     width: 100%;
   }
@@ -683,17 +682,23 @@ div.container {
     }
   }
 
+  #doc-container{
+    height: 500px;
+  }
+
   #doc-title {
     font-size: 1.8em;
     font-weight: bold;
     display: inline;
   }
+
+
   #doc-list {
     float: left;
     display: inline;
     width: 40%;
     height: 100%;
-    overflow: auto;
+    overflow-y: scroll;
     overflow-x: hidden;
 
     /* the label for the input behind the doc list */
