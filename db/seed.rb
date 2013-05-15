@@ -135,4 +135,95 @@ class Seed
     FmhFallbackParserRunscript.run(adapter, '../csv_files/fmh_fallbacks.csv')
 
   end
+
+
+  #this does a quick update, skipping all ICD/CHOP catalogs and doctors
+  def self.update_quick (env)
+    environment = env
+
+    db_config = YAML.load_file('config/mongo.yml')[environment]
+
+    #initialize some values
+    db = db_config['collections']['icd_keywords'][0]
+    coll = db_config['collections']['icd_keywords'][1]
+    host = db_config['host']
+    port = db_config['port']
+    admin_db = db_config['database']
+    write_user = 'pse4_write'
+    puts "Enter your PW for the account #{write_user}: "
+    pw = STDIN.gets.chomp()
+    adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
+
+    #Insert/Update icd dictionary
+    adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
+
+    #Insert/Update chop dictionary
+    adapter.set_collection(db_config['collections']['chop_keywords'][0],db_config['collections']['chop_keywords'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+
+    #Insert/Update doctors to fmh
+    adapter.set_collection(db_config['collections']['docfield_to_FMH_code'][0],db_config['collections']['docfield_to_FMH_code'][1])
+    DocfieldToFsParserRunscript.run(adapter, "../csv_files/docfield_to_fmh.csv")
+
+    #Insert/Update FMH codes
+    adapter.set_collection(db_config['collections']['fmh_codes'][0],db_config['collections']['fmh_codes'][1])
+    FmhNamesParserRunscript.run(adapter, "../csv_files/fmh_names.csv")
+
+    #Insert/Update ICD ranges
+    adapter.set_collection(db_config['collections']['icd_ranges'][0],db_config['collections']['icd_ranges'][1])
+    RangeParserRunscript.run(adapter, "../csv_files/icd_ranges.csv")
+
+    #Insert/Update CHOP ranges
+    adapter.set_collection(db_config['collections']['chop_ranges'][0],db_config['collections']['chop_ranges'][1])
+    RangeParserRunscript.run(adapter, "../csv_files/chop_ranges.csv")
+
+    #Insert/Update FMH compounds
+    adapter.set_collection(db_config['collections']['compounds'][0],db_config['collections']['compounds'][1])
+    CompoundParserRunscript.run(adapter, "../csv_files/fmh_compounds.csv")
+
+    #Insert/Update thesaur to ICD
+    adapter.set_collection(db_config['collections']['thesaur_to_icd'][0],db_config['collections']['thesaur_to_icd'][1])
+    ThesaurToIcdParserRunscript.run(adapter, "../csv_files/thesaur_to_icd.csv")
+
+    #Insert/Update thesaur to FMH
+    adapter.set_collection(db_config['collections']['thesaur_to_fs'][0],db_config['collections']['thesaur_to_fs'][1])
+    ThesaurToFmhParserRunscript.run(adapter, "../csv_files/thesaur_to_fmh.csv")
+
+    #Insert/Update mdc to FMH
+    adapter.set_collection(db_config['collections']['mdc_to_fmh'][0],db_config['collections']['mdc_to_fmh'][1])
+    MdcToFmhParserRunscript.run(adapter, "../csv_files/mdc_to_fmh.csv")
+
+    #Insert/Update mdc codes
+    adapter.set_collection(db_config['collections']['mdcs'][0],db_config['collections']['mdcs'][1])
+    MdcNamesParserRunscript.run(adapter, "../csv_files/mdc_names.csv")
+
+    #Insert/Update fmh fallbacks
+    adapter.set_collection(db_config['collections']['fmh_fallbacks'][0],db_config['collections']['fmh_fallbacks'][1])
+    FmhFallbackParserRunscript.run(adapter, '../csv_files/fmh_fallbacks.csv')
+  end
+
+  #this updates only the doctors
+  def self.update_docs (env)
+    environment = env
+
+    db_config = YAML.load_file('config/mongo.yml')[environment]
+
+    #initialize some values
+    db = db_config['collections']['icd_keywords'][0]
+    coll = db_config['collections']['icd_keywords'][1]
+    host = db_config['host']
+    port = db_config['port']
+    admin_db = db_config['database']
+    write_user = 'pse4_write'
+    puts "Enter your PW for the account #{write_user}: "
+    pw = STDIN.gets.chomp()
+    adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
+
+    #Insert/Update doctors
+    adapter.set_collection(db_config['collections']['doctors'][0],db_config['collections']['doctors'][1])
+    DocParserRunscript.run(adapter, "../csv_files/doctors.csv")
+
+  end
+
 end
