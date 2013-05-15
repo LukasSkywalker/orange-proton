@@ -37,7 +37,7 @@ orangeproton.doctor = {
      * @param {String} language The language of the response
      */
     getDoctorsSuccessHandler: function (response, language, activeField) {
-        $('.docOverlay').remove();  //delete previously loaded stuff
+        $('#doc-overlay').remove();  //delete previously loaded stuff
         var status = response.status;
 
         if (status === 'error') {
@@ -47,13 +47,16 @@ orangeproton.doctor = {
         }
 
         function drawContent() {
-            var $overlay = $('.docOverlay');
+            var $overlay = $('#doc-overlay');
             var $fallbacks = $('<div id="fallbacks"></div>');
             var $container = $('<div id="doc-container"></div>');
-            var $docList = $('<div id="docList"></div>');
+            var $docList = $('<div id="doc-list"></div>');
             var $map = $('<div id="map"></div>');
-            var $help = ($.browser.name === 'msie' && $.browser.version === '7.0')?$('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
-                        '</div> '):$('<div id="docHeader"><div id="docTitle">'+ I18n.t('doc_help')+'</div>' +
+            var $help =
+                ($.browser.name === 'msie' && $.browser.version === '7.0')?   //Don't add center button in IE7
+                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('doc_help')+'</div>' +
+                        '</div> '):
+                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('doc_help')+'</div>' +
                         '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('center_map')+ '"></div>' +
                         '</div> ');
 
@@ -80,7 +83,7 @@ orangeproton.doctor = {
             fbList += '</ul>';
             $('#fallbacks').html(fbList);
 
-            $('#docHeader [title]').tipsy(orangeproton.options.libraries.tipsy);
+            $('#doc-header [title]').tipsy(orangeproton.options.libraries.tipsy);
 
             var map = new GMaps({
                 div: '#map',
@@ -104,7 +107,8 @@ orangeproton.doctor = {
                 shadow: shadow,
                 infoWindow: { content: 'Ihr Standort' }
             });
-			
+
+            //Because IE7 messes this up, we don't show it there
 			if (!($.browser.name === 'msie' && $.browser.version === '7.0')){
 				//register center button
 				$('#center-button').on('click', null, function () {
@@ -113,7 +117,7 @@ orangeproton.doctor = {
 			}
 
             $('#map').data('map', map);
-            
+
             var userPos = new google.maps.LatLng( orangeproton.location.getLocation().lat, orangeproton.location.getLocation().lng );
             var bounds = new google.maps.LatLngBounds(userPos);
 
@@ -192,7 +196,7 @@ orangeproton.doctor = {
                 var address = doc.address.replace(/,\s*/gi, "<br />");
                 var number = doc.nr + 1;
                 var element =
-                    '<div id="docItem-{0}" class="docItem" type="radio" name="doctors">'
+                    '<div id="docItem-{0}" class="docItem">'
                         + '<label class="docLabel clickable" >'
                         + '  <p class="doc-number">'+ number +'</p>'
                         + '  <p class="doc doc-title">{1}</p>'
@@ -215,22 +219,21 @@ orangeproton.doctor = {
         }
 
         var opts = orangeproton.options.libraries.fancybox;
-        $.fancybox('<div class="docOverlay"></div>', $.extend({}, opts, {
+        $.fancybox('<div id="doc-overlay"></div>', $.extend({}, opts, {
             afterShow: function () {
-                $('docOverlay').remove();
                 drawContent();
-                $('#doc-container').height($('.docOverlay').height() - $('#docHeader').outerHeight());
+                $('#doc-container').height($('#doc-overlay').height() - $('#doc-header').outerHeight());
             },
             beforeClose: function () {
-                $('.docOverlay').remove();
+                $('#doc-overlay').remove();
             },
             onUpdate: function(){
-                $('#doc-container').height($('.docOverlay').height() - $('#docHeader').outerHeight());
+                $('#doc-container').height($('#doc-overlay').height() - $('#doc-header').outerHeight());
             }}));
     },
 
     linkFmh: function(code, lang, lat, lng) {
-        $('.docOverlay').spin(orangeproton.options.libraries.spinner);
+        $('#doc-overlay').spin(orangeproton.options.libraries.spinner);
         orangeproton.doctor.getDoctors(code, lang, lat, lng);
     }
 };
