@@ -10,7 +10,8 @@ end
 class FieldEntry
   attr_reader :name, :code, :relatedness, :fallbacks
 
-  # @param code either an icd or chop code
+  # @param field_code either an icd or chop code
+  # @param relatedness the predefined weight of a provider
   def initialize(relatedness, field_code)
     assert_field_code(field_code)
 
@@ -21,6 +22,7 @@ class FieldEntry
   end
 
   private
+  # set relatedness between 0 and 1
   def clamp_relatedness
     @relatedness = 1.0 if @relatedness > 1.0
     @relatedness = 0.0 if @relatedness < 0.0

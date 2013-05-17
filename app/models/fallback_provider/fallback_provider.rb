@@ -44,6 +44,5 @@ class FallbackProvider
       Rails.logger.info field.fallbacks
     end
 
-
   end
 end

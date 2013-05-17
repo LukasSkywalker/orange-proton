@@ -76,7 +76,7 @@ class DatabaseAdapter
 
   # @param code [String] An ICD or CHOP code.
   # @param language [String] 'de', 'en', 'fr', 'it'
-  # @param catalog [String] The catalog to look in.
+  # @param catalog [String] The catalog to look in
   # @return [Hash] The raw icd database entry for the given ICD or CHOP code.
   #   nil if there's no entry for the given code
   def get_catalog_entry(code, language, catalog)

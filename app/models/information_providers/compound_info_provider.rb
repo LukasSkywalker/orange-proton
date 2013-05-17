@@ -7,6 +7,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   def initialize
     super
 
+    # the providers get instantiated in a separate class (ProviderInstance)
     @providers = [
       ProviderInstance.new(MDCInfoProvider.new,         0.4),
       ProviderInstance.new(IcdRangeInfoProvider.new,    0.6),
@@ -39,7 +40,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
 
   private  
-  # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
+  # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code)
   # @param codes an array of fs_codes (2 - 210)
   # @return The same list of fields but with those removed that have a code not in codes
   def extract_fields_with_code_in(fields, codes) 
@@ -84,6 +85,10 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
 
+  # @param code [String] An ICD or CHOP code
+  # @param max_count [Integer] The maximum amount of retults
+  # @param catalog [String] The catalog to look in
+  # @return A list of all results from the defined providers
   def get_provider_results(code, max_count, catalog)
     fields = []
     @providers.each do |provider|

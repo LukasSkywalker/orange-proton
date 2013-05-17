@@ -53,6 +53,7 @@ module ObjectFactory
       end
     end
 
+    # @raise [RuntimeError]
     def get_fallback_provider
       case Rails.env
         when 'test'
@@ -63,7 +64,6 @@ module ObjectFactory
           raise "No fallback provider for environment #{Rails.env}"
       end
     end
-
 
   end
 end

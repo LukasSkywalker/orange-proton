@@ -16,7 +16,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     keywords= @db.get_icd_keywords()
     keywords_chop = @db.get_chop_keywords()
 
-    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop' #this is a hack because we removed the method to check for code-type
+    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop'
 
     get_fs_for_entry(keywords, entry, max_count)
   end
@@ -29,9 +29,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     # Search for keywords in illness text (main name)
     code_text = entry['text'].downcase
     keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry,
-                       1 # full relatedness for keywords in main name
-                       ))
+      fs.concat(get_fs(code_text, keyword_entry, 1)) # full relatedness for keywords in main name
     end
 
     # Consolidate synonyms into one string
@@ -45,10 +43,8 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
     # Search for keywords in synonym string
     keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry,
-                       0.3 # keywords matched in synonyms are just fallbacks so they have much less relatedness
-
-                       ))
+      fs.concat(get_fs(code_text, keyword_entry, 0.3))
+      # keywords matched in synonyms are just fallbacks so they have much less relatedness
     end
 
     fs = fold_duplicate_fields fs

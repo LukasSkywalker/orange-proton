@@ -1,5 +1,7 @@
 require_relative '../assert.rb'
 
+# This class gets the results of a specified provider and
+# multiplies their provider weights.
 class ProviderInstance
   attr_accessor :weight
 
@@ -9,6 +11,7 @@ class ProviderInstance
     @weight = weight
   end
 
+  # @params @see each provider
   # @return The fields found by this provider for the given code
   def get_results(code, max_count, catalog)
     assert_code(code)
