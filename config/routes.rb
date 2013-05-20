@@ -4,6 +4,6 @@ OrangeProton::Application.routes.draw do
 
   root :to => 'home#index'
   mount API => '/'
-  match '*path' => redirect('/')
+  match '*path' => redirect('/') # redirect all unknown urls to home path
 
 end

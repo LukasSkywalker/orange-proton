@@ -1,6 +1,6 @@
 # This info provider finds the fields a given ICD code belongs to by looking
 # up all the ICD code ranges the code belongs to (e.g. B26 is in something like B20-B30, which is in A00-B99 etc.)
-# This is based on a manually created table specifying fields for these ranges.
+# This is based on a manually created table specifying fields for these ranges in order of relatedness.
 class IcdRangeInfoProvider < DatabaseInfoProvider
 
   # Weights for fs_codes found in the ranges of level 1 to 4 (in that order)

@@ -1,4 +1,5 @@
-# This class defines fallbacks for languages which are not available
+# This implements looking up raw db entries in a given catalog and language.
+# It also defines fallbacks for languages which are not available
 # in the database.
 class LocalisedDataProvider
 
@@ -43,7 +44,7 @@ class LocalisedDataProvider
     {:data => data, :language => lang}
   end
 
-
+  # Localises all `name` fields of each FieldEntry.
   # @param api_fields_array [Array] An array of {FieldEntry}s.
   # @param language [String] "de", "en", "fr", "it"
   # @raise [RuntimeError]

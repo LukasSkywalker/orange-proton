@@ -1,7 +1,7 @@
 require_rel '.'
 require_rel '../models/information_providers'
 
-# Module of static methods, returning the Information retrieval objects used by the api.
+# Module of static methods, returning the Information retrieval objects used by the api. We return mock objects when testing.
 module ObjectFactory
 
   class << self

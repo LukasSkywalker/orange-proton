@@ -6,6 +6,7 @@ class ProviderLookupError < StandardError
 
   # @param language [String] "de", "en", "fr", "it"
   # @param msg [String] The keyword of the message for this error, e.g. 'unknown_code_type'
+  # @raise [RuntimeError]
   def initialize(msg, language)
     assert_kind_of(String, msg)
     super(msg)

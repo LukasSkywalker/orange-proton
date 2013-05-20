@@ -4,6 +4,7 @@ class MockDoctorLocator
     assert_field_code(field_code)
     assert_count(count)
     [
+      # Sample entry
         {
             :name => 'Hans Wurst',
             :title => 'Dr. med. dent. Zahnarzt FMH',

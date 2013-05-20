@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module HelpersForCodes ; end  #we don't have a class named like that, but describe expects this name to exist
+module HelpersForCodes ; end  # we don't have a class named like that, but describe expects this name to exist
 
 describe HelpersForCodes do
 
@@ -11,6 +11,7 @@ describe HelpersForCodes do
     expect {assert(false)}.to raise_error
     expect {assert(nil)}.to raise_error
   end
+  
   it 'should find code type of chop' do
     get_code_type('00.4D').should be :chop
     get_code_type('89.d3.5C').should be :chop

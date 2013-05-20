@@ -4,7 +4,7 @@ module ApiResponse
   module ApiResponse::Success
     class << self
 
-      # Genereic success response formatter.
+      # Generic success response formatter.
       def response(data = '')
         assert_kind_of(Hash, data) unless data.kind_of?(String) || data.kind_of?(Array)
         {

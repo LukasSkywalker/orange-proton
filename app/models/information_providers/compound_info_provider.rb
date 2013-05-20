@@ -18,6 +18,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
 
   # @see DatabaseAdapter#get_fields
+  # @raise [RuntimeError]
   def get_fields(code, max_count, catalog)
     assert_code(code)
     assert_count(max_count)
@@ -43,6 +44,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code)
   # @param codes an array of fs_codes (2 - 210)
   # @return The same list of fields but with those removed that have a code not in codes
+  # @raise [RuntimeError]
   def extract_fields_with_code_in(fields, codes) 
     assert_fields_array(fields)
     assert_field_code(codes[0]) if codes.length > 0
@@ -54,6 +56,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
 
   # @param fields a list of fields in the API format (FieldEntry) (with relatedness and code )
   # @return The same list of fields plus all compounds that can be generated from it.
+  # @raise [RuntimeError]
   def generate_compound_fields(fields)
     assert_fields_array(fields)
 
@@ -86,9 +89,10 @@ class CompoundInfoProvider < DatabaseInfoProvider
   end
 
   # @param code [String] An ICD or CHOP code
-  # @param max_count [Integer] The maximum amount of retults
+  # @param max_count [Integer] The maximum amount of results
   # @param catalog [String] The catalog to look in
-  # @return A list of all results from the defined providers
+  # @return A list of all results from the providers in @providers
+  # @raise [RuntimeError]
   def get_provider_results(code, max_count, catalog)
     fields = []
     @providers.each do |provider|

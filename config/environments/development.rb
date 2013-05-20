@@ -1,3 +1,6 @@
+# This environment is like development-remote, but the mongo.yml file specifies a 
+# local db connection for this env.
+
 OrangeProton::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 

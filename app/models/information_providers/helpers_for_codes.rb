@@ -1,9 +1,11 @@
 # Raises an exception if str is not in ["de", "en", "fr", "it"]
+# @raise [RuntimeError]
 def assert_language(str)
   raise "#{str} is not a valid language" unless str == 'de' || str == 'en' || str == 'it' || str == 'fr'
 end
 
 # Raises an exception if fs_code cannot be a field code/fmh code (an Integer in the range 2 - 210)
+# @raise [RuntimeError]
 def assert_field_code(fs_code)
   raise "#{fs_code} is not a valid field code" unless fs_code.kind_of?(Integer) && fs_code >= 2 && fs_code <= 210
 end
@@ -12,6 +14,7 @@ end
 # Classifies the code from user input to icd or chop or unknown
 # accepts only exact matches and is case insensitive.
 # @return [Identifier] Either :icd, :chop or :unknown
+# @raise [RuntimeError]
 def get_code_type(input)
   assert_kind_of(String, input)
   if input.match(/(^\b[A-Z]\d{2}(?:\.\d{1,2})?\b[*+!]?$)/)
@@ -25,6 +28,7 @@ end
 
 # @param input [String] The potential code to be classified.
 # @return true if the given code is an icd subclass code (has a dot)
+# @raise [RuntimeError]
 def icd_subclass?(input)
   assert_kind_of(String, input)
   get_code_type(input) == :icd && input.match(/^(.*\..+)$/)
@@ -32,22 +36,26 @@ end
 
 # @param [String] icd code
 # @return the icd code with the subclass part removed, e.g. B26.9 => B26
+# @raise [RuntimeError]
 def to_icd_superclass(code)
   assert_icd_code(code)
   code.gsub(/([^\.]+)\..*/, '\1')
 end
 
 # Raises an exception if the type of the code is unknown.
+# @raise [RuntimeError]
 def assert_code(code)
   assert_neq(get_code_type(code), :unknown)
 end
 
 # Raises an exception if code is not a chop code.
+# @raise [RuntimeError]
 def assert_chop_code(code)
   assert_equal(get_code_type(code), :chop)
 end
 
 # Raises an exception if code is not an icd code.
+# @raise [RuntimeError]
 def assert_icd_code(code)
   assert_equal(get_code_type(code), :icd)
 end

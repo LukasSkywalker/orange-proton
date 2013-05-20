@@ -1,3 +1,5 @@
+# The environment used in the released version.
+
 OrangeProton::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
