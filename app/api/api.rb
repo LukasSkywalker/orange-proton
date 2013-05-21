@@ -11,15 +11,17 @@ class API < Grape::API
   format :json
 
   # The objects used for fetching the results
-  @@provider                = ObjectFactory.get_information_provider
-  @@doctor_locator          = ObjectFactory.get_doctor_locator
+  @@provider = ObjectFactory.get_information_provider
+  @@doctor_locator = ObjectFactory.get_doctor_locator
   @@localised_data_provider = ObjectFactory.get_localised_data_provider
-  @@fallback_provider       = ObjectFactory.get_fallback_provider
+  @@fallback_provider = ObjectFactory.get_fallback_provider
 
   # Some handy helpers for the API
   helpers do
     # Some params we always use.
-    def lang; params[:lang] end
+    def lang
+      params[:lang]
+    end
 
     def compare_type(catalog, type)
       catalog = catalog.split('_')[0].to_sym
@@ -37,8 +39,8 @@ class API < Grape::API
   # Always rescue ProviderLookupErrors
   rescue_from ProviderLookupError do |error|
     response = Error.error_response(error.message, error.language).to_json
-    Rack::Response.new(response, 200, 
-                       { 'Content-type' => 'application/json' }).finish
+    Rack::Response.new(response, 200,
+                       {'Content-type' => 'application/json'}).finish
   end
 
   # Handles the most important queries:
@@ -48,43 +50,43 @@ class API < Grape::API
     # When these regexes do not match, Grape returns a json object containing an error such as
     # "error" : "illegal parameter: code" or "error" : "missing parameter: catalog"
     params do
-      requires :code, type: String, 
-        regexp: /(^[A-Z]\d{2}(?:\.\d{1,2})?[*+!]?$)|(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/,
-        desc: 'ICD or CHOP Code'
+      requires :code, type: String,
+               regexp: /(^[A-Z]\d{2}(?:\.\d{1,2})?[*+!]?$)|(^[A-Z]?(\d{2}(\.\w{2})?(\.\w{1,2})?)$)/,
+               desc: 'ICD or CHOP Code'
       requires :count, type: Integer,
-        desc: 'Number of fields to be displayed'
+               desc: 'Number of fields to be displayed'
       requires :lang, type: String, regexp: /en\b|de\b|fr\b|it\b/,
-        desc: 'The language of the response'
-      requires :catalog, type: String, 
-        regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_ch\b|icd_2012_ch\b/,
-        desc: 'The catalog the code is to be searched in'
+               desc: 'The language of the response'
+      requires :catalog, type: String,
+               regexp: /chop_2012_ch\b|chop_2013_ch\b|icd_2010_ch\b|icd_2012_ch\b/,
+               desc: 'The catalog the code is to be searched in'
     end
 
     # @raise [RuntimeError, ProviderLookupError]
     get 'get' do
-      code      = params[:code]
-      catalog   = params[:catalog]
+      code = params[:code]
+      catalog = params[:catalog]
       max_count = params[:count]
       assert_count(max_count) # Exceptions raised in these are returned as "Internal Server Error" since it's really
-      # our fault if these fail.
+                              # our fault if these fail.
 
       type = get_code_type(code)
-      # the regex should not differ from the regex used to check this,
-      # so this method should detect a code type as well
-      assert(type != :unknown) 
+                              # the regex should not differ from the regex used to check this,
+                              # so this method should detect a code type as well
+      assert(type != :unknown)
 
       # raises an error if type of code request does not match catalog (icd/chop)
       compare_type(catalog, type)
 
       # Get data
       r = @@localised_data_provider.get_icd_or_chop_data(code,
-                                                           lang,
-                                                           catalog)
+                                                         lang,
+                                                         catalog)
       data = r[:data]
       assert_kind_of(Hash, data)
       # data might not have been available and we had to fall back to another 
       # language
-      data_language = r[:language] 
+      data_language = r[:language]
       assert_language(data_language)
 
       # Get fields
@@ -99,11 +101,11 @@ class API < Grape::API
       @@localised_data_provider.localise_field_entries(fields, lang)
 
       Success.field_response(data,
-                             fields, 
-                             type, 
+                             fields,
+                             type,
                              data_language,
                              data_language != lang # whether we had to fall back 
-                            )
+      )
     end
   end
 
@@ -112,26 +114,26 @@ class API < Grape::API
   desc 'Returns doctors'
   resource :docs do
     params do
-      requires :lat, type: Float, 
-        desc: 'Latitude of user position'
+      requires :lat, type: Float,
+               desc: 'Latitude of user position'
       requires :long, type: Float,
-        desc: 'Longitude of user position'
-      requires :field, type: Integer, 
-        desc: 'Code for field of speciality'
-      requires :count, type: Integer, 
-        desc: 'Maximum numbers of doctors returned'
+               desc: 'Longitude of user position'
+      requires :field, type: Integer,
+               desc: 'Code for field of speciality'
+      requires :count, type: Integer,
+               desc: 'Maximum numbers of doctors returned'
     end
 
     # @raise [RuntimeError]
     get 'get' do
       field_code = params[:field]
-      latitude   = params[:lat]
-      longitude  = params[:long]
-      max_count  = params[:count]
+      latitude = params[:lat]
+      longitude = params[:long]
+      max_count = params[:count]
       assert_count(max_count) # don't allow excessive queries
 
-      doctors =  @@doctor_locator.find_doctors(field_code, latitude,
-                                                longitude, max_count)
+      doctors = @@doctor_locator.find_doctors(field_code, latitude,
+                                              longitude, max_count)
       assert_kind_of(Array, doctors)
       assert(doctors.length <= max_count)
       assert_kind_of(Hash, doctors[0]) if doctors.length > 0
@@ -141,26 +143,26 @@ class API < Grape::API
   end
 
   # Handles admin queries
-    # /api/v2/admin/setWeight=[val1,val2,...]
-    desc 'Handles admin queries, such as setting the relatedness bias'
-    resource :admin do
-      namespace :weights do
+  # /api/v2/admin/setWeight=[val1,val2,...]
+  desc 'Handles admin queries, such as setting the relatedness bias'
+  resource :admin do
+    namespace :weights do
 
-        helpers do
-          # Extract integer values from a string array [val1, val2,...]
-          def extract_weight_values(values)
-              vals = values.split(',')
-              vals.map! do |val|
-                val.to_i / 100.0
-              end
-            vals
+      helpers do
+        # Extract integer values from a string array [val1, val2,...]
+        def extract_weight_values(values)
+          vals = values.split(',')
+          vals.map! do |val|
+            val.to_i / 100.0
           end
+          vals
+        end
 
         def encode_weight_values
-            weights = @@provider.get_relatedness_weight
-            weights.map! do |val|
-              Integer(val * 100)
-            end
+          weights = @@provider.get_relatedness_weight
+          weights.map! do |val|
+            Integer(val * 100)
+          end
           weights
         end
       end
@@ -172,23 +174,26 @@ class API < Grape::API
 
       desc 'Reset weights to default values'
       post 'reset' do
-        if Rails.env == 'development' or Rails.env == 'development-remote'
-          @@provider.reset_weights
-          encode_weight_values
+        if Rails.env == 'production'
+          raise ProviderLookupError.new('weights_not_available_in_production', 'en')
         end
+        @@provider.reset_weights
+        encode_weight_values
       end
 
       params do
         requires :values, type: String, desc: 'The weight values the frontend sends',
-              regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
+                 regexp: /\A(((?:[1-9]\d*|0)?(?:\.\d+)?)+,?)*\z/
       end
 
       post 'set' do
-        if Rails.env == 'development' or Rails.env == 'development-remote'
-          values = extract_weight_values(params[:values])
-          @@provider.set_relatedness_weight(values)
-          encode_weight_values
+        if Rails.env == 'production'
+          raise ProviderLookupError.new('weights_not_available_in_production', 'en')
         end
+        values = extract_weight_values(params[:values])
+        @@provider.set_relatedness_weight(values)
+        encode_weight_values
+
       end
     end
   end

@@ -101,7 +101,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     fields
   end
 
-  # TODO remove for final version (is already removed from frontend)
+  # Development only
   public
     # Handle
     # /api/v1/admin/set??? (values?)

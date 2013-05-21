@@ -26,3 +26,4 @@ en:
   no_icd_chop_data: "No ICD/CHOP data found for given code"
   request_not_chop_type: "Your request is not a CHOP code"
   request_not_icd_type: "Your request is not an ICD code"
+  weights_not_available_in_production: "Manipulation of provider weights forbidden in production mode"
