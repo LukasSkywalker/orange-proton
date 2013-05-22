@@ -55,6 +55,10 @@ Trail.prototype.trimTo = function(index) {
     $(document).trigger('trailUpdated', [this]);
 };
 
+/**
+ * Sets the trail to a certain pattern
+ * @param trail The trail to set to
+ */
 Trail.prototype.setTrail = function(trail) {
     this.crumbs = trail;
     $(document).trigger('trailUpdated', [this]);
@@ -66,14 +70,18 @@ Trail.prototype.setTrail = function(trail) {
  */
 Trail.prototype.trimToNextOccurenceOf = function(code) {
     var idx = this.crumbs.pluck('code').lastIndexOf(code);
-    this.trimTo(idx);
+
+    if (idx >= 0)
+        this.trimTo(idx);
 };
 
 /**
  *
- * @returns {String} Returns the code of the last crumb in the trail
+ * @returns {String} Returns the code of the last crumb in the trail. If trail is empty, returns null
  */
 Trail.prototype.lastCode = function() {
+    if (this.crumbs.isEmpty())
+        return null;
     return this.crumbs.last().code;
 };
 
