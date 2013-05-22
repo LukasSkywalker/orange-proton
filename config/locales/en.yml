@@ -1,29 +1,55 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
-
 en:
-  syn: "Synonyms"
-  field: "Speciality"
-  doc: "Doctor"
-  super: "Superclass"
-  sub: "Subclass"
-  drg: "DRG"
-  exclusiva: "Exclusiva"
-  inclusiva: "Inclusiva"
-  search: "Search"
-  legend: "Legend"
-  location: "Your location"
-  error: "Error"
-  reset: "Reset"
-  save: "Save"
-  position: "Select position"
-  doc_help: "Doctors near you"
-  info_title: "Help"
-  info_text:  "Click on a speciality, to find therein specializing doctors near you."
-  related: "Related diagnosis"
+  mindmap:
+    relevance: "Relevanz"
+    doctors: "Ärzte"
+    type:
+      syn: "Synonyms"
+      field: "Speciality"
+      doc: "Doctor"
+      super: "Superclass"
+      sub: "Subclass"
+      drg: "DRG"
+      exclusiva: "Exclusiva"
+      inclusiva: "Inclusiva"
 
-#errors
-  no_icd_chop_data: "No ICD/CHOP data found for given code"
-  request_not_chop_type: "Your request is not a CHOP code"
-  request_not_icd_type: "Your request is not an ICD code"
-  weights_not_available_in_production: "Manipulation of provider weights forbidden in production mode"
+  action:
+    search: "Search"
+    cancel: "Abbrechen"
+    auto: "Automatisch ermitteln"
+    save: "Save"
+    center_map: "Karte zentrieren"
+
+  help:
+    position: "Positionsauswahl - Marker klicken und ziehen zum ändern, oder eingeben"
+    tooltip:
+      enter_icd_or_chop: "Geben Sie hier einen ICD- oder CHOP- Code ein"
+      choose_catalog: "Wählen Sie einen Katalog"
+      choose_mode: "Wählen Sie den Modus"
+      choose_language: "Wählen Sie die Sprache"
+      shows_help: "Zeigt Hilfe und Legende an"
+      change_loc: "Klicken Sie hier um Ihren Standort zu ändern"
+      location:
+        enter: "Geben Sie hier Ihren Standort ein."
+        search: "Klicken Sie hier um Ihren Standort zu suchen."
+        center: "Klicken Sie hier um die Map-Ansicht zurück zu setzen."
+        abort: "Klicken Sie hier um die Standortänderung abzubrechen."
+        confirm: "Klicken Sie hier um den Standort zu übernehmen."
+        auto: "Klicken Sie hier um Ihren Standort automatisch ermitteln zu lassen."
+
+  info:
+    info_hidden: "Es konnten nicht alle Informationen angezeigt werden"
+    show_fallback: "Zeige Ärzte für Fachgebiet"
+    fallback_language: "Musste auf andere Sprache zurückfallen"
+    doc_help: "Doctors near you"
+    location: "Ihr Standort"
+
+  breadcrumb:
+    root: "Ausgangspunkt"
+    of: "von"
+    related: "Related diagnosis"
+
+  error:
+    no_icd_chop_data: "No ICD/CHOP data found for given code"
+    request_not_chop_type: "Your request is not a CHOP code"
+    request_not_icd_type: "Your request is not an ICD code"
+    weights_not_available_in_production: "Manipulation of provider weights forbidden in production mode"

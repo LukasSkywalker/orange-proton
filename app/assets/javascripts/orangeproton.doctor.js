@@ -55,10 +55,10 @@ orangeproton.doctor = {
             var $map = $('<div id="map"></div>');
             var $help =
                 ($.browser.name === 'msie' && $.browser.version === '7.0')?   //Don't add center button in IE7
-                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('doc_help')+'</div>' +
+                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('info.doc_help')+'</div>' +
                         '</div> '):
-                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('doc_help')+'</div>' +
-                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('center_map')+ '"></div>' +
+                    $('<div id="doc-header"><div id="doc-title">'+ I18n.t('info.doc_help')+'</div>' +
+                        '<div id="center-button" class=" icon-pushpin icon-2x clickable" title="' +I18n.t('action.center_map')+ '"></div>' +
                         '</div> ');
 
             $container.append($docList).append($map).append('<div style="clear:both;"></div>');
@@ -67,7 +67,7 @@ orangeproton.doctor = {
 
             var fieldFallbacks = orangeproton.doctor.fallbacks;
 
-            var fbList = '<span>'+I18n.t('show_fallback')+':</span><br/><ul>';
+            var fbList = '<span>'+I18n.t('info.show_fallback')+':</span><br/><ul>';
             var loc = orangeproton.location.getLocation();
 
             for (var i = 0; i < fieldFallbacks.length; i++) {

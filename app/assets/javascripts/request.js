@@ -99,7 +99,7 @@ $(document).ready(function () {
         lat = lat || pos.lat;
         lng = lng || pos.lng;
         orangeproton.location.reverseGeoCode(lat, lng, function (lat, lng, address) {
-            $('.location').html('<p class="icon-globe globe"></p><p id="loc">' + I18n.t('location') + ': </p><p>' + address.ellipses(100) + '</p>');
+            $('.location').html('<p class="icon-globe globe"></p><p id="loc">' + I18n.t('info.location') + ': </p><p>' + address.ellipses(100) + '</p>');
         });
     });
 
@@ -114,7 +114,6 @@ $(document).ready(function () {
     // load the panel in development mode
     if (window.rails_env === 'development' || window.rails_env === 'development-remote') {
         orangeproton.admin.displayPanel();
-        console.log("sdf");
         orangeproton.admin.loadPanel();
         var $panelToggler = $('#hide-panels');
         // click handler for hiding the whole right panel

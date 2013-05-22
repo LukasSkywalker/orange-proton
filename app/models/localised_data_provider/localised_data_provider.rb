@@ -24,7 +24,7 @@ class LocalisedDataProvider
     lang = language # cannot use language parameter because then changing it in an inner block as no effect
 
     assert_language(lang)
-    raise ProviderLookupError.new('unknown_code_type', lang) if get_code_type(code) == :unknown
+    raise ProviderLookupError.new('error.unknown_code_type', lang) if get_code_type(code) == :unknown
 
     # lang fallback
     if !@db.has_data_for_language_and_catalog?(lang, catalog)
@@ -34,11 +34,11 @@ class LocalisedDataProvider
       assert(lang != old_language)
       assert_language(lang)
       # try again - confirmed working (try a chop code with en)
-      raise ProviderLookupError.new('no_icd_chop_data', lang) unless @db.has_data_for_language_and_catalog?(lang, catalog)
+      raise ProviderLookupError.new('error.no_icd_chop_data', lang) unless @db.has_data_for_language_and_catalog?(lang, catalog)
     end
 
     data = @db.get_catalog_entry(code, lang, catalog)
-    raise ProviderLookupError.new('no_icd_chop_data', lang) if data.nil?
+    raise ProviderLookupError.new('error.no_icd_chop_data', lang) if data.nil?
 
     # return changed lang and data
     {:data => data, :language => lang}

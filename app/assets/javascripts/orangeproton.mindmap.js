@@ -195,7 +195,7 @@ orangeproton.mindmap = {
       var field = fields[i];
       var n = field.name;
       var r = field.relatedness;
-      var newdiv = $('<div class="field clickable" title="'+I18n.t('relevance')+' ' + Math.round(r * 100) + '%"><div class="content">'+ n +
+      var newdiv = $('<div class="field clickable" title="'+I18n.t('mindmap.relevance')+' ' + Math.round(r * 100) + '%"><div class="content">'+ n +
           '<div class="relatedness-container">' +
           '<div class="relatedness-display" style="width:' + r * 100 + '%;"></div>' +
           '</div></div>' +
@@ -239,7 +239,7 @@ orangeproton.mindmap = {
     });
 
     if(response.result.is_fallback){
-      $.notify.alert(I18n.t('fallback_language'), { occupySpace : true ,close : true, autoClose : 3000});
+      $.notify.alert(I18n.t('info.fallback_language'), { occupySpace : true ,close : true, autoClose : 3000});
     }
   }
 };

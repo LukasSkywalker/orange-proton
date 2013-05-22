@@ -1,25 +1,54 @@
 fr:
-  syn: "Synonymes"
-  field: "Branche"
-  doc: "Médcin"
-  super: "Classe supérieure"
-  sub: "Classe inférieure"
-  drg: "DRG"
-  exclusiva: "Exclusiva"
-  inclusiva: "Inclusiva"
-  search: "Chercher"
-  legend: "Légende"
-  location: "Votre lieu"
-  error: "Erreur"
-  reset: "Reculer"
-  save: "Enregistrer"
-  position: "Choisir position"
-  doc_help: "Médcins près de vous"
-  info_title: "Aide"
-  info_text:  "Appuyez sur une branche, pour trouver des docteurs y specialisé."
-  related: "Verwandte Diagnose"
+  mindmap:
+    relevance: "Relevanz"
+    doctors: "Ärzte"
+    type:
+      syn: "Synonyme"
+      field: "Fachrichtung"
+      doc: "Doktor"
+      super: "Oberklasse"
+      sub: "Unterklasse"
+      drg: "DRG"
+      exclusiva: "Exklusiva"
+      inclusiva: "Inklusiva"
 
-#errors
-  no_icd_chop_data: "Il n'y a pas d'informations ICD/CHOP pour le code demandé"
-  request_not_chop_type: "Votre demande n'est pas un CHOP code"
-  request_not_icd_type: "Votre demande n'est pas un ICD code"
+  action:
+    search: "Suchen"
+    cancel: "Abbrechen"
+    auto: "Automatisch ermitteln"
+    save: "Speichern"
+    center_map: "Karte zentrieren"
+
+  help:
+    position: "Positionsauswahl - Marker klicken und ziehen zum ändern, oder eingeben"
+    tooltip:
+      enter_icd_or_chop: "Geben Sie hier einen ICD- oder CHOP- Code ein"
+      choose_catalog: "Wählen Sie einen Katalog"
+      choose_mode: "Wählen Sie den Modus"
+      choose_language: "Wählen Sie die Sprache"
+      shows_help: "Zeigt Hilfe und Legende an"
+      change_loc: "Klicken Sie hier um Ihren Standort zu ändern"
+      location:
+        enter: "Geben Sie hier Ihren Standort ein."
+        search: "Klicken Sie hier um Ihren Standort zu suchen."
+        center: "Klicken Sie hier um die Map-Ansicht zurück zu setzen."
+        abort: "Klicken Sie hier um die Standortänderung abzubrechen."
+        confirm: "Klicken Sie hier um den Standort zu übernehmen."
+        auto: "Klicken Sie hier um Ihren Standort automatisch ermitteln zu lassen."
+
+  info:
+    info_hidden: "Es konnten nicht alle Informationen angezeigt werden"
+    show_fallback: "Zeige Ärzte für Fachgebiet"
+    fallback_language: "Musste auf andere Sprache zurückfallen"
+    doc_help: "Ärzte in ihrer Umgebung"
+    location: "Ihr Standort"
+
+  breadcrumb:
+    root: "Ausgangspunkt"
+    of: "von"
+    related: "Verwandte Diagnose"
+
+  error:
+    no_icd_chop_data: "Keine ICD/CHOP Daten gefunden für gegebenen Code"
+    request_not_chop_type: "Ihre Anfrage ist kein CHOP Code"
+    request_not_icd_type: "Ihre Anfrage ist kein ICD Code"

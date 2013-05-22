@@ -27,11 +27,11 @@ class API < Grape::API
       catalog = catalog.split('_')[0].to_sym
 
       if type == :unknown
-        raise ProviderLookupError.new('no_icd_chop_data', lang)
+        raise ProviderLookupError.new('error.no_icd_chop_data', lang)
       elsif catalog == :chop and type != :chop
-        raise ProviderLookupError.new('request_not_chop_type', lang)
+        raise ProviderLookupError.new('error.request_not_chop_type', lang)
       elsif catalog == :icd and type != :icd
-        raise ProviderLookupError.new('request_not_icd_type', lang)
+        raise ProviderLookupError.new('error.request_not_icd_type', lang)
       end
     end
   end
@@ -175,7 +175,7 @@ class API < Grape::API
 
         def protect_production!
           if Rails.env == 'production'
-            raise ApiError.new('weights_not_available_in_production')
+            raise ApiError.new('error.weights_not_available_in_production')
           end
         end
       end

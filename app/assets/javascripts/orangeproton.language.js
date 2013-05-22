@@ -13,28 +13,23 @@ orangeproton.language = {
         this.updateUiLanguage();
     },
 
-    /**
-     * Updates the language of the UI
-     */
+
     updateUiLanguage: function () {
-        $('#loc').html(I18n.t('location') + ': ');
+        $('#loc').html(I18n.t('info.location') + ': ');
         this.updateToolTips();
     },
 
-    /**
-     * Updates the language of the tooltips
-     */
     updateToolTips: function(){
-        $('#code').attr('title', I18n.t('enter_icd_or_chop'));
-        $('#catalogSelectBoxIt').attr('title', I18n.t('choose_catalog'));
-        $('#modeSelectBoxIt').attr('title', I18n.t('choose_mode'));
-        $('#langSelectBoxIt').attr('title', I18n.t('choose_language'));
-        $('#hide-panels').attr('title', I18n.t('shows_help'));
-        $('#location-container').attr('title', I18n.t('change_loc'));
+        //Tooltips
+        $('#code').attr('title', I18n.t('help.tooltip.enter_icd_or_chop'));
+        $('#catalogSelectBoxIt').attr('title', I18n.t('help.tooltip.choose_catalog'));
+        $('#modeSelectBoxIt').attr('title', I18n.t('help.tooltip.choose_mode'));
+        $('#langSelectBoxIt').attr('title', I18n.t('help.tooltip.choose_language'));
+        $('#hide-panels').attr('title', I18n.t('help.tooltip.shows_help'));
+        $('#location-container').attr('title', I18n.t('help.tooltip.change_loc'));
 
         $('#search-bar [title]').tipsy(orangeproton.options.libraries.tipsy);
 
-        //Apply tipsy on the hide-panels element, but not with the standard options
         $('#hide-panels').tipsy({
             trigger: 'hover',
             gravity: 'e',
