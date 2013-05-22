@@ -5,8 +5,7 @@ class MockLocalisedDataProvider
 
   # @raise [RuntimeError]
   def get_icd_or_chop_data(code, language, catalog)
-    assert_code(code) # we are replying with an icd code here, don't ask for something
-    # else! PF: Which test failed when this was assert_icd_code???
+    assert_icd_code(code) # we are replying with an icd code here, don't ask for something
     assert_language(language)
     {
       data: {

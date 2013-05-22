@@ -15,10 +15,8 @@ class ThesaurInfoProvider < DatabaseInfoProvider
    @db.get_available_thesaur_names.each {|tn|
         if @db.is_icd_code_in_thesaur_named?(icd_code, tn)
          @db.get_fs_codes_for_thesaur_named(tn).each {|fs_code|
-            fields << fs_code_to_field_entry(
-              fs_code,
-              1 # full relatedness -- we have no way to judge more precisely (except maybe weight fields already present higher?)
-            )
+            fields << fs_code_to_field_entry(fs_code, 1)
+            # full relatedness -- we have no way to judge more precisely (except maybe weight fields already present higher?)
           }
         end
     }

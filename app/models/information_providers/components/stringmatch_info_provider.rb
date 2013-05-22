@@ -1,6 +1,7 @@
 # This finds Fachgebiete related to an illness by comparing the (german) name of the 
-# illness or any of it's synonyms and inclusiva to a list of keywords related to a fachgebiet.
+# illness or any of its synonyms to a list of keywords related to a fachgebiet.
 # This is based on a manually created list of keywords and exclusiva.
+# See the dictionaries/icd/chop_dictionary collections in the db.
 class StringmatchInfoProvider < DatabaseInfoProvider
 
   # @see DatabaseInfoProvider#get_fields
@@ -13,10 +14,10 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     Rails.logger.info entry
     return [] if entry.nil? # cannot work unless there is a german entry
 
-    keywords= @db.get_icd_keywords()
+    keywords      = @db.get_icd_keywords()
     keywords_chop = @db.get_chop_keywords()
 
-    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop' #this is a hack because we removed the method to check for code-type
+    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop'
 
     get_fs_for_entry(keywords, entry, max_count)
   end
@@ -29,9 +30,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     # Search for keywords in illness text (main name)
     code_text = entry['text'].downcase
     keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry,
-                       1 # full relatedness for keywords in main name
-                       ))
+      fs.concat(get_fs(code_text, keyword_entry, 1)) # full relatedness for keywords in main name
     end
 
     # Consolidate synonyms into one string
@@ -45,19 +44,17 @@ class StringmatchInfoProvider < DatabaseInfoProvider
 
     # Search for keywords in synonym string
     keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry,
-                       0.3 # keywords matched in synonyms are just fallbacks so they have much less relatedness
-
-                       ))
+      fs.concat(get_fs(code_text, keyword_entry, 0.3))
+      # keywords matched in synonyms are just fallbacks so they have much less relatedness
     end
 
     fs = fold_duplicate_fields fs
     fs[0..max_count-1]
   end
 
-  # @return An array of the FieldEntries of the given keyword_entry
-  # if code_text contains the keyword and none of the exclusiva 
-  # otherwise the array is empty.
+  # @return An array of the FieldEntries generated from the codes in the given keyword_entry's ['fmhcodes'] attribute
+  #   if code_text contains the keyword (keyword_entry['keyword']) *and* none of the exclusiva (keyword_entry['exklusiva'])
+  #   otherwise the array is empty.
   def get_fs(code_text, keyword_entry, relatedness)
     return [] unless code_text.include? keyword_entry['keyword'].downcase
 

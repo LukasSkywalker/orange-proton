@@ -1,3 +1,6 @@
+# This class enhances {FieldEntry}s to contain fallback fs_codes that will yield different sets of doctors.
+# The fallbacks are chosen to be more general fields (a manually set up table) such that we find doctors closer to the user but less specific to the given fachgebiet.
+
 class FallbackProvider
   attr_reader :db
 
@@ -5,6 +8,9 @@ class FallbackProvider
     @db = DatabaseAdapter.new
   end
 
+  # For all FieldEntries in the array finds all the fs_codes higher in the fallback hierarchy (a tree) than that entry's code which yield different docfields.
+  # @param api_fields_array [Array] An array of {FieldEntry}s for which we are to search fallbacks.
+  # @raise [RuntimeError]
   def get_fallbacks(api_fields_array)
     assert_fields_array(api_fields_array)
     table = db.get_fmh_fallbacks_table
@@ -40,10 +46,10 @@ class FallbackProvider
         Rails.logger.info '... and was added as fallback'
       end
 
+      # Enforce this most general fallback to be always included.
       field.add_fallback(5) unless docfields.include? 'allgemeinaerzte' # 5 is allgemeine medizin
       Rails.logger.info field.fallbacks
     end
-
 
   end
 end

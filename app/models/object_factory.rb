@@ -1,7 +1,7 @@
 require_rel '.'
 require_rel '../models/information_providers'
 
-# Module of static methods, returning the Information retrieval objects used by the api.
+# Module of static methods, returning the Information retrieval objects used by the api. We return mock objects when testing.
 module ObjectFactory
 
   class << self
@@ -53,6 +53,7 @@ module ObjectFactory
       end
     end
 
+    # @raise [RuntimeError]
     def get_fallback_provider
       case Rails.env
         when 'test'
@@ -63,7 +64,6 @@ module ObjectFactory
           raise "No fallback provider for environment #{Rails.env}"
       end
     end
-
 
   end
 end

@@ -55,18 +55,21 @@ class DatabaseAdapter
   end
 
   # @param catalog [String] A potential catalog name (e.g. 'icd_2012_ch')
-  # Throws an exception if catalog isn't the name of a catalog in the db.
+  # Raises an exception if catalog isn't the name of a catalog in the db.
   # @note The catalog names are defined in the api's catalog regex and in config/mongo.yml
+  # @raise [RuntimeError]
   def assert_catalog(catalog)
     raise "catalog #{catalog} does not exist " unless (@catalogs.has_key?(catalog))
   end
 
   # @return [Array] the fallback table - an array of ("from_fs": FSCode, "to_fs": FSCode) hashes.
+  # @raise [RuntimeError]
   def get_fmh_fallbacks_table
     @fmh_fallbacks.find().to_a
   end
 
   # @return True if the <catalog> database (must exist in some language) exists in <language>.
+  # @raise [RuntimeError]
   def has_data_for_language_and_catalog?(language, catalog)
     assert_catalog(catalog)
     assert_language(language)
@@ -76,9 +79,10 @@ class DatabaseAdapter
 
   # @param code [String] An ICD or CHOP code.
   # @param language [String] 'de', 'en', 'fr', 'it'
-  # @param catalog [String] The catalog to look in.
+  # @param catalog [String] The catalog to look in
   # @return [Hash] The raw icd database entry for the given ICD or CHOP code.
   #   nil if there's no entry for the given code
+  # @raise [RuntimeError]
   def get_catalog_entry(code, language, catalog)
     assert_code(code)
     assert_language(language)
@@ -90,6 +94,7 @@ class DatabaseAdapter
   # @param code [String] An ICD or CHOP code.
   # @param catalog [String] The catalog to look in.
   # @return [Array] An array of the drgs (most common diagnoses) for a given ICD/CHOP code.
+  # @raise [RuntimeError]
   def get_drgs_for_code(code, catalog)
     assert_catalog(catalog)
     assert_code(code)
@@ -115,6 +120,7 @@ class DatabaseAdapter
   #   An empty array if there are none or this is not an mdc_code.
   # @note Used for icd > drg > mdc > fs mapping. This is based on a manually set up table.
   def get_fs_code_by_mdc(mdc_code)
+    # assert_kind_of(String, mdc_code) # mdc's are something like 18 or 21A, 21B...
     documents = @mdc_to_fs.find({mdc_code: mdc_code.to_s})
     fmhs = []
     documents.each do |document|
@@ -135,6 +141,7 @@ class DatabaseAdapter
 
   # @param language [String] 'de', 'en', 'fr', 'it'
   # @return [Hash] A hash fs_code (Integer) to fs_name (localised to language).
+  # @raise [RuntimeError]
   def get_fs_names(language)
     assert_language(language)
     fs = {}
@@ -147,6 +154,7 @@ class DatabaseAdapter
 
   # @param thesaur_name any of the names returned by get_available_thesaur_names()
   # @return true if the given icd code is listed in the thesaur
+  # @raise [RuntimeError]
   def is_icd_code_in_thesaur_named?(icd_code, thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
     assert_icd_code(icd_code)
@@ -155,6 +163,7 @@ class DatabaseAdapter
 
   # @return [Array] An array of all fs codes associated to the given thesaur.
   # @param thesaur_name one of get_available_thesaur_names().
+  # @raise [RuntimeError]
   def get_fs_codes_for_thesaur_named(thesaur_name)
     assert(get_available_thesaur_names().include?(thesaur_name))
     @thesaur_to_fs.find(
@@ -173,6 +182,7 @@ class DatabaseAdapter
   # @return [String] The name of the Fachgebiet/Spezialisierung with the given code
   #   in the language specified. Throws an assertion error or returns
   #   nil if fs_code is not a valid code!
+  # @raise [RuntimeError]
   def get_fs_name(fs_code, language)
     assert_language(language)
     assert_field_code(fs_code)
@@ -185,6 +195,7 @@ class DatabaseAdapter
   #   if fs_code is not a valid fs code!
   #   Might be empty if there are no matching specialities.
   # @note This is based on a manually set up table. This is used by get_doctors_by_fs.
+  # @raise [RuntimeError]
   def get_specialities_from_fs(fs_code)
     assert_field_code(fs_code)
     @docfield_to_fmh.find(
@@ -194,6 +205,7 @@ class DatabaseAdapter
 
   # @return [Array] An array of all doctors (the raw db entry) with speciality in a
   #   given field (given as fs_code), possibly empty.
+  # @raise [RuntimeError]
   def get_doctors_by_fs(fs_code)
     assert_field_code(fs_code)
     specs = get_specialities_from_fs fs_code
@@ -233,6 +245,7 @@ class DatabaseAdapter
   #   ICD code lies within.
   #   Every range contains an array 'fmhcodes' of codes related to it.
   # @note This is based on a manually set up table.
+  # @raise [RuntimeError]
   def get_chop_ranges(chop)
     assert_chop_code(chop)
     chop = chop[0] + chop[1] # only compare the first two digits

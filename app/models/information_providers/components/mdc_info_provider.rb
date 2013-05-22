@@ -13,7 +13,7 @@ class MDCInfoProvider < DatabaseInfoProvider
 
     drgs = @db.get_drgs_for_code(code, catalog)
 
-    # Get the prefixes  
+    # get the prefixes
     mdcs = drgs.map { |drg|
       prefix = drg[0]
      @db.get_mdc_code(prefix)

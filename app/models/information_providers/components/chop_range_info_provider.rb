@@ -19,8 +19,6 @@ class ChopRangeInfoProvider < DatabaseInfoProvider
       codes.each do |code|
         code = code.to_i # some of these are floats in the db unfortunately...
         fields << fs_code_to_field_entry(code, 1.0) # full relatedness, we don't know better
-                                                    # MH: adapt chop_range_spec if you change relatedness
-
       end
     end
 

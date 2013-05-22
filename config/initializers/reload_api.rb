@@ -1,3 +1,5 @@
+# This allows reloading changed .rb files on the fly (without restarting the server).
+# The reloading doesn't seem to work everytime -- if something goes wrong try a full restart.
 if Rails.env.development?
   api_files = Dir["#{Rails.root}/app/api/**/*.rb"]
   api_reloader = ActiveSupport::FileUpdateChecker.new(api_files) do
