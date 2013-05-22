@@ -13,14 +13,18 @@ orangeproton.language = {
         this.updateUiLanguage();
     },
 
-
+    /**
+     * Updates the language of the UI
+     */
     updateUiLanguage: function () {
         $('#loc').html(I18n.t('location') + ': ');
         this.updateToolTips();
     },
 
+    /**
+     * Updates the language of the tooltips
+     */
     updateToolTips: function(){
-        //Tooltips
         $('#code').attr('title', I18n.t('enter_icd_or_chop'));
         $('#catalogSelectBoxIt').attr('title', I18n.t('choose_catalog'));
         $('#modeSelectBoxIt').attr('title', I18n.t('choose_mode'));
@@ -30,6 +34,7 @@ orangeproton.language = {
 
         $('#search-bar [title]').tipsy(orangeproton.options.libraries.tipsy);
 
+        //Apply tipsy on the hide-panels element, but not with the standard options
         $('#hide-panels').tipsy({
             trigger: 'hover',
             gravity: 'e',

@@ -38,17 +38,21 @@ $(document).ready(function () {
     /* TOP-BAR */
     // start search on enter key press
     $searchBar.enterHandler(function () {
-        orangeproton.trail.clear();
-        orangeproton.trail.push('root', $codeInput.val().toUpperCase());
-        $(document).trigger('paramChange', [null, null, true]);
+        startSearch();
     });
 
     // start search on button click
     $searchButton.on('click', null, function () {
+        startSearch();
+    });
+
+     // Starts a new search.
+     //Clears the breadcrumbs first.
+    function startSearch(){
         orangeproton.trail.clear();
         orangeproton.trail.push('root', $codeInput.val().toUpperCase());
         $(document).trigger('paramChange', [null, null, true]);
-    });
+    }
 
     // focus search field
     $codeInput.focus();
@@ -59,6 +63,7 @@ $(document).ready(function () {
         $('#location-popup [title]').tipsy(orangeproton.options.libraries.tipsy);
     });
 
+    //Sets the standard values of I18n
     I18n.defaultLocale = 'de';
     I18n.fallbacks = true;
 
@@ -100,6 +105,7 @@ $(document).ready(function () {
 
     $(document).trigger('locationChange');
 
+    //add the hover event for container highlighting
     $searchBar.hoverIntent(function () {
         clearHighlight();
     }, null);
@@ -147,7 +153,7 @@ $(document).ready(function () {
         $catalog.val(catalog);
         $mode.val(mode);
 
-
+        //set the dropdown to show the selected values
         var $langSelect = $("#lang");
         $langSelect.find("option[value=" + lang + "]").attr('selected', 'selected');
         $langSelect.data("selectBox-selectBoxIt").refresh();
@@ -260,6 +266,8 @@ var mindmapper = {
      * @method getICD
      * @param {String} input the search term
      * @param {String} lang the search language
+     * @param {String} mode the selected display mdoe
+     * @param {String} catalog the selected catalog
      */
     getICD: function (input, lang, mode, catalog) {
         var params = '?code={0}&lang={1}&catalog={2}'.format(input, lang, catalog);
@@ -323,7 +331,7 @@ var mindmapper = {
     },
 
     /**
-     * check if the right panels are hidden
+     * check if the right panel is hidden
      * @returns {Boolean} whether they are hidden
      */
     panelHidden: function () {
@@ -367,11 +375,13 @@ function toggleHighlightContainer(className) {
 
 }
 
+//Clear all the container highlights
 function clearHighlight() {
     $('.container').removeClass('active', 400);
     last = undefined;
 }
 
+//Resize the width of the search bar to fit into 800px
 function resizeSearchBar(){
     var searchBarWidth = $('#search-bar').width();
     var $loc = $('#location-container');
