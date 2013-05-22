@@ -121,12 +121,13 @@ input[type=button] {
 /*************Side panel*************/
 /************************************/
 #panels-container {
+  background: #FFF;
   max-width: 250px;
   position: absolute;
-  top: 80px;
+  top: 60px;
   right: 0;
   width: 200px;
-  z-index: 10;
+  z-index: 20;
   display: none;
 
   .title {
@@ -144,7 +145,7 @@ input[type=button] {
     }
   }
 
-  /* the bow with the legend and the admin panel*/
+  /* the bow with the admin panel*/
   #panels {
     width: 100%;
     display: block;
@@ -181,25 +182,13 @@ input[type=button] {
         margin: 5px;
       }
     }
-
-    /* the legend */
-    #legend {
-
-      /* the items of the legend */
-      .legend {
-        margin: 10px;
-        padding-left: 10px;
-        text-align: center;
-        position: relative;
-      }
-    }
   }
 }
 
 #hide-panels {
   display: inline-table;
   position: absolute;
-  top: 95px;
+  top: 75px;
   right: 0px;
   background: $light-grey;
   width: 30px;
