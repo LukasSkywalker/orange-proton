@@ -23,8 +23,8 @@ class Seed
     db_config = YAML.load_file('config/mongo.yml')[environment]
 
     #initialize some values
-    db = db_config['collections']['icd_keywords'][0]
-    coll = db_config['collections']['icd_keywords'][1]
+    db = db_config['collections']['icd_dictionary'][0]
+    coll = db_config['collections']['icd_dictionary'][1]
     host = db_config['host']
     port = db_config['port']
     admin_db = db_config['database']
@@ -34,12 +34,12 @@ class Seed
     adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
 
     #Insert/Update icd dictionary
-    adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
+    adapter.set_collection(db_config['collections']['icd_dictionary'][0],db_config['collections']['icd_dictionary'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/icd_dictionary.csv")
 
     #Insert/Update chop dictionary
-    adapter.set_collection(db_config['collections']['chop_keywords'][0],db_config['collections']['chop_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+    adapter.set_collection(db_config['collections']['chop_dictionary'][0],db_config['collections']['chop_dictionary'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/chop_dictionary.csv")
 
     #Insert/Update CHOP catalog 2012 de
     adapter.set_collection(db_config['collections']['catalogs']['chop_2012_ch']['de'][0],db_config['collections']['catalogs']['chop_2012_ch']['de'][1])
@@ -144,8 +144,8 @@ class Seed
     db_config = YAML.load_file('config/mongo.yml')[environment]
 
     #initialize some values
-    db = db_config['collections']['icd_keywords'][0]
-    coll = db_config['collections']['icd_keywords'][1]
+    db = db_config['collections']['icd_dictionary'][0]
+    coll = db_config['collections']['icd_dictionary'][1]
     host = db_config['host']
     port = db_config['port']
     admin_db = db_config['database']
@@ -155,12 +155,12 @@ class Seed
     adapter = ScriptDBAdapter.new(db, coll , host, port, admin_db, true, write_user, pw)
 
     #Insert/Update icd dictionary
-    adapter.set_collection(db_config['collections']['icd_keywords'][0],db_config['collections']['icd_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/icd_keywords.csv")
+    adapter.set_collection(db_config['collections']['icd_dictionary'][0],db_config['collections']['icd_dictionary'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/icd_dictionary.csv")
 
     #Insert/Update chop dictionary
-    adapter.set_collection(db_config['collections']['chop_keywords'][0],db_config['collections']['chop_keywords'][1])
-    DictionaryParserRunscript.run(adapter, "../csv_files/chop_keywords.csv")
+    adapter.set_collection(db_config['collections']['chop_dictionary'][0],db_config['collections']['chop_dictionary'][1])
+    DictionaryParserRunscript.run(adapter, "../csv_files/chop_dictionary.csv")
 
     #Insert/Update doctors to fmh
     adapter.set_collection(db_config['collections']['docfield_to_FMH_code'][0],db_config['collections']['docfield_to_FMH_code'][1])
@@ -210,8 +210,8 @@ class Seed
     db_config = YAML.load_file('config/mongo.yml')[environment]
 
     #initialize some values
-    db = db_config['collections']['icd_keywords'][0]
-    coll = db_config['collections']['icd_keywords'][1]
+    db = db_config['collections']['icd_dictionary'][0]
+    coll = db_config['collections']['icd_dictionary'][1]
     host = db_config['host']
     port = db_config['port']
     admin_db = db_config['database']

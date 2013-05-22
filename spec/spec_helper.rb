@@ -10,14 +10,6 @@ require 'rspec/autorun'
 require 'simplecov-rcov'
 SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
 
-require 'capybara/rails'
-require 'capybara/rspec'
-Capybara.default_driver = :selenium
-Capybara.app_host = 'http://pse4.iam.unibe.ch:3000'
-Capybara.default_wait_time = 5
-
-Capybara.run_server = false
-
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}

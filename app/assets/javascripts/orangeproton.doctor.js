@@ -106,7 +106,7 @@ orangeproton.doctor = {
                 lng: orangeproton.location.getLocation().lng,
                 icon: 'http://maps.google.com/mapfiles/ms/micons/green-dot.png',
                 shadow: shadow,
-                infoWindow: { content: 'Ihr Standort' }
+                infoWindow: { content: I18n.t('location') }
             });
 
             //Because IE7 messes this up, we don't show it there
@@ -200,8 +200,8 @@ orangeproton.doctor = {
                     '<div id="docItem-{0}" class="docItem">'
                         + '<label class="docLabel clickable" >'
                         + '  <p class="doc-number">'+ number +'</p>'
-                        + '  <p class="doc doc-title">{1}</p>'
-                        + '  <p class="doc address">{2}<br />{3}</p>'
+                        + '  <p class="doc doc-title"><i>{1}</i></p>'
+                        + '  <p class="doc address"><b>{2}</b><br />{3}</p>'
                         + '</label>'
                         + '</div>';
 

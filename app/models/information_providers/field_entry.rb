@@ -77,7 +77,7 @@ class FieldEntry
   # @param lang [String] "de", "fr", "it", "en"
   # Sets self.name to be the localised name of the self.code.
   # self.name will be nil if the code doesn't exist.
-  # Also localises the "name" part of each fallback entry according to it's "code".
+  # Also localises the "name" part of each fallback entry according to its "code".
   # All codes can be translated to all supported languages.
   # @raise [RuntimeError]
   def localise(db, lang)

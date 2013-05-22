@@ -8,6 +8,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
     super
 
     # the providers get instantiated in a separate class (ProviderInstance)
+    # The order of these is important in Developemnt mode (the admin panel assumes it to be like this)
     @providers = [
       ProviderInstance.new(MDCInfoProvider.new,         0.4),
       ProviderInstance.new(IcdRangeInfoProvider.new,    0.6),
@@ -104,7 +105,7 @@ class CompoundInfoProvider < DatabaseInfoProvider
   # Development only
   public
     # Handle
-    # /api/v1/admin/set??? (values?)
+    # /api/v1/admin/set/ queries
     # Assign new weights to each info provider. Values is a simple list (?).
     def set_relatedness_weight(vals)
         @providers.each_with_index do |provider, index|

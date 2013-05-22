@@ -38,8 +38,8 @@ class DatabaseAdapter
 
     @mdc_to_fs     = @client[@collections_config['mdc_to_fmh'][0]][@collections_config['mdc_to_fmh'][1]]
     @mdc           = @client[@collections_config['mdcs'][0]][@collections_config['mdcs'][1]]
-    @icd_keywords  = @client[@collections_config['icd_keywords'][0]][@collections_config['icd_keywords'][1]]
-    @chop_keywords = @client[@collections_config['chop_keywords'][0]][@collections_config['chop_keywords'][1]]
+    @icd_dictionary  = @client[@collections_config['icd_dictionary'][0]][@collections_config['icd_dictionary'][1]]
+    @chop_dictionary = @client[@collections_config['chop_dictionary'][0]][@collections_config['chop_dictionary'][1]]
 
     @doctors     = @client[@collections_config['doctors'][0]][@collections_config['doctors'][1]]
     @compounds   = @client[@collections_config['compounds'][0]][@collections_config['compounds'][1]]
@@ -105,15 +105,15 @@ class DatabaseAdapter
   # @return [Array] The icd dictionary
   #   (an array of Hashes with "keyword" => String, "exklusiva" => [String], "fmhcodes" => [Integer 2-210]).
   # @see In the database, under dictionaries/icd_dictionary
-  def get_icd_keywords
-    @icd_keywords.find().to_a
+  def get_icd_dictionary
+    @icd_dictionary.find().to_a
   end
 
   # @return [Array] The chop dictionary
   #   (an array of Hashes with "keyword" => String, "exklusiva" => [String], "fmhcodes" => [Integer 2-210]).
   # @see In the database, under dictionaries/chop_dictionary
-  def get_chop_keywords
-    @chop_keywords.find().to_a
+  def get_chop_dictionary
+    @chop_dictionary.find().to_a
   end
 
   # @return [Array] An array of all fs codes related to a given MDC (Major diagnostic category).

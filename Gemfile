@@ -23,7 +23,6 @@ group :test do
   gem 'brakeman'
   gem 'simplecov'
   gem 'simplecov-rcov'
-  gem 'capybara'
 end
 
 group :test, :development do
