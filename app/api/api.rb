@@ -43,6 +43,13 @@ class API < Grape::API
                        {'Content-type' => 'application/json'}).finish
   end
 
+  # Always rescue from ApiErrors
+  rescue_from ApiError do |api_error|
+    response = Error.error_response(api_error.message, 'en').to_json
+    Rack::Response.new(response, api_error.http_code,
+                       {'Content-type' => 'application/json'}).finish
+  end
+
   # Handles the most important queries:
   # /api/v1/fields/get?code=string&count=integer&lang=string&catalog=...
   desc 'Returns data'
@@ -165,6 +172,12 @@ class API < Grape::API
           end
           weights
         end
+
+        def protect_production!
+          if Rails.env == 'production'
+            raise ApiError.new('weights_not_available_in_production')
+          end
+        end
       end
 
       desc 'Return provider weights'
@@ -174,9 +187,8 @@ class API < Grape::API
 
       desc 'Reset weights to default values'
       post 'reset' do
-        if Rails.env == 'production'
-          raise ProviderLookupError.new('weights_not_available_in_production', 'en')
-        end
+        protect_production!
+
         @@provider.reset_weights
         encode_weight_values
       end
@@ -187,13 +199,11 @@ class API < Grape::API
       end
 
       post 'set' do
-        if Rails.env == 'production'
-          raise ProviderLookupError.new('weights_not_available_in_production', 'en')
-        end
+        protect_production!
+
         values = extract_weight_values(params[:values])
         @@provider.set_relatedness_weight(values)
         encode_weight_values
-
       end
     end
   end
