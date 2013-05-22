@@ -2,6 +2,7 @@ var orangeproton = orangeproton || {};
 
 $(document).ready(function () {
 
+    //A layout fix for IE8
     if ($.browser.name === 'msie' && $.browser.version === '8.0') {
         var head = document.getElementsByTagName('head')[0],
             style = document.createElement('style');
@@ -17,7 +18,6 @@ $(document).ready(function () {
     var $codeInput = $('#code');
     var $lang = $('#lang');
     var $searchButton = $('#search-button');
-    var $panelToggler = $('#hide-panels');
     var $searchBar = $('#search-bar');
 
     $("select").selectBoxIt();
@@ -107,7 +107,14 @@ $(document).ready(function () {
     /* ADMIN-PANELS */
     // load the panel in development mode
     if (window.rails_env === 'development' || window.rails_env === 'development-remote') {
+        orangeproton.admin.displayPanel();
+        console.log("sdf");
         orangeproton.admin.loadPanel();
+        var $panelToggler = $('#hide-panels');
+        // click handler for hiding the whole right panel
+        $panelToggler.click(function () {
+            togglePanels();
+        });
     }
 
     //re-do layout when window size changes. Wait 150ms before firing.
@@ -181,11 +188,6 @@ $(document).ready(function () {
 
     // Adjust the size of the mindmap div
     orangeproton.mindmap.resizeMindmap();
-
-    // click handler for hiding the whole right panel
-    $panelToggler.click(function () {
-        togglePanels();
-    });
 
     // start geolocation
     orangeproton.location.startGeoLocation();
