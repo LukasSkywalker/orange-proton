@@ -1,6 +1,6 @@
 # This finds Fachgebiete related to an illness by comparing the (german) name of the 
 # illness or any of its synonyms to a list of keywords related to a fachgebiet.
-# This is based on a manually created list of keywords and exclusiva.
+# This is based on a manually created list of keywords and exclusiva (collected in "dictionaries").
 # See the dictionaries/icd/chop_dictionary collections in the db.
 class StringmatchInfoProvider < DatabaseInfoProvider
 
@@ -14,23 +14,23 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     Rails.logger.info entry
     return [] if entry.nil? # cannot work unless there is a german entry
 
-    keywords      = @db.get_icd_keywords()
-    keywords_chop = @db.get_chop_keywords()
+    dictionary      = @db.get_icd_dictionary()
+    if catalog[0..3] == 'chop'
+      dictionary_chop = @db.get_chop_dictionary()  # contains *additional* keywords
+      dictionary = dictionary.concat(dictionary_chop)
+    end
 
-    keywords = keywords.concat(keywords_chop) if catalog[0..3] == 'chop'
-
-    get_fs_for_entry(keywords, entry, max_count)
+    get_fs_for_entry(dictionary, entry, max_count)
   end
 
-
   private
-  def get_fs_for_entry(keywords, entry, max_count)
+  def get_fs_for_entry(dictionary, entry, max_count)
     fs = [] # array of fields ({FieldEntry}s)
 
     # Search for keywords in illness text (main name)
     code_text = entry['text'].downcase
-    keywords.each do |keyword_entry|
-      fs.concat(get_fs(code_text, keyword_entry, 1)) # full relatedness for keywords in main name
+    dictionary.each do |keyword_entry|
+      fs.concat(get_fs(code_text, keyword_entry, 1)) # full relatedness for dictionary in main name
     end
 
     # Consolidate synonyms into one string
@@ -43,7 +43,7 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     end
 
     # Search for keywords in synonym string
-    keywords.each do |keyword_entry|
+    dictionary.each do |keyword_entry|
       fs.concat(get_fs(code_text, keyword_entry, 0.3))
       # keywords matched in synonyms are just fallbacks so they have much less relatedness
     end
@@ -52,9 +52,11 @@ class StringmatchInfoProvider < DatabaseInfoProvider
     fs[0..max_count-1]
   end
 
-  # @return An array of the FieldEntries generated from the codes in the given keyword_entry's ['fmhcodes'] attribute
-  #   if code_text contains the keyword (keyword_entry['keyword']) *and* none of the exclusiva (keyword_entry['exklusiva'])
-  #   otherwise the array is empty.
+  # @return [Array] An array of the FieldEntries generated from the codes in the
+  #   given keyword_entry's ['fmhcodes'] attribute
+  #   if code_text contains the keyword (keyword_entry['keyword']) *and*
+  #   none of the exclusiva (keyword_entry['exklusiva']).
+  #   Otherwise the array returned is empty.
   def get_fs(code_text, keyword_entry, relatedness)
     return [] unless code_text.include? keyword_entry['keyword'].downcase
 

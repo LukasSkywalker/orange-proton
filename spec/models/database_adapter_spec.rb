@@ -41,9 +41,13 @@ describe DatabaseAdapter do
     no_entry.should be_nil
   end
 
+  it 'should not raise error when get_mdc_code is called with undefined prefix, 9 (Issue #127)' do
+    expect{@adapter.get_mdc_code(9)}.to_not raise_error NoMethodError
+  end
+
   it 'should return all fachgebiete keywords' do
-    @adapter.instance_variable_get(:@icd_keywords).stub(:find).and_return(['säugling', 'schilddrüse'])
-    @adapter.get_icd_keywords.should eq(['säugling', 'schilddrüse'])
+    @adapter.instance_variable_get(:@icd_dictionary).stub(:find).and_return(['säugling', 'schilddrüse'])
+    @adapter.get_icd_dictionary.should eq(['säugling', 'schilddrüse'])
   end
 
   it 'should find the fs code by mdc' do

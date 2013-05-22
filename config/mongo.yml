@@ -11,7 +11,7 @@ defaults: &defaults
   # Names of all the tables in the db
   collections: {
     chop_ranges: [ranges, chop_ranges_to_fmh],
-    icd_ranges: [ranges, icd_ranges_to_fmh],
+    icd_ranges : [ranges, icd_ranges_to_fmh],
     catalogs: {
       icd_2010_ch: {
       de: [icd_2010_ch,de],
@@ -33,18 +33,18 @@ defaults: &defaults
       it: [chop_2013_ch,it],
     }
   },
-  compounds : [fmh_compounds,compounds],
-  doctors : [doctors,doctors],
+  compounds            : [fmh_compounds,compounds],
+  doctors              : [doctors,doctors],
   docfield_to_FMH_code : [doctors,docfield_to_fmh],
-  icd_keywords : [dictionaries,icd_dictionary],
-  chop_keywords : [dictionaries,chop_dictionary],
-  fmh_codes : [fmh,fmh_names],
-  mdc_to_fmh : [mdc,mdc_to_fmh],
-  mdcs : [mdc,mdc_names],
-  fmh_fallbacks : [fmh_fallbacks, fmh_fallbacks],
-  thesauri : [thesauren],
-  thesaur_to_fs : [thesaur,thesaur_to_fmh],
-  thesaur_to_icd : [thesaur, thesaur_to_icd]
+  icd_dictionary       : [dictionaries,icd_dictionary],
+  chop_dictionary      : [dictionaries,chop_dictionary],
+  fmh_codes            : [fmh,fmh_names],
+  mdc_to_fmh           : [mdc,mdc_to_fmh],
+  mdcs                 : [mdc,mdc_names],
+  fmh_fallbacks        : [fmh_fallbacks, fmh_fallbacks],
+  thesauri             : [thesauren],
+  thesaur_to_fs        : [thesaur,thesaur_to_fmh],
+  thesaur_to_icd       : [thesaur, thesaur_to_icd]
   }
 
 development:
