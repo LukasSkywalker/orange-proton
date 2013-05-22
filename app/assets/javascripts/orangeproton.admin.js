@@ -33,6 +33,30 @@ orangeproton.admin = {
       });
   },
 
+    /**
+     * Displays the Adminpanel
+     */
+  displayPanel: function(){
+      if($('#admin').length === 0){
+          $('#bread-crumbs').after(
+              $('<div id="hide-panels" class="clickable">' +
+                  '<h3>?</h3>' +
+                  '</div>' +
+                  '<div id="panels-container">' +
+                  '<div id="panels">' +
+                  '<div id="admin" class="panel">' +
+                  '<div id="admin-title" class="title">' +
+                  '<p>Admin panel</p>' +
+                  '</div>' +
+                  '<div id="admin-text"></div>' +
+                  '</div>' +
+                  '</div>' +
+                  '</div>')
+          );
+      }
+
+  },
+
   /**
    * Display the sliders based on the response-array
    * @param {Array} response An array containing values for each weight slider
@@ -40,16 +64,8 @@ orangeproton.admin = {
    */
   displaySliders: function(response, status) {
       if($('#admin').length === 0){
-          $('#info').after(
-              '<div id="admin" class="panel">' +
-                  '<div id="admin-title" class="title">' +
-                  '<p>Admin panel</p>' +
-                  '</div>' +
-                  '<div id="admin-text"></div>' +
-                  '</div>'
-          );
+          orangeproton.admin.displayPanel();
       }
-
 
       var providers = ["MDC", "Range", "Thesaur", "StringMatcher", "Chop"];
       var panel = $("#admin-text");
