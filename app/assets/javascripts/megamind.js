@@ -212,6 +212,11 @@ var megamind = {
     }
   };
 
+  /**
+   * Parent method for all megamind-related method calls. Pass the specific method
+   * you want to call and any arguments as parameters, like $('#elem').megamind('debug');
+   * @param {Function} method the name of the method to call
+   */
   $.fn.megamind = function (method) {
     // Method calling logic
     if (methods[method]) {
@@ -225,7 +230,11 @@ var megamind = {
 
   /**
    * @class Canvas
-   * Represents a node-container
+   * Create a node-container
+   * @param {HTMLElement} mm the container
+   * @param {String[]} areas the areas to cover
+   * @param {String} className an additional label to display in the background
+   * @param {Object} options ...
    */
   function Canvas(mm, areas, className, options) {
     var text = getText();
@@ -253,14 +262,25 @@ var megamind = {
     return this;
   }
 
+  /**
+   * Get the left offset of the canvas relative to the mindmap element
+   * @returns {Number} the x offset
+   */
   Canvas.prototype.left = function () {
     return this.xOffset;// + this.container.position().left;
   };
 
+  /**
+   * Get the top offset of the canvas relative to the mindmap element
+   * @returns {Number} the y offset
+   */
   Canvas.prototype.top = function () {
     return this.yOffset;// + this.container.position().top;
   };
 
+  /**
+   * Size this node container based on the presets passed at creation
+   */
   Canvas.prototype.resize = function () {
     var height = 0, width = 0, left = Infinity, top = Infinity;
     $.each(this.areas, function(i, area) {
@@ -280,6 +300,10 @@ var megamind = {
     this.overlay.css({left: this.xOffset, top: this.yOffset, width: this.width, height: this.height});
   };
 
+  /**
+   * Attach the nodes that only existed in memory to the DOM
+   * This method triggers the `beforeDraw` and `afterDraw` events
+   */
   Canvas.prototype.render = function () {
     this.container.trigger('beforeDraw');
     if( !this.el.isInDom() ) {
@@ -311,17 +335,29 @@ var megamind = {
     this.container.trigger('afterDraw');
   };
 
+  /**
+   * Get the last inserted row from this Canvas
+   * @returns {Row} the latest row
+   */
   Canvas.prototype.currentRow = function () {
     return this.rows[this.rows.length - 1];
   };
 
-
+  /**
+   * Add a row containing the specified node to the canvas
+   * @param {Node} node the first node
+   * @returns {Row} the new row
+   */
   Canvas.prototype.addRow = function (node) {
     var row = new Row(node, this);
     this.rows.push(row);
     return row;
   };
 
+  /**
+   * Calculate the bottom border of the last row
+   * @returns {Number} the y position
+   */
   Canvas.prototype.bottom = function () {
     var b = this.top();
     for (var i = 0; i < this.rows.length; i++) {
@@ -331,10 +367,16 @@ var megamind = {
     return b;
   };
 
+  /**
+   * Shuffle the order of the rows contained in this canvas
+   */
   Canvas.prototype.shuffle = function () {
     this.rows.shuffle();
   };
 
+  /**
+   * Equally space the nodes contained in the canvas
+   */
   Canvas.prototype.space = function () {
     var spaceLeft = this.height - this.spaceUsed();
     var gaps = this.rows.length + 1;
@@ -347,6 +389,10 @@ var megamind = {
     }
   };
 
+  /**
+   * Calculate the vertical space already used inside the canvas
+   * @returns {number} the occupied pixels
+   */
   Canvas.prototype.spaceUsed = function () {
     var h = 0;
     for (var i = 0; i < this.rows.length; i++) {
@@ -355,6 +401,10 @@ var megamind = {
     return h;
   };
 
+  /**
+   * Get all Nodes contained in the canvas
+   * @returns {Node[]} all nodes
+   */
   Canvas.prototype.nodeElements = function () {
     var nodes = [];
     for(var i = 0; i < this.allNodes.length; i++) {
@@ -363,6 +413,10 @@ var megamind = {
     return nodes;
   };
 
+  /**
+   * Re-render the canvas after a style- or size-change happened e.g. after
+   * the user resized the window
+   */
   Canvas.prototype.redraw = function () {
     this.distribute();
     this.render();
@@ -385,6 +439,12 @@ var megamind = {
     this.render();
   };
 
+  /**
+   * Calculate position for all Nodes contained in the canvas
+   * This does not yet render the nodes. Triggers `beforePosition`
+   * and `afterPosition` events
+   * @returns {Canvas} itself
+   */
   Canvas.prototype.distribute = function () {
     this.container.trigger('beforePosition');
     var elements = this.nodeElements();
@@ -476,6 +536,11 @@ var megamind = {
     return this;
   };
 
+  /**
+   * Get all rows above the specified row
+   * @param row
+   * @returns {Row[]} all higher rows
+   */
   Canvas.prototype.rowsBefore = function (row) {
     var r = [];
     for (var i = 0; i < this.rows.length && this.rows[i] != row; i++) {
@@ -484,10 +549,21 @@ var megamind = {
     return r;
   };
 
+  /**
+   * Calculate the vertical fill-percentage of the canvas
+   * @returns {number} fraction (0-1)
+   */
   Canvas.prototype.fillLevel = function() {
     return this.spaceUsed() / this.height;
   };
 
+  /**
+   * Calculate the overall fill-ratio of the canvas. This number represents
+   * how event the distribution across the x- and y-axis are. The closer the
+   * number is to 1, the better. Larger numbers mean it's too wide, smaller
+   * mean it's to high.
+   * @returns {number} the ratio
+   */
   Canvas.prototype.fillRatio = function() {
     var horFillLevel = 0;
     for(var i = 0; i < this.rows.length; i++) {
@@ -512,6 +588,10 @@ var megamind = {
     this.addNode(node);
   }
 
+  /**
+   * Get the y position of the top border of this row
+   * @returns {number} y offset
+   */
   Row.prototype.top = function () {
     var h = 0;
     var previousRows = this.canvas.rowsBefore(this);
@@ -521,19 +601,34 @@ var megamind = {
     return this.canvas.top() + h + this.yOffset;
   };
 
+  /**
+   * Get the x position of the left border of this row
+   * @returns {number} x offset
+   */
   Row.prototype.left = function () {
     return this.canvas.left();
   };
 
+  /**
+   * Add an additional node to the row
+   * @param {Node} node the new node
+   */
   Row.prototype.addNode = function (node) {
     this.nodes.push(node);
     node.row = this;
   };
 
+  /**
+   * Shuffle the nodes contained in this row
+   */
   Row.prototype.shuffle = function () {
     this.nodes.shuffle();
   };
 
+  /**
+   * Equally space the nodes contained in this row based on the optional
+   * spacing-settings passed to the canvas
+   */
   Row.prototype.space = function () {
     var spaceLeft = this.width() - this.spaceUsed();
     var gaps = this.nodes.length + 1;
@@ -547,11 +642,21 @@ var megamind = {
     }
   };
 
+  /**
+   * No idea
+   * @param x
+   * @param y
+   */
   Row.prototype.move = function (x, y) {
     this.xOffset = x;
     this.yOffset = y;
   };
 
+  /**
+   * Calculate pixels of horizontal space used by nodes
+   * contained in this row
+   * @returns {number} the total width of all nodes
+   */
   Row.prototype.spaceUsed = function () {
     var w = 0;
     for (var i = 0; i < this.nodes.length; i++) {
@@ -560,6 +665,11 @@ var megamind = {
     return w;
   };
 
+  /**
+   * Calculate the height of the row. This is equal to the height
+   * of the highest Node
+   * @returns {Number} the hotizontal size
+   */
   Row.prototype.height = function () {
     var h = this.nodes[0].height();
     for (var i = 0; i < this.nodes.length; i++) {
@@ -569,14 +679,29 @@ var megamind = {
     return h;
   };
 
+  /**
+   * Get the total width of this row. This is always the same as
+   * the width of the parent Canvas
+   * @returns {number} total width
+   */
   Row.prototype.width = function () {
     return this.canvas.width;
   };
 
+  /**
+   * Calculate the absolute position of the bottom border of the row
+   * @returns {Number} bottom border position
+   */
   Row.prototype.bottom = function () {
     return this.top() + this.height();
   };
 
+  /**
+   * Get all Nodes in this row that are positioned before (to the left)
+   * of the specified node
+   * @param {Node} node the pivot
+   * @returns {Node[]} all nodes before
+   */
   Row.prototype.nodesBefore = function (node) {
     var n = [];
     for (var i = 0; i < this.nodes.length && this.nodes[i] != node; i++) {
@@ -585,6 +710,11 @@ var megamind = {
     return n;
   };
 
+  /**
+   * Calculate the horizontal fill-fraction that is used up
+   * by nodes
+   * @returns {number} the fraction (0...1)
+   */
   Row.prototype.fillLevel = function() {
     return this.spaceUsed() / this.width();
   };
@@ -607,14 +737,26 @@ var megamind = {
     this.yOffset = 0;
   }
 
+  /**
+   * Get the node width
+   * @returns {Number} width
+   */
   Node.prototype.width = function () {
     return this.el.outerWidth();
   };
 
+  /**
+   * Get the node height
+   * @returns {Number} height
+   */
   Node.prototype.height = function () {
     return this.el.outerHeight();
   };
 
+  /**
+   * Get the absolute position of the left border of the node
+   * @returns {Number} left position
+   */
   Node.prototype.left = function () {
     var w = 0;
     var nodesBefore = this.row.nodesBefore(this);
@@ -625,19 +767,35 @@ var megamind = {
     return this.row.left() + w + this.xOffset;
   };
 
+  /**
+   * Get the absolute position of the top border of the node
+   * @returns {Number} top position
+   */
   Node.prototype.top = function () {
     return this.row.top() + this.yOffset;
   };
 
+  /**
+   * No idea
+   * @param x
+   * @param y
+   */
   Node.prototype.move = function (x, y) {
     this.xOffset = x;
     this.yOffset = y;
   };
 
+  /**
+   * Calculate the absolute center position of the node
+   * @returns {Point} the center
+   */
   Node.prototype.getCenter = function () {
     return new Point(this.left() + this.width() / 2, this.top() + this.height() / 2);
   };
 
+  /**
+   * Remove the node from everywhere
+   */
   Node.prototype.remove = function () {
     if (this.parent) {
       this.parent.children.removeByValue(this);
@@ -659,7 +817,7 @@ var megamind = {
    * Center a jQuery element inside an arbitrary parent, if wanted with an animation
    * @param {HTMLElement} parent the container element
    * @param {Boolean} animate whether the centering should be animated
-   * @return {HTMLElement} the centered element
+   * @returns {HTMLElement} the centered element
    */
   jQuery.fn.center = function (parent, animate) {
     this.css("position", "absolute");
@@ -679,7 +837,7 @@ var megamind = {
 
   /**
    * Get the absolute center of an HTML element
-   * @return {Point} the coordinates of the center
+   * @returns {Point} the coordinates of the center
    */
   jQuery.fn.getCenter = function () {
     var x = this.position().left + this.outerWidth() / 2;
@@ -689,7 +847,7 @@ var megamind = {
 
   /**
    * Check whether the given element is already appended to the DOM
-   * @return {Boolean} whether it's in the DOM
+   * @returns {Boolean} whether it's in the DOM
    */
   jQuery.fn.isInDom = function () {
     return jQuery.contains(document.documentElement, this);
