@@ -136,7 +136,15 @@ var megamind = {
       ele.center($mm, animate || false);
       data.rootNode = ele;
       megamind.rootNode = ele;
-      //TODO remove above line
+      /**
+       * TODO a node that has no parent specified will automatically use
+       * the global root node as parent. Since the node creation happens
+       * at a time when no access to data.rootNode is possible, the root
+       * has to be saved in the megamind object.rootNode. This is not an
+       * issue per se, but it prevents megamind from being used twice on
+       * the same page. Please edit this if you ever have an idea on how
+       * to do this. See how I aligned every line-end of this paragraph?
+       */
       return ele;
     },
 
@@ -488,6 +496,14 @@ var megamind = {
     return horFillLevel / this.fillLevel();
   };
 
+  /**
+   * @class Row
+   * Represents one row of nodes inside a container.
+   * The two parameters are required because the Row-constructor
+   * needs to know those properties early
+   * @param {Node} node the first node to add to the row
+   * @param {Canvas} canvas the canvas in which the row should be inserted
+   */
   function Row(node, canvas) {
     this.xOffset = 0;
     this.yOffset = 0;
@@ -573,6 +589,12 @@ var megamind = {
     return this.spaceUsed() / this.width();
   };
 
+  /**
+   * Represents a single node in the mindmap. This is where the actual content
+   * is contained.
+   * @param {HTMLElelemt} el the HTML element that needs to be inserted
+   * @param {Node} [parent] an optional parent node
+   */
   function Node(el, parent) {
     this.el = el;
     if (parent) {
@@ -623,11 +645,22 @@ var megamind = {
     this.el.remove();
   };
 
+  /**
+   * Represents an arbitrary two-dimensional value such as coordinates or sizes
+   * @param {Number} x the x value
+   * @param {Number} y the y value
+   */
   function Point(x, y) {
     this.x = x;
     this.y = y;
   }
 
+  /**
+   * Center a jQuery element inside an arbitrary parent, if wanted with an animation
+   * @param {HTMLElement} parent the container element
+   * @param {Boolean} animate whether the centering should be animated
+   * @return {HTMLElement} the centered element
+   */
   jQuery.fn.center = function (parent, animate) {
     this.css("position", "absolute");
     $(this).addClass('centering');
@@ -644,12 +677,20 @@ var megamind = {
     return this;
   };
 
+  /**
+   * Get the absolute center of an HTML element
+   * @return {Point} the coordinates of the center
+   */
   jQuery.fn.getCenter = function () {
     var x = this.position().left + this.outerWidth() / 2;
     var y = this.position().top + this.outerHeight() / 2;
     return new Point(x, y);
   };
 
+  /**
+   * Check whether the given element is already appended to the DOM
+   * @return {Boolean} whether it's in the DOM
+   */
   jQuery.fn.isInDom = function () {
     return jQuery.contains(document.documentElement, this);
   };
