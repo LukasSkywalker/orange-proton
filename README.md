@@ -1,6 +1,8 @@
 orange-proton
 =============
 
+## This fork exists for historic purposes
+
 ## How to run
 * Install Ruby 1.9.3 or similar
 * Install the bundler gem: `gem install bundler`
